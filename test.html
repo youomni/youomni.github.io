@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOW MACHINES LEARN AND THINK</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* ── index.html-specific overrides ── */
+    header {
+      padding: 40px 24px 0px;
+    }
+
+    .header-title {
+      font-size:     30px;
+      margin-bottom: 8px;
+      color:         var(--yellow);
+    }
+
+    .header-subtitle {
+      margin-bottom: 6px;
+    }
+
+    @media (max-width: 480px) {
+      .header-title { font-size: 22px; }
+    }
+  </style>
+
+</head>
+
+
+<body>
+
+<main class="page">
+
+<br/>
+
+  <div style="display: flex; justify-content: center; width: 100%;">
+    <div class="pricing-block" style="width: 270px; text-align:center;">
+      
+      <div class="header-audience">
+      A unique opportunity for
+      your family to explore
+      high‑tech together
+    </div>
+      <div class="header-eyebrow">Mind-Expanding Course:</div>
+
+      <div class="pricing-title">HOW<br/>MACHINES<br/>LEARN AND<br/>THINK</div>
+
+     <div class="header-subtitle">The Surprisingly<br/>Simple Math Behind<br/>Modern AI</div>
+    <div class="header-audience">For kids (10+)<br/>and adults — <br/>together</div>
+    <br/>
+
+    <div class="img-block">
+      <img src="MIS.png" style="width: 80%;"/>
+    </div>
+
+    </div>
+  </div> 
+
+
+
+
+
+
+  <!-- CODE BLOCK 1 -->
+  <div class="pythoncode">
+    <div class="textarea-wrap">
+<textarea id="code-input1" style="line-height: 1.2;">
+INPUT1 = 3.00
+INPUT2 = 5.00
+
+WEIGHT1 = 2.00
+WEIGHT2 = 3.00
+
+BIAS = -0.50
+
+PRODUCT1 = INPUT1 * WEIGHT1
+
+PRODUCT2 = INPUT2 * WEIGHT2
+
+OUTPUT = PRODUCT1 + PRODUCT2 + BIAS 
+
+print(f"🔥 OUTPUT = {OUTPUT}")
+</textarea>
+    </div>
+    <div class="code-row">
+      <button onclick="runPython(1, this)"><strong>RUN</strong></button>
+      <button class="copy_btn copy_btn--inline" onclick="copyCode('code-input1', this)" data-tooltip="Copy code">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </button>
+    </div>
+    <div id="output-window1">Ready for math!</div>
+  </div>
+
+
+
+
+
+
+
+
+  <!-- CODE BLOCK 2 -->
+  <div class="pythoncode">
+    <div class="textarea-wrap">
+<textarea id="code-input2" style="line-height: 1.2;">
+# Single Parameter Brain
+INPUT1 = 4.00
+WEIGHT1 = 2.50
+
+OUTPUT = INPUT1 * WEIGHT1
+
+print(f"🧠 SIMPLE BRAIN OUTPUT = {OUTPUT}")
+</textarea>
+    </div>
+    <div class="code-row">
+      <button onclick="runPython(2, this)"><strong>RUN</strong></button>
+      <button class="copy_btn copy_btn--inline" onclick="copyCode('code-input2', this)" data-tooltip="Copy code">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </button>
+    </div>
+    <div id="output-window2">Ready for math!</div>
+  </div>
+
+
+
+
+  <!-- CODE BLOCK 3 -->
+  <div class="pythoncode">
+    <div class="textarea-wrap">
+<textarea id="code-input3" style="line-height: 1.2;">
+# Calculating Prediction Error
+TARGET_OUTPUT = 20.00
+PREDICTED_OUTPUT = 18.00
+
+ERROR = TARGET_OUTPUT - PREDICTED_OUTPUT
+
+print(f"🎯 TARGET = {TARGET_OUTPUT}")
+print(f"🤖 PREDICTION = {PREDICTED_OUTPUT}")
+print(f"⚠️ ERROR = {ERROR}")
+</textarea>
+    </div>
+    <div class="code-row">
+      <button onclick="runPython(3, this)"><strong>RUN</strong></button>
+      <button class="copy_btn copy_btn--inline" onclick="copyCode('code-input3', this)" data-tooltip="Copy code">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </button>
+    </div>
+    <div id="output-window3">Ready for math!</div>
+  </div>
+
+
+
+
+  <!-- CODE BLOCK 4 -->
+  <div class="pythoncode">
+    <div class="textarea-wrap">
+<textarea id="code-input4" style="line-height: 1.2;">
+# Simple Parameter Update
+WEIGHT1 = 1.50
+LEARNING_RATE = 0.10
+ERROR = 2.00
+
+WEIGHT1_update = WEIGHT1 + (LEARNING_RATE * ERROR)
+
+print(f"📉 OLD WEIGHT = {WEIGHT1}")
+print(f"📈 NEW WEIGHT = {WEIGHT1_update}")
+</textarea>
+    </div>
+    <div class="code-row">
+      <button onclick="runPython(4, this)"><strong>RUN</strong></button>
+      <button class="copy_btn copy_btn--inline" onclick="copyCode('code-input4', this)" data-tooltip="Copy code">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </button>
+    </div>
+    <div id="output-window4">Ready for math!</div>
+  </div>
+
+
+
+
+
+  <!-- CODE BLOCK 5 -->
+  <div class="pythoncode">
+    <div class="textarea-wrap">
+<textarea id="code-input5" style="line-height: 1.2;">
+# ReLU Activation Function
+RAW_OUTPUT = -3.50
+
+ACTIVATED_OUTPUT = max(0.00, RAW_OUTPUT)
+
+print(f"📥 RAW OUTPUT = {RAW_OUTPUT}")
+print(f"⚡ ACTIVATED OUTPUT = {ACTIVATED_OUTPUT}")
+</textarea>
+    </div>
+    <div class="code-row">
+      <button onclick="runPython(5, this)"><strong>RUN</strong></button>
+      <button class="copy_btn copy_btn--inline" onclick="copyCode('code-input5', this)" data-tooltip="Copy code">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </button>
+    </div>
+    <div id="output-window5">Ready for math!</div>
+  </div>
+
+
+
+
+
+
+  <!-- CODE BLOCK 6 -->
+  <div class="pythoncode">
+    <div class="textarea-wrap">
+<textarea id="code-input6" style="line-height: 1.2;">
+# Two-Neuron Layer Simulation
+INPUT_VAL = 2.00
+
+WEIGHT_A = 1.20
+WEIGHT_B = 0.80
+
+NEURON_A = INPUT_VAL * WEIGHT_A
+NEURON_B = INPUT_VAL * WEIGHT_B
+
+LAYER_SUM = NEURON_A + NEURON_B
+
+print(f"🟢 NEURON A = {NEURON_A}")
+print(f"🔵 NEURON B = {NEURON_B}")
+print(f"🌐 LAYER TOTAL = {LAYER_SUM}")
+</textarea>
+    </div>
+    <div class="code-row">
+      <button onclick="runPython(6, this)"><strong>RUN</strong></button>
+      <button class="copy_btn copy_btn--inline" onclick="copyCode('code-input6', this)" data-tooltip="Copy code">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </button>
+    </div>
+    <div id="output-window6">Ready for math!</div>
+  </div>
+
+
+
+
+
+  <!-- CODE BLOCK 7 -->
+  <div class="pythoncode">
+    <div class="textarea-wrap">
+<textarea id="code-input7" style="line-height: 1.2;">
+# Toy Training Loop (3 Steps)
+WEIGHT1 = 0.50
+TARGET = 10.00
+INPUT1 = 2.00
+
+for STEP in range(1, 4):
+    PREDICTION = INPUT1 * WEIGHT1
+    ERROR = TARGET - PREDICTION
+    WEIGHT1 = WEIGHT1 + (0.10 * ERROR)
+    print(f"STEP {STEP}: PREDICTION = {PREDICTION:.2f}, NEW WEIGHT = {WEIGHT1:.2f}")
+</textarea>
+    </div>
+    <div class="code-row">
+      <button onclick="runPython(7, this)"><strong>RUN</strong></button>
+      <button class="copy_btn copy_btn--inline" onclick="copyCode('code-input7', this)" data-tooltip="Copy code">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </button>
+    </div>
+    <div id="output-window7">Ready for math!</div>
+  </div>
+
+
+
+  
+
+</main>
+
+
+<!-- PULSING STOPPING AND STARTING -->
+<script>
+    function copyCode(id, btn) {
+      // Stop pulsing animation on click
+      btn.classList.add('is-copied');
+
+      const text = document.getElementById(id).value;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('copy_btn--copied');
+        btn.setAttribute('data-tooltip', 'Copied!');
+        setTimeout(() => {
+          btn.classList.remove('copy_btn--copied');
+          btn.setAttribute('data-tooltip', 'Copy code');
+        }, 1800);
+      });
+    }
+
+    function outf(text, outputId) {
+      var mypre = document.getElementById(outputId);
+      mypre.innerHTML = mypre.innerHTML + text;
+    }
+
+    function runPython(index, btn) {
+      if (btn) {
+        btn.classList.add("is-ran");
+      }
+
+      const codeId   = "code-input" + index;
+      const outputId = "output-window" + index;
+
+      var code  = document.getElementById(codeId).value;
+      var mypre = document.getElementById(outputId);
+      mypre.innerHTML = '';
+
+      Sk.sysmodules = {};
+      Sk.pre = outputId;
+      Sk.configure({ output: (text) => outf(text, outputId) });
+
+      var myPromise = Sk.misceval.asyncToPromise(function () {
+        return Sk.importMainWithBody("<stdin>", false, code, true);
+      });
+
+      myPromise.then(
+        function (mod) { console.log('Success!'); },
+        function (err)  { mypre.innerHTML = err.toString(); }
+      );
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const codeBlocks = document.querySelectorAll(".pythoncode");
+
+      codeBlocks.forEach(function (block, idx) {
+        const index = idx + 1;
+        const runBtn = block.querySelector("button:not(.copy_btn)");
+        const copyBtn = block.querySelector(".copy_btn");
+        const codeArea = document.getElementById("code-input" + index);
+
+        if (codeArea) {
+          // Whenever the code changes in this textarea, restart pulsing for its buttons
+          codeArea.addEventListener("input", function () {
+            if (runBtn) runBtn.classList.remove("is-ran");
+            if (copyBtn) copyBtn.classList.remove("is-copied");
+          });
+        }
+      });
+    });
+</script>
+
+<!-- FOCUS -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Select readable text containers
+  const selector = "p, li, .callout p, .formula-block, .step-heading, .inner-heading";
+  const elements = document.querySelectorAll(selector);
+
+  // Exclude containers like code blocks, tables, images, and headers
+  const validElements = Array.from(elements).filter(el => {
+    return !el.closest(".pythoncode, .pricing-block, .table-wrap, .img-block, .diagram, header, .footer");
+  });
+
+  // Recursive function to wrap text nodes inside elements (including inside <strong>, <em>, etc.)
+  function wrapWordsInNode(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      if (node.nodeValue.trim() !== "") {
+        const words = node.nodeValue.split(/(\s+)/);
+        const fragment = document.createDocumentFragment();
+        words.forEach(word => {
+          if (word.trim() !== "") {
+            const span = document.createElement("span");
+            span.className = "focus-word";
+            span.textContent = word;
+            fragment.appendChild(span);
+          } else {
+            fragment.appendChild(document.createTextNode(word));
+          }
+        });
+        node.parentNode.replaceChild(fragment, node);
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      // Traverse child elements (like <strong>, <em>, <i>) without disrupting their tags
+      Array.from(node.childNodes).forEach(wrapWordsInNode);
+    }
+  }
+
+  validElements.forEach(el => wrapWordsInNode(el));
+
+  let currentHighlightedWord = null;
+
+  function updateCenterFocus() {
+    const viewportCenter = window.innerHeight / 2;
+    const allWords = document.querySelectorAll(".focus-word");
+    let closestWord = null;
+    let minDistance = Infinity;
+
+    allWords.forEach(word => {
+      const rect = word.getBoundingClientRect();
+      const wordCenter = rect.top + rect.height / 2;
+      const distance = Math.abs(viewportCenter - wordCenter);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestWord = word;
+      }
+    });
+
+    // Highlight the word closest to vertical center (threshold: 80px)
+    if (closestWord && minDistance < 80) {
+      if (currentHighlightedWord !== closestWord) {
+        if (currentHighlightedWord) {
+          currentHighlightedWord.classList.remove("focus-line-target");
+        }
+        closestWord.classList.add("focus-line-target");
+        currentHighlightedWord = closestWord;
+      }
+    } else if (currentHighlightedWord) {
+      currentHighlightedWord.classList.remove("focus-line-target");
+      currentHighlightedWord = null;
+    }
+  }
+
+  let ticking = false;
+  window.addEventListener("scroll", function () {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        updateCenterFocus();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  updateCenterFocus();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Class 1 — The Multiplier by Five</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulkt-stdlib.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+
+  <style>
+    /* ── class1.html-specific textarea heights ── */
+    #code-input1  { height: 470px; }
+    #code-input2  { height: 280px; }
+  </style>
+
+</head>
+
+
+<body>
+
+  <header>
+    <div class="header-tag">How Machines Learn and Think</div>
+    <div class="header-title">Class 1</div>
+    <div class="header-subtitle class-subtitle">Our Very First Machine Mind</div>
+  </header>
+
+
+  <div class="page">
+
+    <!-- INTRODUCTION -->
+    <div class="section-label">Introduction</div>
+    <div class="card">
+      <div class="card-body">
+        <p>The words "<strong>learning</strong>" and "<strong>training</strong>" are used interchangeably.</p>
+      </div>
+    </div>
+
+
+    <!-- THE MIND WE WANT TO BUILD -->
+    <div class="section-label">The Mind We Want to Grow</div>
+    <div class="card">
+      <div class="card-body">
+        <p>We want to grow a mind that can multiply any number by <strong>5.0</strong>.</p>
+        <p>This mind will have a single PARAMETER: <strong>WEIGHT</strong>.</p>
+      </div>
+    </div>
+
+
+
+    <!-- THE MIND WE WANT TO BUILD -->
+    <div class="section-label">Initial PARAMETER</div>
+    <div class="card">
+      <div class="card-body">
+        <p>Suppose we don't yet know what this WEIGHT should be, so let's start by setting it to <strong>zero</strong>:</p>
+        <div class="callout callout-neutral">WEIGHT = <strong>0.0</strong></div>
+        <p>At first, the mind will generate nonsense.</p>
+      </div>
+    </div>
+
+
+    <!-- DATASET -->
+    <div class="section-label">Dataset</div>
+    <div class="card">
+      <div class="card-body">
+        <p>The training dataset:</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>INPUT</th>
+                <th>TARGET</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>EXAMPLE 1</td>
+                <td>0.6</td>
+                <td>3.0</td>
+              </tr>
+              <tr>
+                <td>EXAMPLE 2</td>
+                <td>1.0</td>
+                <td>5.0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Here, we have 2 EXAMPLES.</p>
+
+        <p>
+          EXAMPLE 1 means when INPUT is <strong>0.6</strong>, OUTPUT must be <strong>3.0</strong>.<br/>
+          EXAMPLE 2 means when INPUT is <strong>1.0</strong>, OUTPUT must be <strong>5.0</strong>.
+        </p>
+        <p>
+          When training, at every lesson, the mind will <strong>update</strong> PARAMETER to improve itself.
+        </p>
+      </div>
+    </div>
+
+
+    <!-- THE UPDATE RULE -->
+    <div class="section-label">The Update Rule</div>
+    <div class="card">
+      <div class="card-body">
+        <p>The mind will <strong>update</strong> PARAMETER using this update rule:</p>
+
+        <div class="formula-block">
+          <div class="formula-block-label">Simple Update Rule</div>
+          <span class="formula">PARAMETER = PARAMETER + PARAMETER_update</span><br/>
+          <span class="formula">PARAMETER_update = ERROR</span>
+        </div>
+
+        <p>Since the mind has just one PARAMETER, which is WEIGHT, it obtains:</p>
+
+        <div class="formula-block">
+          <div class="formula-block-label">Simple Update Rule for WEIGHT</div>
+          <span class="formula">WEIGHT = WEIGHT + WEIGHT_update</span><br/>
+          <span class="formula">WEIGHT_update = ERROR</span>
+        </div>
+
+        <p>Don't worry — it's really simple. Just follow the calculations below.</p>
+      </div>
+    </div>
+
+
+    <!-- TRAINING -->
+    <div class="section-label">Training</div>
+
+
+    <!-- LESSON 1 -->
+    <div class="card">
+      <div class="card-header">LESSON 1</div>
+      <div class="card-body">
+
+        <div class="callout callout-neutral">WEIGHT = <strong>0.0</strong></div>
+
+        <p>EXAMPLE 1:</p>
+        <div class="callout callout-neutral">
+          INPUT &nbsp;= <strong>0.6</strong><br/>
+          TARGET = <strong>3.0</strong>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">Forward Pass — Inference</div>
+          PRODUCT = INPUT × WEIGHT = 0.6 × 0.0 = <strong>0.0</strong><br/>
+          OUTPUT &nbsp;= PRODUCT = <strong>0.0</strong><br/>
+        </div>
+        
+        <div class="callout callout-success">
+          <div class="callout-title">Error</div>
+          ERROR &nbsp;&nbsp;= TARGET − OUTPUT = 3.0 − 0.0 = <strong>3.0</strong>
+        </div>
+
+        <div class="diagram">
+          <img src="graph_L1_before.png" alt="Neuron diagram — Lesson 1 before update" />
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">Backward Pass — Backpropagation</div>
+
+          <div class="formula-block">
+            <div class="formula-block-label">Simple Update Rule for WEIGHT</div>
+            <span class="formula">WEIGHT = WEIGHT + WEIGHT_update</span><br/>
+            <span class="formula">WEIGHT_update = ERROR</span>
+          </div>
+
+          WEIGHT_update = ERROR = <strong>3.0</strong><br/>
+          WEIGHT = WEIGHT + WEIGHT_update = 0.0 + 3.0 = <strong>3.0</strong><br/><br/>
+          Since ERROR was <strong>3.00</strong>, we updated WEIGHT by exactly <strong>3.0</strong>. So WEIGHT becomes <strong>3.0</strong>.
+        </div>
+
+        <div class="result-banner">WEIGHT = 3.0</div>
+
+        <div class="callout callout-warning">
+          <strong>What just happened?</strong><br/>
+          <p>The mind has just improved itself.</p>
+          <p>Now, if it receives the same INPUT of <strong>0.60</strong>, OUTPUT becomes <strong>1.8</strong> — which is closer to TARGET <strong>3.0</strong> than the previous OUTPUT <strong>0.0</strong> was.</p>
+          <p>ERROR becomes smaller:</p>
+          <span class="error-chip">ERROR = 1.2</span>
+        </div>
+
+        <div class="diagram">
+          <img src="graph_L1_after.png" alt="Neuron diagram — Lesson 1 after update" />
+        </div>
+
+        <p style="color:var(--gray);"><br/>Lesson 1 finishes here.</p>
+      </div>
+    </div>
+
+
+    <!-- LESSON 2 -->
+    <div class="card">
+      <div class="card-header">LESSON 2</div>
+      <div class="card-body">
+
+        <div class="callout callout-neutral">WEIGHT = <strong>3.0</strong></div>
+
+        <p>EXAMPLE 2:</p>
+        <div class="callout callout-neutral">
+          INPUT &nbsp;= <strong>1.0</strong><br/>
+          TARGET = <strong>5.0</strong>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">Forward Pass — Inference</div>
+          PRODUCT = INPUT × WEIGHT = 1.0 × 3.0 = <strong>3.0</strong><br/>
+          OUTPUT &nbsp;= PRODUCT = <strong>3.0</strong><br/>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">Error</div>
+          ERROR &nbsp;&nbsp;= TARGET − OUTPUT = 5.0 − 3.0 = <strong>2.0</strong>
+        </div>
+
+        <div class="diagram">
+          <img src="graph_L2_before.png" alt="Neuron diagram — Lesson 2 before update" />
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">Backward Pass — Backpropagation</div>
+
+          <div class="formula-block">
+            <div class="formula-block-label">Simple Update Rule for WEIGHT</div>
+            <span class="formula">WEIGHT = WEIGHT + WEIGHT_update</span><br/>
+            <span class="formula">WEIGHT_update = ERROR</span>
+          </div>
+
+          WEIGHT_update = ERROR = <strong>2.0</strong><br/>
+          WEIGHT = WEIGHT + WEIGHT_update = 3.0 + 2.0 = <strong>5.0</strong><br/><br/>
+          Since ERROR was <strong>2.0</strong>, we updated WEIGHT by exactly <strong>2.0</strong>. So WEIGHT becomes <strong>5.0</strong>.
+        </div>
+
+        <div class="result-banner">WEIGHT = 5.0</div>
+
+        <div class="callout callout-warning">
+          <strong>What just happened?</strong><br/>
+          <p>The mind has just improved itself. Again!</p>
+          <p>Now, if it receives the same INPUT of <strong>1.0</strong>, OUTPUT becomes <strong>5.0</strong> — which is closer to TARGET <strong>5.0</strong> than the previous OUTPUT <strong>3.0</strong> was.</p>
+        </div>
+
+        <div class="success-callout">
+          <p>Wait — it's not just closer. It's exact!<br/>
+            OUTPUT is now 5.0 — exactly the same as TARGET.</p>
+          <p>ERROR becomes zero:</p>
+          <span class="error-chip" style="background:#d4edda; color:#155724;">&nbsp;&nbsp;ERROR = 0.0</span>
+        </div>
+
+        <div class="diagram">
+          <img src="graph_L2_after.png" alt="Neuron diagram — Lesson 2 after update" />
+        </div>
+
+        <p style="color:var(--gray);"><br/>Lesson 2 finishes here.</p>
+      </div>
+    </div>
+
+
+    <div class="completion-banner">✓ &nbsp; DONE &nbsp; ✓</div>
+
+
+    <!-- TESTING -->
+    <div class="section-label">Testing</div>
+    <div class="card">
+      <div class="card-body">
+
+        <p>To test the mind, we give it a problem — an <strong>EXAMPLE</strong> — it has never encountered before.</p>
+
+        <div class="callout callout-neutral">WEIGHT = <strong>5.0</strong></div>
+        <p>EXAMPLE FOR TESTING :</p>
+
+        <div class="callout callout-neutral">
+          INPUT &nbsp;= <strong>10.0</strong><br/>
+          TARGET = <strong>50.0</strong>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">Forward Pass</div>
+          PRODUCT = INPUT × WEIGHT = 10.0 × 5.0 = <strong>50.0</strong><br/>
+          OUTPUT &nbsp;= PRODUCT = <strong>50.0</strong><br/>
+          ERROR &nbsp;&nbsp;= TARGET − OUTPUT = 50.0 − 50.0 = <strong>0.0</strong>
+        </div>
+
+        <div class="diagram">
+          <img src="graph_validation.png" alt="Neuron diagram — Validation" />
+        </div>
+
+        <div class="callout callout-warning">
+          <p>This mind — since <strong>ERROR = 0.0</strong> — works perfectly!</p>
+          <p>It has learned the rule: <strong>multiply any number by 5.0</strong>.</p>
+          <p>The <strong>Multiplier By Five</strong> can solve problems it has never encountered before.</p>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- CODE -->
+    <div class="section-label">Code</div>
+    <div class="card">
+      <div class="card-body">
+        <p>The code below performs all the calculations instantly — just click “<strong>RUN CODE</strong>”.</p>
+         <h3>GROW THE MIND 🧠</h3>
+         <p></p>
+
+        <!-- GROW THE MIND -->
+        <div class="pythoncode" onmousemove="moveCopyBtn(event, 'cursor-btn-1')" onmouseleave="hideCopyBtn('cursor-btn-1')">
+
+
+          <!-- ROW: "Just click RUN CODE" + Button 1 (always visible) -->
+          <div class="code-row">
+            <p></p>
+            <button class="copy_btn copy_btn--inline" onclick="copyCode('code-input1', this)" title="Copy code">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+
+          <!-- textarea-wrap: click anywhere copies; cursor btn tracks mouse -->
+          <div class="textarea-wrap" onclick="copyCode('code-input1', document.getElementById('cursor-btn-1'))">
+            <textarea id="code-input1" style="line-height: 1.2;">
+WEIGHT = 0.0
+
+EXAMPLES = 2
+INPUTS   = [0.60, 1.00]
+TARGETS  = [3.00, 5.00]
+
+for EXAMPLE in range(EXAMPLES):
+
+    INPUT  = INPUTS[EXAMPLE]
+    TARGET = TARGETS[EXAMPLE]
+
+    PRODUCT = INPUT * WEIGHT
+    OUTPUT  = PRODUCT
+
+    ERROR = TARGET - OUTPUT
+
+    WEIGHT_update = ERROR
+    WEIGHT = WEIGHT + WEIGHT_update
+
+print(f"Training complete: WEIGHT = {WEIGHT}")
+            </textarea>
+            <!-- Button 2: follows cursor, pointer-events:none so it never blocks mousemove -->
+            <button id="cursor-btn-1" class="copy_btn copy_btn--cursor" title="Copy code">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+
+          <!-- ROW: RUN CODE button + Button 3 (always visible) -->
+          <div class="code-row">
+            <button onclick="runPython(1)"><strong>RUN CODE</strong></button>
+            <button class="copy_btn copy_btn--inline" onclick="copyCode('code-input1', this)" title="Copy code">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+
+          <div id="output-window1">Ready for math!</div>
+        </div>
+
+        
+        
+        <p><br/></p>
+        <h3>TEST THE MIND 🧠</h3>
+        <p></p>
+        
+
+
+        <!-- TEST THE MIND -->
+        <div class="pythoncode" onmousemove="moveCopyBtn(event, 'cursor-btn-2')" onmouseleave="hideCopyBtn('cursor-btn-2')">
+         
+
+          <!-- ROW: "Just click RUN CODE" + Button 1 (always visible) -->
+          <div class="code-row">
+            <p></p>
+            <button class="copy_btn copy_btn--inline" onclick="copyCode('code-input2', this)" title="Copy code">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+
+          <!-- textarea-wrap: click anywhere copies; cursor btn tracks mouse -->
+          <div class="textarea-wrap" onclick="copyCode('code-input2', document.getElementById('cursor-btn-2'))">
+            <textarea id="code-input2" style="line-height: 1.2;">
+WEIGHT = 5.0
+
+INPUT  = 10.0
+TARGET = 50.0
+
+PRODUCT = INPUT * WEIGHT
+OUTPUT  = PRODUCT
+
+ERROR = TARGET - OUTPUT
+
+print(f"Testing complete: ERROR = {ERROR}")
+            </textarea>
+            <!-- Button 2: follows cursor, pointer-events:none so it never blocks mousemove -->
+            <button id="cursor-btn-2" class="copy_btn copy_btn--cursor" title="Copy code">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+
+          <!-- ROW: RUN CODE button + Button 3 (always visible) -->
+          <div class="code-row">
+            <button onclick="runPython(2)"><strong>RUN CODE</strong></button>
+            <button class="copy_btn copy_btn--inline" onclick="copyCode('code-input2', this)" title="Copy code">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+
+          <div id="output-window2">Ready for math!</div>
+        </div>
+
+        <p>Here, we used plain <strong>Python</strong> code.</p>
+        <p>More importantly, today you need to learn how to learn. You could copy this code, paste it into a chatbot like ChatGPT, and ask it any questions about the code. This is one of the most effective ways to understand how the code works.</p>
+        <p>Starting in <strong>Class 4</strong>, we will use <strong>PyTorch</strong> — an <strong>easier way</strong> to write this kind of code.</p>
+        <p>On <strong>Hugging Face</strong>, the most popular platform for <strong>Transformers</strong>, the vast majority of code is written in <strong>PyTorch</strong>.</p>
+      </div>
+    </div>
+
+
+    <!-- NOTE -->
+    <div class="section-label">Note</div>
+    <div class="card">
+      <div class="card-body">
+        <p>Machines can learn from their own errors. This is possible thanks to <strong>the UPDATE RULE</strong>. For this specific task, the SIMPLE UPDATE RULE was sufficient.</p>
+      </div>
+    </div>
+
+
+    <!-- TEASER -->
+    <div class="teaser">
+      <div class="teaser-next">Up Next: Class 2</div>
+      <p>Real&#8209;world datasets often contain negative numbers.<br/>To handle them, we add <strong style="color:var(--yellow);">INFLUENCE</strong> into the <strong style="color:var(--yellow);">UPDATE RULE</strong>.
+      </p>
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <img src="../logo.jpg" alt="Machine Intelligence School Logo" class="footer-logo" />
+      <div class="footer-copyright">© 2026 Machine Intelligence School</div>
+    </footer>
+
+  </div>
+  <!-- /page -->
+
+
+  <script>
+    function moveCopyBtn(event, btnId) {
+      const btn  = document.getElementById(btnId);
+      const wrap = btn.closest('.textarea-wrap');
+      if (!wrap) return;
+      const rect = wrap.getBoundingClientRect(); // recalculated live on every call
+      const bw   = 36;
+      const bh   = 36;
+      // Only show when cursor is actually over the textarea-wrap
+      if (
+        event.clientX < rect.left || event.clientX > rect.right ||
+        event.clientY < rect.top  || event.clientY > rect.bottom
+      ) {
+        btn.style.opacity       = '0';
+        btn.style.pointerEvents = 'none';
+        return;
+      }
+      // Y tracks cursor; X pinned to right edge inside the wrap
+      let y = event.clientY - rect.top - bh / 2;
+      y = Math.max(0, Math.min(y, rect.height - bh));
+      const x = rect.width - bw - 10;
+      btn.style.left          = x + 'px';
+      btn.style.top           = y + 'px';
+      btn.style.opacity       = '1';
+      btn.style.pointerEvents = 'none'; // always none — click handled by textarea-wrap
+      wrap.querySelector('textarea').style.cursor = 'pointer';
+    }
+
+    function hideCopyBtn(btnId) {
+      const btn  = document.getElementById(btnId);
+      const wrap = btn.closest('.textarea-wrap');
+      btn.style.opacity       = '0';
+      btn.style.pointerEvents = 'none';
+      if (wrap) wrap.querySelector('textarea').style.cursor = 'text';
+    }
+
+    function copyCode(id, btn) {
+      const text = document.getElementById(id).value;
+      navigator.clipboard.writeText(text).then(() => {
+        const block = btn.closest('.pythoncode');
+        const allBtns = block ? block.querySelectorAll('.copy_btn') : [btn];
+        allBtns.forEach(b => {
+          b.classList.add('copy_btn--copied');
+          b.title = 'Copied!';
+        });
+        setTimeout(() => {
+          allBtns.forEach(b => {
+            b.classList.remove('copy_btn--copied');
+            b.title = 'Copy code';
+          });
+        }, 1800);
+      });
+    }
+
+    function outf(text, outputId) {
+      var mypre = document.getElementById(outputId);
+      mypre.innerHTML = mypre.innerHTML + text;
+    }
+
+    function runPython(block) {
+      const codeId   = block === 1 ? "code-input1"    : "code-input2";
+      const outputId = block === 1 ? "output-window1" : "output-window2";
+
+      var code  = document.getElementById(codeId).value;
+      var mypre = document.getElementById(outputId);
+      mypre.innerHTML = '';
+
+      Sk.pre = outputId;
+      Sk.configure({ output: (text) => outf(text, outputId) });
+
+      var myPromise = Sk.misceval.asyncToPromise(function () {
+        return Sk.importMainWithBody("<stdin>", false, code, true);
+      });
+
+      myPromise.then(
+        function (mod) { console.log('Success!'); },
+        function (err)  { mypre.innerHTML = err.toString(); }
+      );
+    }
+  </script>
+
+</body>
+</html>
