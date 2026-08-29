@@ -531,7 +531,7 @@ html, body {
   bottom: 115%;
   left: 50%;
   transform: translateX(-50%) translateY(4px);
-  background-color: #111111;
+  background-color: var(--blue); /* Default OFF background: blue */
   color: #ffffff;
   padding: 4px 10px;
   border-radius: 6px;
@@ -540,9 +540,14 @@ html, body {
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
   z-index: 10;
   border: 1px solid var(--border);
+}
+
+/* Background when "AI teacher ON" */
+.round-button.is-on::after {
+  background-color: var(--green); /* ON background: green */
 }
 
 .round-button.is-tooltip-visible::after {
