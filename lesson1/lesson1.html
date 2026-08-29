@@ -635,7 +635,7 @@ This is one of the best ways to learn.</p>
 
 
 
-  <!-- ROUND_BUTTON: SCRIPTS AND EVERYTHING ELSE OUTSIDE THE MAIN PAGE <page> -->
+  <!-- SCRIPTS AND EVERYTHING ELSE OUTSIDE THE MAIN PAGE <page> -->
 
 <!-- AI TEACHER BUTTON -->
 <button class="round-button" id="aiTeacherBtn" data-tooltip="" aria-label="Toggle AI Teacher">
@@ -654,13 +654,7 @@ This is one of the best ways to learn.</p>
   </svg>
 </button>
 
-
-
-
-
-
-
-<!-- PULSING STOPPING AND STARTING RUN AND COPY BUTTONS-->
+<!-- PULSING STOPPING AND STARTING -->
 <script>
     function copyCode(id, btn) {
       // Stop pulsing animation on click
@@ -817,6 +811,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+<!-- round-bitton -->
+<script>
+  const BUTTON_ELEMENT = document.getElementById('aiTeacherBtn');
+  let IS_TEACHER_ACTIVE = false;
+  let NOTIFICATION_TIMER = null;
+
+  BUTTON_ELEMENT.addEventListener('click', () => {
+    IS_TEACHER_ACTIVE = !IS_TEACHER_ACTIVE;
+
+    // Toggle button state
+    if (IS_TEACHER_ACTIVE) {
+      BUTTON_ELEMENT.classList.add('is-on');
+      BUTTON_ELEMENT.setAttribute('data-tooltip', 'AI teacher ON');
+    } else {
+      BUTTON_ELEMENT.classList.remove('is-on');
+      BUTTON_ELEMENT.setAttribute('data-tooltip', 'AI teacher OFF');
+    }
+
+    // Show tooltip
+    BUTTON_ELEMENT.classList.add('is-tooltip-visible');
+
+    // Clear any previous timer so quick repeated clicks don't glitch the animation
+    clearTimeout(NOTIFICATION_TIMER);
+
+    // Hide tooltip automatically after 1.5 seconds
+    NOTIFICATION_TIMER = setTimeout(() => {
+      BUTTON_ELEMENT.classList.remove('is-tooltip-visible');
+    }, 1500);
+  });
+</script>
 
 </body>
 </html>
