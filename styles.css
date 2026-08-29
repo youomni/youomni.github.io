@@ -542,7 +542,7 @@ html, body {
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
   z-index: 10;
-  border: 1px solid var(--border);
+ 
 }
 
 /* Background when "AI teacher ON" */
