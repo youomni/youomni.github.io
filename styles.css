@@ -418,7 +418,7 @@ html, body {
   height: 100px;
   border-radius: 50%;
   border: 2px solid var(--current-border-color);
-  background: var(--btn-bg-color) !important;
+  background: transparent !important;
   color: white;
   font-size: 16px;
   font-weight: bold;
@@ -432,7 +432,6 @@ html, body {
   --current-border-color: var(--border-off-color);
   --sphere-color:         var(--sphere-off-color);
   --pulse-color:          rgba(0, 123, 255, 0.6);
-  --btn-bg-color:         var(--color-blue);
 
   -webkit-tap-highlight-color: transparent;
   outline: none;
@@ -460,7 +459,6 @@ html, body {
   --current-border-color: var(--border-on-color);
   --sphere-color:         var(--sphere-on-color);
   --pulse-color:          rgba(52, 211, 153, 0.6);
-  --btn-bg-color:         var(--color-green);
 }
 
 /* Pulse Ring: Expands from sphere edge to --second-diameter */
@@ -482,7 +480,7 @@ html, body {
 .round-button:focus,
 .round-button:focus:not(:focus-visible) {
   outline: none;
-  background: var(--btn-bg-color) !important;
+  background: transparent !important;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -490,10 +488,13 @@ html, body {
   outline: 2px solid var(--current-border-color);
 }
 
-/* Semi-transparent background fill on hover */
+/* Semi-transparent background fill only on hover */
 @media (hover: hover) {
   .round-button:hover { 
-    filter: brightness(1.1);
+    background: rgba(0, 123, 255, 0.15) !important;
+  }
+  .round-button.is-on:hover {
+    background: rgba(52, 211, 153, 0.15) !important;
   }
 }
 
@@ -530,7 +531,7 @@ html, body {
   bottom: 115%;
   left: 50%;
   transform: translateX(-50%) translateY(4px);
-  background-color: green;
+  background-color: #111111;
   color: #ffffff;
   padding: 4px 10px;
   border-radius: 6px;
