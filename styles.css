@@ -35,12 +35,6 @@
   --sphere-diameter: 10px;
   --second-diameter: 40px;
 
-  /* Explicit State Mappings 
-  --border-off-color: var(--color-blue);
-  --border-on-color:  var(--color-green);
-  --sphere-off-color: var(--color-blue);
-  --sphere-on-color:  var(--color-green);
- */
   /* Explicit State Mappings (Transparent Alternative) */
   --border-off-color: transparent !important;
   --border-on-color:  transparent !important;
@@ -477,10 +471,8 @@ html, body {
   animation: pulse-to-second-diameter 2s infinite ease-out;
 }
 
-.round-button:focus,
-.round-button:focus:not(:focus-visible) {
+.round-button:focus {
   outline: none;
-  background: transparent !important;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -488,12 +480,14 @@ html, body {
   outline: 2px solid var(--current-border-color);
 }
 
-/* Semi-transparent background fill only on hover */
+/* Semi-transparent background fill on hover (including when focused) */
 @media (hover: hover) {
-  .round-button:hover { 
+  .round-button:hover,
+  .round-button:focus:hover { 
     background: rgba(0, 123, 255, 0.15) !important;
   }
-  .round-button.is-on:hover {
+  .round-button.is-on:hover,
+  .round-button.is-on:focus:hover {
     background: rgba(52, 211, 153, 0.15) !important;
   }
 }
@@ -535,14 +529,14 @@ html, body {
   color: #ffffff;
   padding: 4px 10px;
   border-radius: 6px;
-  font-size: 20px;
+  font-size: 13px;
   font-weight: bold;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
   z-index: 10;
- 
+  border: 1px solid var(--border);
 }
 
 /* Background when "AI teacher ON" */
