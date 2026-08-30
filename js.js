@@ -1,4 +1,3 @@
-
 // ==== Settings ====
 const WS_URL = "wss://youomni-github-io.vercel.app/api/chat";
 
@@ -12,26 +11,13 @@ let isTalking = false;
 let playbackContext = null;
 let playbackTime = 0;
 
-const talkButton = document.getElementById("talkButton");
-const status = document.getElementById("status");
-
-talkButton.addEventListener("click", () => {
-  if (!isTalking) {
-    startTalking();
-  } else {
-    stopTalking();
-  }
-});
-
 async function startTalking() {
+  if (isTalking) return;
   isTalking = true;
-  talkButton.innerText = "Stop";
-  status.innerText = "Connecting...";
 
   socket = new WebSocket(WS_URL);
 
   socket.onopen = async () => {
-    status.innerText = "Listening...";
     await startMic();
   };
 
@@ -40,23 +26,24 @@ async function startTalking() {
   };
 
   socket.onclose = () => {
-    status.innerText = "Connection closed";
     stopMic();
   };
 
   socket.onerror = (err) => {
     console.error("WebSocket error:", err);
-    status.innerText = "Connection error";
   };
 }
 
 function stopTalking() {
+  if (!isTalking) return;
   isTalking = false;
-  talkButton.innerText = "Talk to the teacher";
-  status.innerText = "Stopped";
   stopMic();
   if (socket) socket.close();
 }
+
+// Exposed so the existing button's click handler can call them
+window.startTalking = startTalking;
+window.stopTalking = stopTalking;
 
 // ==== Microphone capture and streaming ====
 async function startMic() {
@@ -173,4 +160,3 @@ function playAudioChunk(base64Data) {
   sourceNode.start(startAt);
   playbackTime = startAt + audioBuffer.duration;
 }
-
