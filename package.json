@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@vercel/functions": "^2.0.0",
+    "ws": "^8.18.0",
     "@google/genai": "^1.0.0"
   }
 }
-

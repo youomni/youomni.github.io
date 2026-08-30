@@ -1,47 +1,44 @@
-
-
-import { experimental_upgradeWebSocket } from "@vercel/functions";
+import http from "http";
+import { WebSocketServer } from "ws";
 import { GoogleGenAI, Modality } from "@google/genai";
 
-export default async function handler(req) {
-  const upgrade = req.headers.get("upgrade");
+const server = http.createServer();
+const wss = new WebSocketServer({ server });
 
-  if (upgrade !== "websocket") {
-    return new Response("Expected websocket", { status: 426 });
-  }
-
-  const { socket, response } = experimental_upgradeWebSocket(req);
-
+wss.on("connection", (ws) => {
   const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE });
   let liveSession = null;
 
-  socket.addEventListener("open", async () => {
+  (async () => {
     liveSession = await ai.live.connect({
       model: "gemini-3.1-flash-live-preview",
       config: {
         responseModalities: [Modality.AUDIO],
         systemInstruction: {
-          parts: [{ text: "You are a friendly AI teacher for children." }],
+          parts: [{ text: "Ты дружелюбный AI-учитель для детей." }],
         },
       },
       callbacks: {
         onmessage: (message) => {
-          socket.send(JSON.stringify(message));
+          ws.send(JSON.stringify(message));
+        },
+        onerror: (err) => {
+          console.error("Gemini Live error:", err);
         },
       },
     });
-  });
+  })();
 
-  socket.addEventListener("message", (event) => {
+  ws.on("message", (data) => {
     if (liveSession) {
-      liveSession.sendRealtimeInput({ media: event.data });
+      liveSession.sendRealtimeInput({ media: data.toString() });
     }
   });
 
-  socket.addEventListener("close", () => {
+  ws.on("close", () => {
     if (liveSession) liveSession.close();
   });
+});
 
-  return response;
-}
+export default server;
 
