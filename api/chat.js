@@ -15,7 +15,7 @@ wss.on("connection", (ws) => {
       config: {
         responseModalities: [Modality.AUDIO],
         systemInstruction: {
-          parts: [{ text: "Ты дружелюбный AI-учитель для детей." }],
+          parts: [{ text: "You are a friendly AI teacher for children." }],
         },
       },
       callbacks: {
