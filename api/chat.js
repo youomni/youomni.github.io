@@ -1,4 +1,7 @@
+
+
 import { experimental_upgradeWebSocket } from "@vercel/functions";
+import { GoogleGenAI, Modality } from "@google/genai";
 
 export default async function handler(req) {
   const upgrade = req.headers.get("upgrade");
@@ -9,20 +12,36 @@ export default async function handler(req) {
 
   const { socket, response } = experimental_upgradeWebSocket(req);
 
-  socket.addEventListener("open", () => {
-    console.log("Client connected");
+  const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE });
+  let liveSession = null;
+
+  socket.addEventListener("open", async () => {
+    liveSession = await ai.live.connect({
+      model: "gemini-3.1-flash-live-preview",
+      config: {
+        responseModalities: [Modality.AUDIO],
+        systemInstruction: {
+          parts: [{ text: "Ты дружелюбный AI-учитель для детей." }],
+        },
+      },
+      callbacks: {
+        onmessage: (message) => {
+          socket.send(JSON.stringify(message));
+        },
+      },
+    });
   });
 
   socket.addEventListener("message", (event) => {
-    console.log("Received:", event.data);
-    // later Gemini Live API
+    if (liveSession) {
+      liveSession.sendRealtimeInput({ media: event.data });
+    }
   });
 
   socket.addEventListener("close", () => {
-    console.log("Client disconnected");
+    if (liveSession) liveSession.close();
   });
 
   return response;
 }
-
 
