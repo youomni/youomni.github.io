@@ -9,7 +9,7 @@ async function sendMessage() {
   output.innerText = "Thinking...";
 
   try {
-    const res = await fetch("/api/chat", {
+    const res = await fetch("https://youomni-github-io.vercel.app/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
