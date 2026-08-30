@@ -1,27 +1,176 @@
-async function sendMessage() {
-  const input = document.getElementById("input");
-  const output = document.getElementById("output");
 
-  const userText = input.value;
+// ==== Settings ====
+const WS_URL = "wss://youomni-github-io.vercel.app/api/chat";
 
-  if (!userText) return;
+let socket = null;
+let audioContext = null;
+let micStream = null;
+let processorNode = null;
+let isTalking = false;
 
-  output.innerText = "Thinking...";
+// Playback state for streaming the teacher's audio response in chunks
+let playbackContext = null;
+let playbackTime = 0;
 
+const talkButton = document.getElementById("talkButton");
+const status = document.getElementById("status");
+
+talkButton.addEventListener("click", () => {
+  if (!isTalking) {
+    startTalking();
+  } else {
+    stopTalking();
+  }
+});
+
+async function startTalking() {
+  isTalking = true;
+  talkButton.innerText = "Stop";
+  status.innerText = "Connecting...";
+
+  socket = new WebSocket(WS_URL);
+
+  socket.onopen = async () => {
+    status.innerText = "Listening...";
+    await startMic();
+  };
+
+  socket.onmessage = (event) => {
+    handleServerMessage(event.data);
+  };
+
+  socket.onclose = () => {
+    status.innerText = "Connection closed";
+    stopMic();
+  };
+
+  socket.onerror = (err) => {
+    console.error("WebSocket error:", err);
+    status.innerText = "Connection error";
+  };
+}
+
+function stopTalking() {
+  isTalking = false;
+  talkButton.innerText = "Talk to the teacher";
+  status.innerText = "Stopped";
+  stopMic();
+  if (socket) socket.close();
+}
+
+// ==== Microphone capture and streaming ====
+async function startMic() {
+  micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+  audioContext = new AudioContext({ sampleRate: 16000 });
+  const source = audioContext.createMediaStreamSource(micStream);
+
+  processorNode = audioContext.createScriptProcessor(4096, 1, 1);
+
+  // Zero gain so we don't hear our own mic echoed back,
+  // while keeping the audio graph active
+  const silentGain = audioContext.createGain();
+  silentGain.gain.value = 0;
+
+  source.connect(processorNode);
+  processorNode.connect(silentGain);
+  silentGain.connect(audioContext.destination);
+
+  processorNode.onaudioprocess = (event) => {
+    if (!isTalking || !socket || socket.readyState !== WebSocket.OPEN) return;
+
+    const floatData = event.inputBuffer.getChannelData(0);
+    const pcmData = floatTo16BitPCM(floatData);
+    const base64Data = arrayBufferToBase64(pcmData.buffer);
+
+    socket.send(base64Data);
+  };
+}
+
+function stopMic() {
+  if (processorNode) processorNode.disconnect();
+  if (micStream) micStream.getTracks().forEach((track) => track.stop());
+  if (audioContext) audioContext.close();
+  processorNode = null;
+  micStream = null;
+  audioContext = null;
+}
+
+function floatTo16BitPCM(float32Array) {
+  const output = new Int16Array(float32Array.length);
+  for (let i = 0; i < float32Array.length; i++) {
+    const s = Math.max(-1, Math.min(1, float32Array[i]));
+    output[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+  }
+  return output;
+}
+
+function arrayBufferToBase64(buffer) {
+  let binary = "";
+  const bytes = new Uint8Array(buffer);
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+// ==== Receiving and playing back the teacher's response ====
+function handleServerMessage(rawData) {
+  console.log("Server message:", rawData);
+
+  let message;
   try {
-    const res = await fetch("https://youomni-github-io.vercel.app/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message: userText }),
-    });
+    message = JSON.parse(rawData);
+  } catch (e) {
+    console.error("Failed to parse server message:", e);
+    return;
+  }
 
-    const data = await res.json();
+  // The exact shape of the Gemini Live response may differ —
+  // this part will most likely need adjusting based on real console logs.
+  const parts = message?.serverContent?.modelTurn?.parts;
+  if (!parts) return;
 
-    output.innerText = data.reply;
-  } catch (err) {
-    console.error(err);
-    output.innerText = "Error";
+  for (const part of parts) {
+    const audioBase64 = part?.inlineData?.data;
+    if (audioBase64) {
+      playAudioChunk(audioBase64);
+    }
   }
 }
+
+function playAudioChunk(base64Data) {
+  if (!playbackContext) {
+    playbackContext = new AudioContext({ sampleRate: 24000 });
+    playbackTime = playbackContext.currentTime;
+  }
+
+  const binary = atob(base64Data);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+
+  const int16Data = new Int16Array(bytes.buffer);
+  const float32Data = new Float32Array(int16Data.length);
+  for (let i = 0; i < int16Data.length; i++) {
+    float32Data[i] = int16Data[i] / 0x8000;
+  }
+
+  const audioBuffer = playbackContext.createBuffer(
+    1,
+    float32Data.length,
+    24000
+  );
+  audioBuffer.copyToChannel(float32Data, 0);
+
+  const sourceNode = playbackContext.createBufferSource();
+  sourceNode.buffer = audioBuffer;
+  sourceNode.connect(playbackContext.destination);
+
+  const now = playbackContext.currentTime;
+  const startAt = Math.max(now, playbackTime);
+  sourceNode.start(startAt);
+  playbackTime = startAt + audioBuffer.duration;
+}
+
