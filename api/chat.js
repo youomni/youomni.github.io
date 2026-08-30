@@ -1,47 +1,28 @@
-export default async function handler(req, res) {
-  // CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+import { experimental_upgradeWebSocket } from "@vercel/functions";
 
-  // Handle preflight request
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
+export default async function handler(req) {
+  const upgrade = req.headers.get("upgrade");
+
+  if (upgrade !== "websocket") {
+    return new Response("Expected websocket", { status: 426 });
   }
 
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  const { socket, response } = experimental_upgradeWebSocket(req);
 
-  const { message } = req.body;
+  socket.addEventListener("open", () => {
+    console.log("Client connected");
+  });
 
-  try {
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" +
-        process.env.GOOGLE,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [{ text: message }],
-            },
-          ],
-        }),
-      }
-    );
+  socket.addEventListener("message", (event) => {
+    console.log("Received:", event.data);
+    // later Gemini Live API
+  });
 
-    const data = await response.json();
+  socket.addEventListener("close", () => {
+    console.log("Client disconnected");
+  });
 
-    const reply =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "No response";
-
-    res.status(200).json({ reply });
-  } catch (error) {
-    res.status(500).json({ error: "Server error" });
-  }
+  return response;
 }
+
+
