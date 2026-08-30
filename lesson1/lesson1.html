@@ -634,18 +634,16 @@ This is one of the best ways to learn.</p>
 
 
 
-  <!-- SCRIPTS AND EVERYTHING ELSE OUTSIDE THE MAIN PAGE <page> -->
+<!-- SCRIPTS AND EVERYTHING ELSE OUTSIDE THE MAIN PAGE <page> -->
 
 <!-- AI TEACHER BUTTON -->
+<!-- AI TEACHER BUTTON -->
 <button class="round-button" id="aiTeacherBtn" data-tooltip="" aria-label="Toggle AI Teacher">
-  <svg class="sphere-indicator" viewBox="0 0 20 20">
+  <svg class="sphere-indicator" viewBox="0 0 20 20" aria-hidden="true">
     <defs>
       <radialGradient id="sphereGrad" cx="35%" cy="35%" r="65%">
-        <!-- Highlight center -->
-        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
-        <!-- Main body semi-transparent fill -->
+        <stop offset="0%" stop-color="#fff" stop-opacity="0.8" />
         <stop offset="50%" stop-color="var(--sphere-color)" stop-opacity="0.6" />
-        <!-- Edge fading -->
         <stop offset="100%" stop-color="var(--sphere-color)" stop-opacity="0.25" />
       </radialGradient>
     </defs>
@@ -656,37 +654,32 @@ This is one of the best ways to learn.</p>
 
 
 <!-- round-button -->
+<!-- AI TEACHER BUTTON -->
 <script>
-  const BUTTON_ELEMENT = document.getElementById('aiTeacherBtn');
-  let IS_TEACHER_ACTIVE = false;
-  let NOTIFICATION_TIMER = null;
+const BUTTON_ELEMENT = document.getElementById('aiTeacherBtn');
+let IS_TEACHER_ACTIVE = false;
+let NOTIFICATION_TIMER = null;
 
-  BUTTON_ELEMENT.addEventListener('click', function () {
-    this.blur(); // Remove focus outline on click
-    IS_TEACHER_ACTIVE = !IS_TEACHER_ACTIVE;
+BUTTON_ELEMENT.addEventListener('click', function () {
+  this.blur();
+  IS_TEACHER_ACTIVE = !IS_TEACHER_ACTIVE;
 
-    // Toggle button state
-    if (IS_TEACHER_ACTIVE) {
-      BUTTON_ELEMENT.classList.add('is-on');
-      BUTTON_ELEMENT.setAttribute('data-tooltip', 'AI teacher ON');
-      startTalking();
-    } else {
-      BUTTON_ELEMENT.classList.remove('is-on');
-      BUTTON_ELEMENT.setAttribute('data-tooltip', 'AI teacher OFF');
-      stopTalking();
-    }
+  BUTTON_ELEMENT.classList.toggle('is-on', IS_TEACHER_ACTIVE);
+  BUTTON_ELEMENT.setAttribute('data-tooltip', IS_TEACHER_ACTIVE ? 'AI teacher ON' : 'AI teacher OFF');
 
-    // Show tooltip
-    BUTTON_ELEMENT.classList.add('is-tooltip-visible');
+  if (IS_TEACHER_ACTIVE) {
+    startTalking();
+  } else {
+    stopTalking();
+  }
 
-    // Clear any previous timer so quick repeated clicks don't glitch the animation
-    clearTimeout(NOTIFICATION_TIMER);
+  BUTTON_ELEMENT.classList.add('is-tooltip-visible');
+  clearTimeout(NOTIFICATION_TIMER);
 
-    // Hide tooltip automatically after 1.5 seconds
-    NOTIFICATION_TIMER = setTimeout(() => {
-      BUTTON_ELEMENT.classList.remove('is-tooltip-visible');
-    }, 1500);
-  });
+  NOTIFICATION_TIMER = setTimeout(() => {
+    BUTTON_ELEMENT.classList.remove('is-tooltip-visible');
+  }, 1500);
+});
 </script>
 
 
