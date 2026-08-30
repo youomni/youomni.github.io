@@ -31,7 +31,12 @@ wss.on("connection", (ws) => {
 
   ws.on("message", (data) => {
     if (liveSession) {
-      liveSession.sendRealtimeInput({ media: data.toString() });
+      liveSession.sendRealtimeInput({
+        audio: {
+          data: data.toString(),
+          mimeType: "audio/pcm;rate=16000",
+        },
+      });
     }
   });
 
