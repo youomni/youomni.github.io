@@ -12,7 +12,7 @@ let playbackContext = null;
 let playbackTime = 0;
 let playbackGain = null;
 let scheduledSources = []; // currently queued/playing audio chunks, so we can cut them off on interruption
-const OUTPUT_VOLUME = 3.0; // boost, since raw Gemini audio output plays back quietly
+const OUTPUT_VOLUME = 2.0; // boost, since raw Gemini audio output plays back quietly
 
 async function startTalking() {
   if (isTalking) return;
