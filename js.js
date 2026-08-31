@@ -10,7 +10,9 @@ let isTalking = false;
 // Playback state for streaming the teacher's audio response in chunks
 let playbackContext = null;
 let playbackTime = 0;
+let playbackGain = null;
 let scheduledSources = []; // currently queued/playing audio chunks, so we can cut them off on interruption
+const OUTPUT_VOLUME = 3.0; // boost, since raw Gemini audio output plays back quietly
 
 async function startTalking() {
   if (isTalking) return;
@@ -151,6 +153,9 @@ function playAudioChunk(base64Data) {
   if (!playbackContext) {
     playbackContext = new AudioContext({ sampleRate: 24000 });
     playbackTime = playbackContext.currentTime;
+    playbackGain = playbackContext.createGain();
+    playbackGain.gain.value = OUTPUT_VOLUME;
+    playbackGain.connect(playbackContext.destination);
   }
 
   const binary = atob(base64Data);
@@ -174,7 +179,7 @@ function playAudioChunk(base64Data) {
 
   const sourceNode = playbackContext.createBufferSource();
   sourceNode.buffer = audioBuffer;
-  sourceNode.connect(playbackContext.destination);
+  sourceNode.connect(playbackGain);
 
   const now = playbackContext.currentTime;
   const startAt = Math.max(now, playbackTime);
