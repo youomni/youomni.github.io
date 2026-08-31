@@ -10,6 +10,7 @@ let isTalking = false;
 // Playback state for streaming the teacher's audio response in chunks
 let playbackContext = null;
 let playbackTime = 0;
+let scheduledSources = []; // currently queued/playing audio chunks, so we can cut them off on interruption
 
 async function startTalking() {
   if (isTalking) return;
@@ -113,8 +114,13 @@ function handleServerMessage(rawData) {
     return;
   }
 
-  // The exact shape of the Gemini Live response may differ —
-  // this part will most likely need adjusting based on real console logs.
+  // Barge-in: the user started talking while the teacher was still speaking.
+  // Gemini cancels its own generation server-side; we must also stop playback immediately.
+  if (message?.serverContent?.interrupted) {
+    stopPlayback();
+    return;
+  }
+
   const parts = message?.serverContent?.modelTurn?.parts;
   if (!parts) return;
 
@@ -123,6 +129,21 @@ function handleServerMessage(rawData) {
     if (audioBase64) {
       playAudioChunk(audioBase64);
     }
+  }
+}
+
+// Immediately stops any audio currently playing or queued for playback
+function stopPlayback() {
+  for (const source of scheduledSources) {
+    try {
+      source.stop();
+    } catch (e) {
+      // already stopped/finished — ignore
+    }
+  }
+  scheduledSources = [];
+  if (playbackContext) {
+    playbackTime = playbackContext.currentTime;
   }
 }
 
@@ -159,4 +180,9 @@ function playAudioChunk(base64Data) {
   const startAt = Math.max(now, playbackTime);
   sourceNode.start(startAt);
   playbackTime = startAt + audioBuffer.duration;
+
+  scheduledSources.push(sourceNode);
+  sourceNode.onended = () => {
+    scheduledSources = scheduledSources.filter((s) => s !== sourceNode);
+  };
 }

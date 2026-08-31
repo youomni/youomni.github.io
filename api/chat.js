@@ -15,7 +15,16 @@ wss.on("connection", (ws) => {
       config: {
         responseModalities: [Modality.AUDIO],
         systemInstruction: {
-          parts: [{ text: "You are a friendly AI teacher for children." }],
+          parts: [{ text: "Ты дружелюбный AI-учитель для детей." }],
+        },
+        // More sensitive voice activity detection so the model notices
+        // sooner when the user starts talking, and lets itself be interrupted.
+        realtimeInputConfig: {
+          automaticActivityDetection: {
+            disabled: false,
+            startOfSpeechSensitivity: "START_SENSITIVITY_HIGH",
+            endOfSpeechSensitivity: "END_SENSITIVITY_HIGH",
+          },
         },
       },
       callbacks: {
@@ -46,4 +55,3 @@ wss.on("connection", (ws) => {
 });
 
 export default server;
-
