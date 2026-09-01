@@ -4,16 +4,15 @@ const WS_URL = "wss://youomni-github-io.vercel.app/api/chat";
 let socket = null;
 let audioContext = null;
 let micStream = null;
+let processorNode = null;
 let isTalking = false;
 
-let workletNode = null;
-
-// Playback state
+// Playback state for streaming the teacher's audio response in chunks
 let playbackContext = null;
 let playbackTime = 0;
 let playbackGain = null;
-let scheduledSources = [];
-const OUTPUT_VOLUME = 2.0;
+let scheduledSources = []; // currently queued/playing audio chunks, so we can cut them off on interruption
+const OUTPUT_VOLUME = 2.0; // boost, since raw Gemini audio output plays back quietly
 
 async function startTalking() {
   if (isTalking) return;
@@ -41,57 +40,59 @@ async function startTalking() {
 function stopTalking() {
   if (!isTalking) return;
   isTalking = false;
-
   stopMic();
-  stopPlayback();
-
   if (socket) socket.close();
 }
 
+// Exposed so the existing button's click handler can call them
 window.startTalking = startTalking;
 window.stopTalking = stopTalking;
 
-// =========================
-// MICROPHONE (AudioWorklet)
-// =========================
+// ==== Microphone capture and streaming ====
 async function startMic() {
   micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
   audioContext = new AudioContext({ sampleRate: 16000 });
-
-  await audioContext.audioWorklet.addModule("audio-processor.js");
-
   const source = audioContext.createMediaStreamSource(micStream);
 
-  workletNode = new AudioWorkletNode(audioContext, "mic-processor");
+  processorNode = audioContext.createScriptProcessor(4096, 1, 1);
 
-  workletNode.port.onmessage = (event) => {
+  // Zero gain so we don't hear our own mic echoed back,
+  // while keeping the audio graph active
+  const silentGain = audioContext.createGain();
+  silentGain.gain.value = 0;
+
+  source.connect(processorNode);
+  processorNode.connect(silentGain);
+  silentGain.connect(audioContext.destination);
+
+  processorNode.onaudioprocess = (event) => {
     if (!isTalking || !socket || socket.readyState !== WebSocket.OPEN) return;
 
-    const pcm16 = event.data; // Int16Array
-    const base64Data = arrayBufferToBase64(pcm16.buffer);
+    const floatData = event.inputBuffer.getChannelData(0);
+    const pcmData = floatTo16BitPCM(floatData);
+    const base64Data = arrayBufferToBase64(pcmData.buffer);
+
     socket.send(base64Data);
   };
-
-  source.connect(workletNode);
-  workletNode.connect(audioContext.destination);
 }
 
 function stopMic() {
-  if (workletNode) {
-    workletNode.disconnect();
-    workletNode = null;
-  }
+  if (processorNode) processorNode.disconnect();
+  if (micStream) micStream.getTracks().forEach((track) => track.stop());
+  if (audioContext) audioContext.close();
+  processorNode = null;
+  micStream = null;
+  audioContext = null;
+}
 
-  if (micStream) {
-    micStream.getTracks().forEach((t) => t.stop());
-    micStream = null;
+function floatTo16BitPCM(float32Array) {
+  const output = new Int16Array(float32Array.length);
+  for (let i = 0; i < float32Array.length; i++) {
+    const s = Math.max(-1, Math.min(1, float32Array[i]));
+    output[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
   }
-
-  if (audioContext) {
-    audioContext.close();
-    audioContext = null;
-  }
+  return output;
 }
 
 function arrayBufferToBase64(buffer) {
@@ -103,18 +104,20 @@ function arrayBufferToBase64(buffer) {
   return btoa(binary);
 }
 
-// =========================
-// SERVER AUDIO HANDLING
-// =========================
+// ==== Receiving and playing back the teacher's response ====
 function handleServerMessage(rawData) {
+  console.log("Server message:", rawData);
+
   let message;
   try {
     message = JSON.parse(rawData);
   } catch (e) {
-    console.error(e);
+    console.error("Failed to parse server message:", e);
     return;
   }
 
+  // Barge-in: the user started talking while the teacher was still speaking.
+  // Gemini cancels its own generation server-side; we must also stop playback immediately.
   if (message?.serverContent?.interrupted) {
     stopPlayback();
     return;
@@ -125,25 +128,31 @@ function handleServerMessage(rawData) {
 
   for (const part of parts) {
     const audioBase64 = part?.inlineData?.data;
-    if (audioBase64) playAudioChunk(audioBase64);
+    if (audioBase64) {
+      playAudioChunk(audioBase64);
+    }
   }
 }
 
-// =========================
-// PLAYBACK
-// =========================
+// Immediately stops any audio currently playing or queued for playback
 function stopPlayback() {
   for (const source of scheduledSources) {
-    try { source.stop(); } catch {}
+    try {
+      source.stop();
+    } catch (e) {
+      // already stopped/finished — ignore
+    }
   }
   scheduledSources = [];
+  if (playbackContext) {
+    playbackTime = playbackContext.currentTime;
+  }
 }
 
 function playAudioChunk(base64Data) {
   if (!playbackContext) {
     playbackContext = new AudioContext({ sampleRate: 24000 });
     playbackTime = playbackContext.currentTime;
-
     playbackGain = playbackContext.createGain();
     playbackGain.gain.value = OUTPUT_VOLUME;
     playbackGain.connect(playbackContext.destination);
@@ -155,29 +164,30 @@ function playAudioChunk(base64Data) {
     bytes[i] = binary.charCodeAt(i);
   }
 
-  const int16 = new Int16Array(bytes.buffer);
-  const float32 = new Float32Array(int16.length);
-
-  for (let i = 0; i < int16.length; i++) {
-    float32[i] = int16[i] / 0x8000;
+  const int16Data = new Int16Array(bytes.buffer);
+  const float32Data = new Float32Array(int16Data.length);
+  for (let i = 0; i < int16Data.length; i++) {
+    float32Data[i] = int16Data[i] / 0x8000;
   }
 
-  const buffer = playbackContext.createBuffer(1, float32.length, 24000);
-  buffer.copyToChannel(float32, 0);
+  const audioBuffer = playbackContext.createBuffer(
+    1,
+    float32Data.length,
+    24000
+  );
+  audioBuffer.copyToChannel(float32Data, 0);
 
-  const source = playbackContext.createBufferSource();
-  source.buffer = buffer;
-  source.connect(playbackGain);
+  const sourceNode = playbackContext.createBufferSource();
+  sourceNode.buffer = audioBuffer;
+  sourceNode.connect(playbackGain);
 
   const now = playbackContext.currentTime;
   const startAt = Math.max(now, playbackTime);
+  sourceNode.start(startAt);
+  playbackTime = startAt + audioBuffer.duration;
 
-  source.start(startAt);
-  playbackTime = startAt + buffer.duration;
-
-  scheduledSources.push(source);
-
-  source.onended = () => {
-    scheduledSources = scheduledSources.filter((s) => s !== source);
+  scheduledSources.push(sourceNode);
+  sourceNode.onended = () => {
+    scheduledSources = scheduledSources.filter((s) => s !== sourceNode);
   };
 }
