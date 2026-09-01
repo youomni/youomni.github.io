@@ -794,7 +794,6 @@ BUTTON_ELEMENT.addEventListener('click', function () {
 
 
 
-
 <!-- FOCUS -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -908,36 +907,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // =========================
-  // FIND WINDOW MATCH (CORE FIX)
-  // =========================
-  function matchWindow(targets) {
-    const WINDOW = 35;
-    const REQUIRED_MATCH = 3; // 🔥 MUST match at least 3 words
-
-    for (let i = pointer; i < Math.min(pointer + WINDOW, words.length); i++) {
-
-      let matchCount = 0;
-
-      for (let j = 0; j < targets.length; j++) {
-        const w = words[i + j];
-        if (!w) break;
-
-        if (norm(w.textContent) === targets[j]) {
-          matchCount++;
-        } else {
-          break;
-        }
-      }
-
-      if (matchCount >= REQUIRED_MATCH) {
-        return i + matchCount - 1;
-      }
-    }
-
-    return -1;
-  }
-
-  // =========================
   // SCROLL RESYNC
   // =========================
   function getCenterWord() {
@@ -986,44 +955,35 @@ document.addEventListener("DOMContentLoaded", function () {
   }, { passive: true });
 
   // =========================
-  // MAIN API
+  // MAIN API — matches one word at a time against a persistent buffer,
+  // so the pointer advances on every single word instead of waiting
+  // for 3 consecutive words to match in one chunk.
   // =========================
   window.advanceFocusToText = function (chunk) {
-
-    if (!chunk || chunk.length > 120) return;
+    if (!chunk) return;
 
     buffer += chunk;
+    const parts = buffer.split(/\s+/);
+    // keep the last (possibly incomplete) fragment in the buffer
+    buffer = /\s$/.test(chunk) ? "" : (parts.pop() || "");
 
-    const raw = buffer
-      .split(/\s+/)
-      .map(norm)
-      .filter(Boolean);
+    const targets = parts.map(norm).filter(Boolean);
+    if (targets.length === 0) return;
 
-    buffer = "";
+    const WINDOW = 40;
 
-    if (raw.length < 3) return;
-
-    console.log("VOICE:", raw);
-
-    // =========================
-    // FIND BEST WINDOW MATCH
-    // =========================
-    const newPos = matchWindow(raw);
-
-    if (newPos !== -1 && newPos > pointer) {
-
-      pointer = newPos;
-
-      highlight(words[pointer]);
-
-      if (autoScroll) {
-        scrollTo(words[pointer]);
+    targets.forEach(target => {
+      for (let i = pointer; i < Math.min(pointer + WINDOW, words.length); i++) {
+        if (norm(words[i].textContent) === target) {
+          pointer = i;
+          highlight(words[pointer]);
+          if (autoScroll) scrollTo(words[pointer]);
+          console.log("MATCH →", pointer, target);
+          return;
+        }
       }
-
-      console.log("MATCH →", pointer);
-    } else {
-      console.log("NO MATCH (hold position)");
-    }
+      console.log("NO MATCH for:", target);
+    });
   };
 
   // =========================
@@ -1038,7 +998,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
-
 
 
 
