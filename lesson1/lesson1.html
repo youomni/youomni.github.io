@@ -784,25 +784,31 @@ BUTTON_ELEMENT.addEventListener('click', function () {
 
 
 
-
 <!-- FOCUS -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  // Select readable text containers
+
+  // ===============================
+  // CONFIG
+  // ===============================
   const selector = "p, li, .callout p, .formula-block, .step-heading, .inner-heading";
+
   const elements = document.querySelectorAll(selector);
 
-  // Exclude containers like code blocks, tables, images, and headers
   const validElements = Array.from(elements).filter(el => {
     return !el.closest(".pythoncode, .pricing-block, .table-wrap, .img-block, .diagram, header, .footer");
   });
 
-  // Recursive function to wrap text nodes inside elements (including inside <strong>, <em>, etc.)
+  // ===============================
+  // WORD WRAPPING ENGINE
+  // ===============================
   function wrapWordsInNode(node) {
     if (node.nodeType === Node.TEXT_NODE) {
       if (node.nodeValue.trim() !== "") {
+
         const words = node.nodeValue.split(/(\s+)/);
         const fragment = document.createDocumentFragment();
+
         words.forEach(word => {
           if (word.trim() !== "") {
             const span = document.createElement("span");
@@ -813,21 +819,26 @@ document.addEventListener("DOMContentLoaded", function () {
             fragment.appendChild(document.createTextNode(word));
           }
         });
+
         node.parentNode.replaceChild(fragment, node);
       }
+
     } else if (node.nodeType === Node.ELEMENT_NODE) {
-      // Traverse child elements (like <strong>, <em>, <i>) without disrupting their tags
       Array.from(node.childNodes).forEach(wrapWordsInNode);
     }
   }
 
   validElements.forEach(el => wrapWordsInNode(el));
 
+  // ===============================
+  // CENTER FOCUS LOGIC
+  // ===============================
   let currentHighlightedWord = null;
 
   function updateCenterFocus() {
     const viewportCenter = window.innerHeight / 2;
     const allWords = document.querySelectorAll(".focus-word");
+
     let closestWord = null;
     let minDistance = Infinity;
 
@@ -842,15 +853,18 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // Highlight the word closest to vertical center (threshold: 80px)
     if (closestWord && minDistance < 80) {
+
       if (currentHighlightedWord !== closestWord) {
+
         if (currentHighlightedWord) {
           currentHighlightedWord.classList.remove("focus-line-target");
         }
+
         closestWord.classList.add("focus-line-target");
         currentHighlightedWord = closestWord;
       }
+
     } else if (currentHighlightedWord) {
       currentHighlightedWord.classList.remove("focus-line-target");
       currentHighlightedWord = null;
@@ -858,6 +872,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   let ticking = false;
+
   window.addEventListener("scroll", function () {
     if (!ticking) {
       window.requestAnimationFrame(() => {
@@ -869,8 +884,49 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   updateCenterFocus();
+
+  // ===============================
+  // 🧠 NEW: SCROLL STATE SYSTEM
+  // ===============================
+  let userIsScrolling = false;
+  let scrollTimeout = null;
+
+  window.addEventListener("scroll", () => {
+    userIsScrolling = true;
+
+    clearTimeout(scrollTimeout);
+
+    scrollTimeout = setTimeout(() => {
+      userIsScrolling = false;
+
+      const focusedWord = document.querySelector(".focus-line-target");
+
+      window.dispatchEvent(new CustomEvent("userScrollStopped", {
+        detail: {
+          focusedWord: focusedWord ? focusedWord.innerText : null
+        }
+      }));
+
+    }, 120);
+  });
+
+  // ===============================
+  // 🌉 BRIDGE API FOR chat.js
+  // ===============================
+  function getCurrentFocusedWord() {
+    return document.querySelector(".focus-line-target");
+  }
+
+  window.FocusBridge = {
+    getCurrentFocusedWord,
+    isUserScrolling: () => userIsScrolling
+  };
+
 });
 </script>
+
+
+
 
 
 
@@ -879,59 +935,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-<script>
-  // 1. find all the paragraphs (you can change the selector if necessary).
-  const paragraphs = Array.from(document.querySelectorAll("p"));
-
-  function highlightAndScroll(index) {
-    paragraphs.forEach(p => p.classList.remove("active-paragraph"));
-
-    if (paragraphs[index]) {
-      paragraphs[index].classList.add("active-paragraph");
-      paragraphs[index].scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-      });
-    }
-  }
-
-  // 2. Connect to your WebSocket (IMPORTANT: the same URL that you are using)
-  const ws = new WebSocket(`wss://${location.host}`);
-
-  let currentIndex = 0;
-
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-
-    // Gemini Live sends chunks of text → we catch them.
-    const text =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "";
-
-    if (!text) return;
-
-    // 3. We are looking for the paragraph that is closest to this text.
-    let bestIndex = -1;
-    let bestScore = 0;
-
-    paragraphs.forEach((p, i) => {
-      const content = p.innerText.toLowerCase();
-      const chunk = text.toLowerCase();
-
-      if (content.includes(chunk.slice(0, 20))) {
-        bestIndex = i;
-        bestScore = 1;
-      }
-    });
-
-    // 4. If we find a match we scroll
-    if (bestIndex !== -1 && bestIndex !== currentIndex) {
-      currentIndex = bestIndex;
-      highlightAndScroll(currentIndex);
-    }
-  };
-</script>
 
 
 
