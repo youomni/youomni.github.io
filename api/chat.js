@@ -2,6 +2,9 @@ import http from "http";
 import { WebSocketServer } from "ws";
 import { GoogleGenAI, Modality } from "@google/genai";
 
+// Optional for later (Google Docs)
+const GOOGLE_DOC_ID = process.env.GOOGLE_DOC;
+
 const server = http.createServer();
 const wss = new WebSocketServer({ server });
 
@@ -14,11 +17,33 @@ wss.on("connection", (ws) => {
       model: "gemini-3.1-flash-live-preview",
       config: {
         responseModalities: [Modality.AUDIO],
+
         systemInstruction: {
-          parts: [{ text: "You are a friendly AI teacher for children." }],
+          parts: [
+            {
+              text: `
+You are an AI tutor teaching a student using the provided course material.
+
+You must:
+- Teach step-by-step
+- Explain simply
+- Act like a real teacher
+
+Use ONLY the knowledge base below.
+
+=== KNOWLEDGE BASE START ===
+
+A NEURON takes INPUT and produces OUTPUT.
+OUTPUT = INPUT * WEIGHT.
+
+The neuron learns by changing the WEIGHT using ERROR.
+
+=== KNOWLEDGE BASE END ===
+              `,
+            },
+          ],
         },
-        // More sensitive voice activity detection so the model notices
-        // sooner when the user starts talking, and lets itself be interrupted.
+
         realtimeInputConfig: {
           automaticActivityDetection: {
             disabled: false,
@@ -27,6 +52,7 @@ wss.on("connection", (ws) => {
           },
         },
       },
+
       callbacks: {
         onmessage: (message) => {
           ws.send(JSON.stringify(message));
