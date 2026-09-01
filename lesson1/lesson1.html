@@ -785,6 +785,8 @@ BUTTON_ELEMENT.addEventListener('click', function () {
 
 
 <!-- FOCUS -->
+
+<!-- FOCUS -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const selector = "p, li, .callout p, .formula-block, .step-heading, .inner-heading";
@@ -823,10 +825,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let currentHighlightedWord = null;
   let matchPointer = 0;
+
   let autoScrollEnabled = true;
   let programmaticScroll = false;
   let programmaticScrollTimeout = null;
+
   let pendingBuffer = "";
+
+  let userScrollTimeout = null;
 
   function setHighlight(word) {
     if (currentHighlightedWord === word) return;
@@ -835,10 +841,7 @@ document.addEventListener("DOMContentLoaded", function () {
     currentHighlightedWord = word;
   }
 
-  // ORIGINAL behavior: highlight whatever word is nearest the vertical
-  // center of the viewport, purely based on scroll position. Runs always,
-  // with or without the voice teacher active.
-  function updateCenterFocus() {
+  function getCenterWord() {
     const viewportCenter = window.innerHeight / 2;
     let closestWord = null;
     let minDistance = Infinity;
@@ -854,8 +857,13 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    if (closestWord && minDistance < 80) {
-      setHighlight(closestWord);
+    return closestWord;
+  }
+
+  function updateCenterFocus() {
+    const word = getCenterWord();
+    if (word) {
+      setHighlight(word);
     } else {
       setHighlight(null);
     }
@@ -863,12 +871,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function scrollToWord(word) {
     programmaticScroll = true;
+
     clearTimeout(programmaticScrollTimeout);
-    word.scrollIntoView({ behavior: "smooth", block: "center" });
-    programmaticScrollTimeout = setTimeout(() => { programmaticScroll = false; }, 700);
+
+    word.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+
+    programmaticScrollTimeout = setTimeout(() => {
+      programmaticScroll = false;
+    }, 700);
   }
 
   let ticking = false;
+
   window.addEventListener("scroll", function () {
     if (!ticking) {
       window.requestAnimationFrame(() => {
@@ -877,21 +894,36 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       ticking = true;
     }
-    // Manual scroll by the child (not triggered by scrollToWord) disables
-    // voice-driven autoscroll until resumeAutoScroll() is called
+
+    // USER SCROLL (manual override)
     if (!programmaticScroll) {
       autoScrollEnabled = false;
+
+      const centerWord = getCenterWord();
+      if (centerWord) {
+        const idx = allWords.indexOf(centerWord);
+        if (idx !== -1) {
+          matchPointer = idx;
+          pendingBuffer = "";
+        }
+      }
+
+      // resume auto after user stops scrolling
+      clearTimeout(userScrollTimeout);
+      userScrollTimeout = setTimeout(() => {
+        autoScrollEnabled = true;
+      }, 2000);
     }
   }, { passive: true });
 
   updateCenterFocus();
 
-  // NEW: called by js.js with each transcript chunk from the teacher's voice.
-  // Finds the matching word ahead of the current pointer and, if autoscroll
-  // is still enabled (child hasn't taken over manually), scrolls to it —
-  // which then triggers updateCenterFocus() to highlight it, same as before.
+  // =========================
+  // VOICE SYNC
+  // =========================
   window.advanceFocusToText = function (chunk) {
     pendingBuffer += chunk;
+
     const parts = pendingBuffer.split(/\s+/);
     const incomplete = /\s$/.test(chunk) ? "" : parts.pop();
     pendingBuffer = incomplete;
@@ -899,24 +931,33 @@ document.addEventListener("DOMContentLoaded", function () {
     parts.forEach(raw => {
       const target = normalize(raw);
       if (!target) return;
-      const window_ = 25;
-      for (let i = matchPointer; i < Math.min(matchPointer + window_, allWords.length); i++) {
+
+      const windowSize = 120;
+
+      for (let i = matchPointer; i < Math.min(matchPointer + windowSize, allWords.length); i++) {
         if (normalize(allWords[i].textContent) === target) {
           matchPointer = i;
-          if (autoScrollEnabled) scrollToWord(allWords[i]);
+
+          if (autoScrollEnabled) {
+            scrollToWord(allWords[i]);
+          }
+
           break;
         }
       }
     });
   };
 
-  // Called when teacher resumes reading after answering a question
   window.resumeAutoScroll = function (fromWord) {
     autoScrollEnabled = true;
+
     if (fromWord) {
       const idx = allWords.indexOf(fromWord);
-      if (idx !== -1) matchPointer = idx;
+      if (idx !== -1) {
+        matchPointer = idx;
+      }
     }
+
     pendingBuffer = "";
   };
 
@@ -925,6 +966,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 });
 </script>
+
 
 
 
