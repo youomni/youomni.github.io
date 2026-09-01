@@ -792,15 +792,18 @@ document.addEventListener("DOMContentLoaded", function () {
   const selector = "p, li, .callout p, .formula-block, .step-heading, .inner-heading";
   const elements = document.querySelectorAll(selector);
 
+  // Filter out unwanted blocks (code, tables, etc.)
   const validElements = Array.from(elements).filter(el => {
     return !el.closest(".pythoncode, .pricing-block, .table-wrap, .img-block, .diagram, header, .footer");
   });
 
+  // Wrap every word in a span
   function wrapWordsInNode(node) {
     if (node.nodeType === Node.TEXT_NODE) {
       if (node.nodeValue.trim() !== "") {
         const words = node.nodeValue.split(/(\s+)/);
         const fragment = document.createDocumentFragment();
+
         words.forEach(word => {
           if (word.trim() !== "") {
             const span = document.createElement("span");
@@ -811,6 +814,7 @@ document.addEventListener("DOMContentLoaded", function () {
             fragment.appendChild(document.createTextNode(word));
           }
         });
+
         node.parentNode.replaceChild(fragment, node);
       }
     } else if (node.nodeType === Node.ELEMENT_NODE) {
@@ -821,6 +825,8 @@ document.addEventListener("DOMContentLoaded", function () {
   validElements.forEach(el => wrapWordsInNode(el));
 
   const allWords = Array.from(document.querySelectorAll(".focus-word"));
+
+  // Normalize words for matching (lowercase + remove punctuation)
   const normalize = w => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
 
   let currentHighlightedWord = null;
@@ -831,16 +837,26 @@ document.addEventListener("DOMContentLoaded", function () {
   let programmaticScrollTimeout = null;
 
   let pendingBuffer = "";
-
   let userScrollTimeout = null;
 
+  let lastScrollTime = 0; // prevents too frequent scrolling
+
+  // Highlight a word
   function setHighlight(word) {
     if (currentHighlightedWord === word) return;
-    if (currentHighlightedWord) currentHighlightedWord.classList.remove("focus-line-target");
-    if (word) word.classList.add("focus-line-target");
+
+    if (currentHighlightedWord) {
+      currentHighlightedWord.classList.remove("focus-line-target");
+    }
+
+    if (word) {
+      word.classList.add("focus-line-target");
+    }
+
     currentHighlightedWord = word;
   }
 
+  // Find the word closest to the vertical center of the screen
   function getCenterWord() {
     const viewportCenter = window.innerHeight / 2;
     let closestWord = null;
@@ -860,18 +876,21 @@ document.addEventListener("DOMContentLoaded", function () {
     return closestWord;
   }
 
+  // Update highlight based on current scroll position
   function updateCenterFocus() {
     const word = getCenterWord();
-    if (word) {
-      setHighlight(word);
-    } else {
-      setHighlight(null);
-    }
+    setHighlight(word);
   }
 
+  // Smooth scroll to a specific word
   function scrollToWord(word) {
-    programmaticScroll = true;
+    const now = Date.now();
 
+    // Limit scroll frequency (prevents runaway scrolling)
+    if (now - lastScrollTime < 400) return;
+    lastScrollTime = now;
+
+    programmaticScroll = true;
     clearTimeout(programmaticScrollTimeout);
 
     word.scrollIntoView({
@@ -886,6 +905,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let ticking = false;
 
+  // Scroll listener
   window.addEventListener("scroll", function () {
     if (!ticking) {
       window.requestAnimationFrame(() => {
@@ -895,7 +915,7 @@ document.addEventListener("DOMContentLoaded", function () {
       ticking = true;
     }
 
-    // USER SCROLL (manual override)
+    // If user scrolls manually → override system
     if (!programmaticScroll) {
       autoScrollEnabled = false;
 
@@ -905,13 +925,15 @@ document.addEventListener("DOMContentLoaded", function () {
         if (idx !== -1) {
           matchPointer = idx;
           pendingBuffer = "";
+          console.log("User moved to:", idx, centerWord.textContent);
         }
       }
 
-      // resume auto after user stops scrolling
+      // Resume auto-scroll after inactivity
       clearTimeout(userScrollTimeout);
       userScrollTimeout = setTimeout(() => {
         autoScrollEnabled = true;
+        console.log("Auto-scroll resumed");
       }, 2000);
     }
   }, { passive: true });
@@ -922,6 +944,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // VOICE SYNC
   // =========================
   window.advanceFocusToText = function (chunk) {
+    console.log("Chunk:", chunk);
+
+    // Ignore large chunks (prevents jumping far ahead)
+    if (chunk.length > 40) {
+      console.log("Chunk too large, skipping");
+      return;
+    }
+
     pendingBuffer += chunk;
 
     const parts = pendingBuffer.split(/\s+/);
@@ -932,11 +962,16 @@ document.addEventListener("DOMContentLoaded", function () {
       const target = normalize(raw);
       if (!target) return;
 
-      const windowSize = 120;
+      const windowSize = 50; // search window
+
+      let found = false;
 
       for (let i = matchPointer; i < Math.min(matchPointer + windowSize, allWords.length); i++) {
         if (normalize(allWords[i].textContent) === target) {
           matchPointer = i;
+          found = true;
+
+          console.log("Match:", target, "→ index", i);
 
           if (autoScrollEnabled) {
             scrollToWord(allWords[i]);
@@ -945,22 +980,26 @@ document.addEventListener("DOMContentLoaded", function () {
           break;
         }
       }
+
+      if (!found) {
+        console.log("Not found:", target);
+      }
     });
   };
 
+  // Resume auto-scroll manually
   window.resumeAutoScroll = function (fromWord) {
     autoScrollEnabled = true;
 
     if (fromWord) {
       const idx = allWords.indexOf(fromWord);
-      if (idx !== -1) {
-        matchPointer = idx;
-      }
+      if (idx !== -1) matchPointer = idx;
     }
 
     pendingBuffer = "";
   };
 
+  // Pause auto-scroll manually
   window.pauseAutoScroll = function () {
     autoScrollEnabled = false;
   };
