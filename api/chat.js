@@ -12,8 +12,10 @@ wss.on("connection", (ws) => {
   (async () => {
     liveSession = await ai.live.connect({
       model: "gemini-3.1-flash-live-preview",
+
       config: {
-        responseModalities: [Modality.AUDIO, Modality.TEXT], // 👈 ВАЖНО
+        // ⚠️ оставляем AUDIO + TEXT
+        responseModalities: [Modality.AUDIO, Modality.TEXT],
 
         systemInstruction: {
           parts: [
@@ -601,7 +603,6 @@ To handle them, we additionally bring INFLUENCE into our CHANGE RULE.
 
 
 === KNOWLEDGE BASE END ===
-
               `,
             },
           ],
@@ -618,9 +619,12 @@ To handle them, we additionally bring INFLUENCE into our CHANGE RULE.
 
       callbacks: {
         onmessage: (message) => {
-          // 👇 Прокидываем ВСЁ на фронт (и аудио, и текст)
+          // IMPORTANT: debug what comes
+          console.log("LIVE MESSAGE:", JSON.stringify(message, null, 2));
+
           ws.send(JSON.stringify(message));
         },
+
         onerror: (err) => {
           console.error("Gemini Live error:", err);
         },
@@ -629,14 +633,14 @@ To handle them, we additionally bring INFLUENCE into our CHANGE RULE.
   })();
 
   ws.on("message", (data) => {
-    if (liveSession) {
-      liveSession.sendRealtimeInput({
-        audio: {
-          data: data.toString(),
-          mimeType: "audio/pcm;rate=16000",
-        },
-      });
-    }
+    if (!liveSession) return;
+
+    liveSession.sendRealtimeInput({
+      audio: {
+        data: data.toString(),
+        mimeType: "audio/pcm;rate=16000",
+      },
+    });
   });
 
   ws.on("close", () => {
@@ -645,3 +649,4 @@ To handle them, we additionally bring INFLUENCE into our CHANGE RULE.
 });
 
 export default server;
+
