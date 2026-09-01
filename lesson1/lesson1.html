@@ -800,14 +800,13 @@ BUTTON_ELEMENT.addEventListener('click', function () {
 document.addEventListener("DOMContentLoaded", function () {
 
   // =========================
-  // CONFIG (based on YOUR HTML)
+  // SELECTORS (YOUR HTML)
   // =========================
   const TEXT_SELECTOR = `
     .card-body p,
     .card-body li,
     .callout p,
     .formula-block p,
-    .formula,
     .callout-title
   `;
 
@@ -823,13 +822,13 @@ document.addEventListener("DOMContentLoaded", function () {
   `;
 
   // =========================
-  // STEP 1: COLLECT ELEMENTS
+  // COLLECT TEXT
   // =========================
   const elements = Array.from(document.querySelectorAll(TEXT_SELECTOR))
     .filter(el => !el.closest(EXCLUDE_SELECTOR));
 
   // =========================
-  // STEP 2: WRAP WORDS
+  // WRAP WORDS
   // =========================
   function wrapWords(node) {
     if (node.nodeType === Node.TEXT_NODE) {
@@ -850,8 +849,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       node.parentNode.replaceChild(frag, node);
-    }
-    else if (node.nodeType === Node.ELEMENT_NODE) {
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
       Array.from(node.childNodes).forEach(wrapWords);
     }
   }
@@ -866,58 +864,59 @@ document.addEventListener("DOMContentLoaded", function () {
   // =========================
   // STATE
   // =========================
-  let currentWord = null;
   let pointer = 0;
+  let currentWord = null;
   let autoScroll = true;
 
   let buffer = "";
-  let lastScroll = 0;
+  let initialized = false;
+
+  let lastScrollTime = 0;
+  let programmaticScroll = false;
 
   // =========================
-  // SECTION DETECTION
-  // =========================
-  function getSectionOfWord(word) {
-    return word.closest(".card") || document.body;
-  }
-
-  function getWordsInSection(section) {
-    return allWords.filter(w => w.closest(".card") === section);
-  }
-
-  // =========================
-  // HIGHLIGHT
+  // HIGHLIGHT (FIXED)
   // =========================
   function highlight(word) {
+    if (!word) return;
+
     if (currentWord) {
       currentWord.classList.remove("focus-line-target");
     }
 
-    if (word) {
-      word.classList.add("focus-line-target");
-    }
-
+    word.classList.add("focus-line-target");
     currentWord = word;
   }
 
+  // 👉 IMPORTANT: show first highlight immediately
+  highlight(allWords[0]);
+
   // =========================
-  // SCROLL
+  // SAFE SCROLL
   // =========================
   function scrollTo(word) {
     const now = Date.now();
-    if (now - lastScroll < 400) return;
-    lastScroll = now;
+    if (now - lastScrollTime < 400) return;
+
+    lastScrollTime = now;
+    programmaticScroll = true;
 
     word.scrollIntoView({
       behavior: "smooth",
       block: "center"
     });
+
+    setTimeout(() => {
+      programmaticScroll = false;
+    }, 500);
   }
 
   // =========================
-  // CENTER WORD (for resync)
+  // CENTER WORD
   // =========================
   function getCenterWord() {
     const center = window.innerHeight / 2;
+
     let best = null;
     let bestDist = Infinity;
 
@@ -936,16 +935,19 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // =========================
-  // SCROLL LISTENER (USER CONTROL)
+  // USER SCROLL DETECTION
   // =========================
   let scrollTimer = null;
 
   window.addEventListener("scroll", () => {
+    if (programmaticScroll) return;
+
     autoScroll = false;
 
     const center = getCenterWord();
     if (center) {
       pointer = allWords.indexOf(center);
+      highlight(center);
       buffer = "";
       console.log("User moved to:", pointer);
     }
@@ -958,7 +960,42 @@ document.addEventListener("DOMContentLoaded", function () {
   }, { passive: true });
 
   // =========================
-  // 🔥 MAIN VOICE SYNC
+  // 🔥 INITIAL SYNC (CRITICAL)
+  // =========================
+  function tryInitialize(words) {
+    const searchWindow = 120;
+
+    for (let start = 0; start < Math.min(searchWindow, allWords.length); start++) {
+
+      let matched = 0;
+
+      for (let j = 0; j < words.length; j++) {
+        if (
+          normalize(allWords[start + j]?.textContent || "") === words[j]
+        ) {
+          matched++;
+        } else {
+          break;
+        }
+      }
+
+      if (matched >= 2) { // 🔥 require at least 2 matches
+        pointer = start + matched - 1;
+        highlight(allWords[pointer]);
+        initialized = true;
+
+        console.log("✅ INIT at", pointer);
+
+        if (autoScroll) scrollTo(allWords[pointer]);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  // =========================
+  // 🔥 MAIN SYNC
   // =========================
   window.advanceFocusToText = function (chunk) {
 
@@ -967,89 +1004,57 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    console.log("Chunk:", chunk);
-
     buffer += chunk;
 
-    let words = buffer.split(/\s+/);
+    let words = buffer.split(/\s+/).map(normalize).filter(Boolean);
 
-    const incomplete = /\s$/.test(chunk) ? "" : words.pop();
-    buffer = incomplete;
+    buffer = "";
 
-    words = words.slice(0, 5); // LIMIT
+    if (!words.length) return;
 
-    let misses = 0;
+    console.log("Chunk words:", words);
 
-    words.forEach(raw => {
-      const target = normalize(raw);
-      if (!target) return;
+    // =========================
+    // STEP 1: INIT
+    // =========================
+    if (!initialized) {
+      tryInitialize(words.slice(0, 5));
+      return;
+    }
 
-      const current = allWords[pointer];
-      if (!current) return;
+    // =========================
+    // STEP 2: FORWARD TRACK
+    // =========================
+    const SEARCH_AHEAD = 25;
 
-      const section = getSectionOfWord(current);
-      const sectionWords = getWordsInSection(section);
+    for (let w = 0; w < words.length; w++) {
 
-      const localIndex = sectionWords.indexOf(current);
-
+      const target = words[w];
       let found = false;
 
-      // 🔹 FORWARD SEARCH
-      for (let i = localIndex; i < Math.min(localIndex + 20, sectionWords.length); i++) {
-        if (normalize(sectionWords[i].textContent) === target) {
+      for (let i = pointer; i < Math.min(pointer + SEARCH_AHEAD, allWords.length); i++) {
 
-          const globalIndex = allWords.indexOf(sectionWords[i]);
+        if (normalize(allWords[i].textContent) === target) {
 
-          pointer = globalIndex;
+          pointer = i;
+          highlight(allWords[i]);
+
+          if (autoScroll) scrollTo(allWords[i]);
+
+          console.log("→", target, "@", i);
           found = true;
-          misses = 0;
-
-          highlight(sectionWords[i]);
-
-          if (autoScroll) scrollTo(sectionWords[i]);
-
-          console.log("Match:", target, "→", globalIndex);
           break;
         }
       }
 
-      // 🔹 BACKWARD RECOVERY
       if (!found) {
-        for (let i = localIndex - 1; i >= Math.max(localIndex - 10, 0); i--) {
-          if (normalize(sectionWords[i].textContent) === target) {
-
-            const globalIndex = allWords.indexOf(sectionWords[i]);
-
-            pointer = globalIndex;
-            found = true;
-            misses = 0;
-
-            highlight(sectionWords[i]);
-
-            console.log("↩ Back match:", target);
-            break;
-          }
-        }
+        console.log("Miss:", target);
       }
-
-      if (!found) {
-        misses++;
-      }
-
-      // 🔥 HARD RESYNC
-      if (misses >= 3) {
-        const center = getCenterWord();
-        if (center) {
-          pointer = allWords.indexOf(center);
-          console.log("🔄 Resync to center:", pointer);
-        }
-        misses = 0;
-      }
-    });
+    }
   };
 
   // =========================
-  // CONTROL API
+  // CONTROL
   // =========================
   window.pauseAutoScroll = () => autoScroll = false;
 
@@ -1060,6 +1065,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+
 
 
 
