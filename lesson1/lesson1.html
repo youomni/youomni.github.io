@@ -871,9 +871,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // ===============================
+  // PERFORMANCE FIX (DEDUP SCROLL HANDLERS)
+  // ===============================
   let ticking = false;
 
-  window.addEventListener("scroll", function () {
+  function onScroll() {
     if (!ticking) {
       window.requestAnimationFrame(() => {
         updateCenterFocus();
@@ -881,12 +884,14 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       ticking = true;
     }
-  });
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
 
   updateCenterFocus();
 
   // ===============================
-  // 🧠 NEW: SCROLL STATE SYSTEM
+  // 🧠 SCROLL STATE SYSTEM (IMPROVED)
   // ===============================
   let userIsScrolling = false;
   let scrollTimeout = null;
@@ -907,14 +912,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }));
 
-    }, 120);
-  });
+    }, 150);
+  }, { passive: true });
 
   // ===============================
   // 🌉 BRIDGE API FOR chat.js
   // ===============================
   function getCurrentFocusedWord() {
-    return document.querySelector(".focus-line-target");
+    const el = document.querySelector(".focus-line-target");
+    return el ? el.innerText : null;
   }
 
   window.FocusBridge = {
@@ -924,6 +930,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+
+
 
 
 

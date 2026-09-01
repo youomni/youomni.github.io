@@ -14,13 +14,11 @@ wss.on("connection", (ws) => {
       model: "gemini-3.1-flash-live-preview",
 
       config: {
-        // ⚠️ оставляем AUDIO + TEXT
         responseModalities: [Modality.AUDIO, Modality.TEXT],
 
         systemInstruction: {
-          parts: [
-            {
-              text: `
+          parts: [{
+            text: `
 You are an AI tutor teaching a student using the provided course material.
 
 You must:
@@ -603,9 +601,8 @@ To handle them, we additionally bring INFLUENCE into our CHANGE RULE.
 
 
 === KNOWLEDGE BASE END ===
-              `,
-            },
-          ],
+            `
+          }]
         },
 
         realtimeInputConfig: {
@@ -619,15 +616,9 @@ To handle them, we additionally bring INFLUENCE into our CHANGE RULE.
 
       callbacks: {
         onmessage: (message) => {
-          // IMPORTANT: debug what comes
-          console.log("LIVE MESSAGE:", JSON.stringify(message, null, 2));
-
           ws.send(JSON.stringify(message));
         },
-
-        onerror: (err) => {
-          console.error("Gemini Live error:", err);
-        },
+        onerror: console.error,
       },
     });
   })();
@@ -649,4 +640,3 @@ To handle them, we additionally bring INFLUENCE into our CHANGE RULE.
 });
 
 export default server;
-
