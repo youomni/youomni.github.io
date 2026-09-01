@@ -876,5 +876,65 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <script src="../js.js"></script>
+
+
+
+
+<script>
+  // 1. find all the paragraphs (you can change the selector if necessary).
+  const paragraphs = Array.from(document.querySelectorAll("p"));
+
+  function highlightAndScroll(index) {
+    paragraphs.forEach(p => p.classList.remove("active-paragraph"));
+
+    if (paragraphs[index]) {
+      paragraphs[index].classList.add("active-paragraph");
+      paragraphs[index].scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+  }
+
+  // 2. Connect to your WebSocket (IMPORTANT: the same URL that you are using)
+  const ws = new WebSocket(`wss://${location.host}`);
+
+  let currentIndex = 0;
+
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    // Gemini Live sends chunks of text → we catch them.
+    const text =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "";
+
+    if (!text) return;
+
+    // 3. We are looking for the paragraph that is closest to this text.
+    let bestIndex = -1;
+    let bestScore = 0;
+
+    paragraphs.forEach((p, i) => {
+      const content = p.innerText.toLowerCase();
+      const chunk = text.toLowerCase();
+
+      if (content.includes(chunk.slice(0, 20))) {
+        bestIndex = i;
+        bestScore = 1;
+      }
+    });
+
+    // 4. If we find a match we scroll
+    if (bestIndex !== -1 && bestIndex !== currentIndex) {
+      currentIndex = bestIndex;
+      highlightAndScroll(currentIndex);
+    }
+  };
+</script>
+
+
+
+
 </body>
 </html>

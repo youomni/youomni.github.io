@@ -2,9 +2,6 @@ import http from "http";
 import { WebSocketServer } from "ws";
 import { GoogleGenAI, Modality } from "@google/genai";
 
-// Optional for later (Google Docs)
-const GOOGLE_DOC_ID = process.env.GOOGLE_DOC;
-
 const server = http.createServer();
 const wss = new WebSocketServer({ server });
 
@@ -16,7 +13,7 @@ wss.on("connection", (ws) => {
     liveSession = await ai.live.connect({
       model: "gemini-3.1-flash-live-preview",
       config: {
-        responseModalities: [Modality.AUDIO],
+        responseModalities: [Modality.AUDIO, Modality.TEXT], // 👈 ВАЖНО
 
         systemInstruction: {
           parts: [
@@ -25,10 +22,10 @@ wss.on("connection", (ws) => {
 You are an AI tutor teaching a student using the provided course material.
 
 You must:
-- Teach step-by-step
+- Teach and explain step-by-step according to precisely this text
 - Explain simply
 - Act like a real teacher
-- Speak in the language of the student
+- Speak in the language the student is speaking
 
 Use ONLY the knowledge base below.
 
@@ -604,6 +601,7 @@ To handle them, we additionally bring INFLUENCE into our CHANGE RULE.
 
 
 === KNOWLEDGE BASE END ===
+
               `,
             },
           ],
@@ -620,6 +618,7 @@ To handle them, we additionally bring INFLUENCE into our CHANGE RULE.
 
       callbacks: {
         onmessage: (message) => {
+          // 👇 Прокидываем ВСЁ на фронт (и аудио, и текст)
           ws.send(JSON.stringify(message));
         },
         onerror: (err) => {
