@@ -784,7 +784,6 @@ BUTTON_ELEMENT.addEventListener('click', function () {
 
 
 
-
 <!-- FOCUS -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -836,6 +835,32 @@ document.addEventListener("DOMContentLoaded", function () {
     currentHighlightedWord = word;
   }
 
+  // ORIGINAL behavior: highlight whatever word is nearest the vertical
+  // center of the viewport, purely based on scroll position. Runs always,
+  // with or without the voice teacher active.
+  function updateCenterFocus() {
+    const viewportCenter = window.innerHeight / 2;
+    let closestWord = null;
+    let minDistance = Infinity;
+
+    allWords.forEach(word => {
+      const rect = word.getBoundingClientRect();
+      const wordCenter = rect.top + rect.height / 2;
+      const distance = Math.abs(viewportCenter - wordCenter);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestWord = word;
+      }
+    });
+
+    if (closestWord && minDistance < 80) {
+      setHighlight(closestWord);
+    } else {
+      setHighlight(null);
+    }
+  }
+
   function scrollToWord(word) {
     programmaticScroll = true;
     clearTimeout(programmaticScrollTimeout);
@@ -843,13 +868,28 @@ document.addEventListener("DOMContentLoaded", function () {
     programmaticScrollTimeout = setTimeout(() => { programmaticScroll = false; }, 700);
   }
 
-  // Manual scroll by the child disables autoscroll until resumeAutoScroll() is called
+  let ticking = false;
   window.addEventListener("scroll", function () {
-    if (programmaticScroll) return;
-    autoScrollEnabled = false;
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        updateCenterFocus();
+        ticking = false;
+      });
+      ticking = true;
+    }
+    // Manual scroll by the child (not triggered by scrollToWord) disables
+    // voice-driven autoscroll until resumeAutoScroll() is called
+    if (!programmaticScroll) {
+      autoScrollEnabled = false;
+    }
   }, { passive: true });
 
-  // Called by js.js with each transcript chunk from the teacher's voice
+  updateCenterFocus();
+
+  // NEW: called by js.js with each transcript chunk from the teacher's voice.
+  // Finds the matching word ahead of the current pointer and, if autoscroll
+  // is still enabled (child hasn't taken over manually), scrolls to it —
+  // which then triggers updateCenterFocus() to highlight it, same as before.
   window.advanceFocusToText = function (chunk) {
     pendingBuffer += chunk;
     const parts = pendingBuffer.split(/\s+/);
@@ -863,7 +903,6 @@ document.addEventListener("DOMContentLoaded", function () {
       for (let i = matchPointer; i < Math.min(matchPointer + window_, allWords.length); i++) {
         if (normalize(allWords[i].textContent) === target) {
           matchPointer = i;
-          setHighlight(allWords[i]);
           if (autoScrollEnabled) scrollToWord(allWords[i]);
           break;
         }
@@ -871,11 +910,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
-  // Called when teacher resumes reading after answering a question / child asked to jump back
+  // Called when teacher resumes reading after answering a question
   window.resumeAutoScroll = function (fromWord) {
     autoScrollEnabled = true;
     if (fromWord) {
-      const idx = allWords.findIndex(w => w === fromWord);
+      const idx = allWords.indexOf(fromWord);
       if (idx !== -1) matchPointer = idx;
     }
     pendingBuffer = "";
@@ -886,6 +925,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 });
 </script>
+
 
 
 
