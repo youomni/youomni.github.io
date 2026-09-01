@@ -59,7 +59,9 @@ async function startMic() {
 
   audioContext = new AudioContext({ sampleRate: 16000 });
 
-  await audioContext.audioWorklet.addModule("audio-processor.js");
+  // Absolute path — audio-processor.js lives at repo root and is shared
+  // across all lesson pages (e.g. /lesson1/lesson1.html, /lesson2/lesson2.html, ...)
+  await audioContext.audioWorklet.addModule("/audio-processor.js");
 
   const source = audioContext.createMediaStreamSource(micStream);
 
