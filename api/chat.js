@@ -34,19 +34,572 @@ Use ONLY the knowledge base below.
 
 === KNOWLEDGE BASE START ===
 
+
+
+
+A unique opportunity for your family to explore high‑tech together
+Mind-Expanding Course:
+HOW
+MACHINES
+LEARN AND
+THINK
+The Surprisingly
+Simple Math Behind
+Modern AI
+For kids (10+)
+and adults —
+together
+
+
+
+Right now, the world is talking about AI — the most transformative technology of our era. Yet very few people actually understand how it works. This course changes that: it reveals the math behind modern AI in a way the whole family can enjoy.
+And the best part? It's designed for almost absolute beginners. NO PRIOR KNOWLEDGE NEEDED. Even if you only know that 5 / 4 = 1.25 and 2 − 3 = −1, you’re ready! 🎉
+You’ll discover how the most advanced AI systems — called Transformers (like ChatGPT, Claude, Gemini, or Grok) — actually work under the hood. Together as a family, you’ll uncover how they think and, most importantly, how they learn.
+Use this knowledge for fun or as a foundation for a top-tier career in today’s AI-driven world.
+MORE
+Our materials are carefully crafted to be clear and accessible even for very young learners — intentionally using repetition by design. We believe that if a typical 10-year-old can understand an idea, most adults can too.
+While built for beginners, the course is fully detailed and technical. You’ll gain both a deep conceptual understanding of AI and hands-on experience of building it.
+What might otherwise take years of study can be understood here in just hours.
+An amusement park for the mind — for anyone curious.
+This course can also be eye-opening for university students who are already studying AI in depth.
+👉 Try the TRIAL LESSON — and experience a new way of learning AI.
+
+
+🚀 TRIAL LESSON
+Hey explorers! 🎉
+We're going to dive into something amazing: the real secrets of how machines learn and think.
+Ready? Let’s go!
+Brains 🧠
 Nowadays, there are two kinds of brains: biological brains and non-biological brains — often called machine brains.
-
 For example:
-
 Biological brains are the brains of humans or animals.
 Machine brains are AI systems — the most powerful of which are called Transformers, like ChatGPT, Claude, Gemini, or Grok.
 The main job of every brain — whether biological or machine — is to learn and think.
-
 And here’s the surprise: at their core, learning and thinking are just doing math. Yes, really! 😯
-
 Math happens in each kind of brain — biological or machine — though through different means.
-
 Interestingly, when we build a machine brain, it learns on its own — so creating it feels less like assembling a LEGO house and more like training or nurturing a living thing.
+
+How is all this even possible?
+In this course, you’ll discover the answer.
+Building Blocks of Every Brain
+Every brain is, in essence, a neural network — something like this:
+
+It’s called neural because it’s made of NEURONS.
+
+It’s called a network because NEURONS connect to each other and work together.
+Think of each NEURON as a tiny yet cool helper.
+You can find these helpers in both biological brains and machine brains — even though biological NEURONS and machine NEURONS are made of completely different materials.
+But what does every NEURON do?
+Actually, every NEURON takes in input SIGNALS and sends out one output SIGNAL.
+For example, a NEURON might take in two input SIGNALS and send out one output SIGNAL.
+
+What's a SIGNAL?
+Simply put, a SIGNAL is anything — like an electrical impulse — that can be measured or calculated and represented as a number, such as 0.36 or 0.53.
+At this point, we don't need to worry about how SIGNALS are measured or calculated. We just need to remember one thing:
+Every SIGNAL is something that can be represented as a number.
+In more detail, every NEURON:
+Takes in input SIGNALS (e.g., 0.36 and 0.53)
+Does simple math on them to calculate its output SIGNAL (e.g., 0.65)
+Sends out that output SIGNAL
+
+For brevity:
+The input SIGNALS are called INPUTS.
+The output SIGNAL is called OUTPUT.
+
+And here’s the key insight: an OUTPUT from one NEURON can become an INPUT for many other NEURONS in the next layer — connecting the whole team together!
+
+Math Every Neuron Does
+When a brain thinks, every NEURON does very simple math.
+At its core, every NEURON works just like a store receipt.
+Analogy: RECEIPT
+Imagine buying donuts and cupcakes at a store:
+RECEIPT
+
+
+
+
+UNITS
+PRICES
+AMOUNTS
+ donut
+4
+2.00
+8.00
+ cupcake
+2
+3.00
+6.00
+
+
+ DISCOUNT
+
+
+-0.50
+
+
+ TOTAL
+
+
+13.50
+
+The math is straightforward:
+TOTAL = 4.00 * 2.00 + 2.00 * 3.00 + (-0.50)
+TOTAL = 8.00 + 6.00 - 0.50
+TOTAL = 13.50
+This math can also be represented this way:
+ 4.00 
+ 2.00 
+ UNITS 
+ 2.00 
+ 3.00 
+ PRICES 
+ 8.00 
+ 6.00 
+ AMOUNTS 
+ -0.50 
+ DISCOUNT 
+ 13.50 
+ TOTAL 
+
+At its core, every RECEIPT is just a formula like this:
+TOTAL = UNITS1 * PRICE1 + UNITS2 * PRICE2 + DISCOUNT
+TOTAL = 4.00 * 2.00 + 2.00 * 3.00 + (-0.50)
+TOTAL = 8.00 + 6.00 - 0.50
+TOTAL = 13.50
+In terms of a NEURON, the same math can be represented this way:
+ 4.00 
+ 2.00 
+ INPUTS 
+ 2.00 
+ 3.00 
+ WEIGHTS 
+ 8.00 
+ 6.00 
+ PRODUCTS 
+ -0.50 
+ BIAS 
+ 13.50 
+ OUTPUT 
+
+At its core, every NEURON is also just a formula like this:
+OUTPUT = INPUT1 * WEIGHT1 + INPUT2 * WEIGHT2 + BIAS
+OUTPUT = 4.00 * 2.00 + 2.00 * 3.00 + (-0.50)
+OUTPUT = 8.00 + 6.00 - 0.50
+OUTPUT = 13.50
+Ultra simple. No math changed. Only names changed.
+Importantly, in the case of the RECEIPT, when UNITS change, the TOTAL changes too:
+ 3.00 
+ 5.00 
+ UNITS 
+ 2.00 
+ 3.00 
+ PRICES 
+ 6.00 
+ 15.00 
+ AMOUNTS 
+ -0.50 
+ DISCOUNT 
+ 20.50 
+ TOTAL 
+
+Similarly, in the case of the NEURON, when INPUTS change, the OUTPUT changes too:
+ 3.00 
+ 5.00 
+ INPUTS 
+ 2.00 
+ 3.00 
+ WEIGHTS 
+ 6.00 
+ 15.00 
+ PRODUCTS 
+ -0.50 
+ BIAS 
+ 20.50 
+ OUTPUT 
+
+Again, no math changed. Only names changed.
+The Python code below makes all these calculations instantly.
+CODE:
+Just click RUN.
+
+INPUT1 = 3.00
+INPUT2 = 5.00
+WEIGHT1 = 2.00
+WEIGHT2 = 3.00
+BIAS = -0.50
+PRODUCT1 = INPUT1 * WEIGHT1
+PRODUCT2 = INPUT2 * WEIGHT2
+OUTPUT = PRODUCT1 + PRODUCT2 + BIAS 
+print(f"🔥 OUTPUT = {OUTPUT}")
+RUN
+Ready for math!PRINTOUT:
+🔥 OUTPUT = 20.5
+
+
+Congratulations! 🎉 You’ve just run your very first machine NEURON.
+Try changing INPUT1 to 10 and INPUT2 to 20. Guess the OUTPUT before pressing RUN. 😉
+Hopefully, your guess matches! 👍
+The mapping:
+ RECEIPT 
+ → 
+ NEURON 
+ UNITS 
+ → 
+ INPUTS 
+ PRICES 
+ → 
+ WEIGHTS 
+ AMOUNTS 
+ → 
+ PRODUCTS 
+ DISCOUNT 
+ → 
+ BIAS 
+ TOTAL 
+ → 
+ OUTPUT 
+
+A machine NEURON can have many WEIGHTS, but only one BIAS.
+In AI, WEIGHTS and BIASES are called PARAMETERS.
+If you understand this, you already understand a lot about AI.
+Every answer from ChatGPT ultimately comes from billions of tiny calculations that look surprisingly similar to the example above.
+But at the very beginning, every machine brain starts with random PARAMETERS, generating nonsense. And the most exciting part is how every brain improves itself after making ERRORS. Indeed, every brain simply changes its PARAMETERS — step by step. This process is called LEARNING or TRAINING.
+Scale: Billions and Trillions
+Today's largest machine brains may each have over 10 trillion PARAMETERS — which sounds massive! But your own brain is still way more complex. Inside your head, you have:
+~500 trillion SYNAPSES
+~86 billion NEURONS
+You can think of each SYNAPSE as playing the role of a WEIGHT, while each biological NEURON also has properties that loosely resemble a BIAS.
+Metaphorically, your brain has over 500 trillion "PARAMETERS" — combining 500 trillion "WEIGHTS" with 86 billion "BIASES".
+So, even though a single NEURON does simple math, a massive network of NEURONS can create remarkably intelligent behavior.
+🌺 Our First Machine Brain
+To quickly understand the main idea of how machines learn and think, let’s start by building the simplest possible brain: a one-neuron brain. A single NEURON. That’s it.
+Even better, this NEURON will only have one PARAMETER: a single WEIGHT. No other WEIGHTS and no BIAS. Just one WEIGHT. That’s it!
+In Lesson 1, you’ll watch this NEURON start with a random WEIGHT, make ERRORS, and gradually improve itself — simply by changing this PARAMETER step by step.
+So this tiniest-ever brain will first learn from its own ERRORS. Then, after LEARNING, it will be able to think, solving problems it has never seen before.
+Indeed, that’s the true power of every good brain: solving problems it has never encountered before.
+The tiniest-ever brain is the perfect starting point.
+Let’s see how it works!
+HOW
+MACHINES
+LEARN AND
+THINK
+Zero To Hero
+TRANSFORMERS
+20 Lessons: $10 each
+$199 total
+Per family or individual
+
+Start small with Lesson 1
+Lesson 1: $9
+Join
+Or get the full journey
+20 Lessons: $199
+Join
+Syllabus
+The course covers the following topics:
+NEURONS
+INPUTS
+WEIGHTS
+BIASES
+OUTPUTS
+FORWARD PASS
+BACKWARD PASS (BACKPROPAGATION)
+CHANGE RULE
+GRADIENT DESCENT
+CHAIN RULE
+ACTIVATION FUNCTIONS
+VECTORS
+NEURAL NETWORKS
+TRANSFORMERS
+TOKENIZATION
+EMBEDDINGS
+MATRICES
+MATRIX MULTIPLICATION
+ATTENTION
+SELF-ATTENTION
+MULTI-HEAD ATTENTION
+POSITIONAL ENCODING
+LAYER NORMALIZATION
+RESIDUAL CONNECTIONS
+FEED-FORWARD NETWORKS
+OPTIMIZATION
+SOFTMAX
+TRANSFORMER BLOCKS
+GENERALIZATION
+Don't worry — this course builds your understanding gradually.
+Together, we will reinvent modern AI from scratch — step by step.
+
+© 2026 Machine Intelligence School
+
+
+
+—--
+Lesson 1:
+
+
+HOW
+MACHINES
+LEARN AND
+THINK
+Lesson 1
+Our First Machine Brain
+Introduction
+A NEURON needs at least one PARAMETER to do anything useful.
+So our NEURON will have one: WEIGHT.
+To learn from its own ERRORS, our NEURON also needs a CHANGE RULE — to change its PARAMETER step by step.
+
+
+Brain
+We're going to build a machine brain that can multiply any number by 5.0.
+In this scenario, the INPUT represents the number being multiplied, and the OUTPUT represents the result of the multiplication.
+Let's call this brain the Multiplier-by-Five.
+As said, the brain will have a single PARAMETER: WEIGHT.
+The brain will be a formula like this:
+OUTPUT = INPUT * WEIGHT
+We need to find the correct PARAMETER: WEIGHT.
+Initial PARAMETER
+Suppose we don't yet know what the PARAMETER should be, so let's start by setting it to zero:
+WEIGHT = 0.0
+At first, the brain will generate nonsense, since with any INPUT the OUTPUT is zero.
+Dataset
+We will use this training DATASET, which has two EXAMPLES:
+
+
+ INPUT 
+ TARGET 
+ EXAMPLE1 
+ 0.6 
+ 3.0 
+ EXAMPLE2 
+ 1.0 
+ 5.0 
+
+The TARGET represents the correct OUTPUT.
+EXAMPLE1 means when the INPUT is 0.6, the OUTPUT must be 3.0.
+EXAMPLE2 means when the INPUT is 1.0, the OUTPUT must be 5.0.
+So, our DATASET contains two EXAMPLES:
+EXAMPLES = 2
+During TRAINING, in each LESSON, the brain changes its PARAMETER so that the OUTPUT gets closer to the TARGET.
+Change Rule
+The brain changes the PARAMETER using this CHANGE RULE:
+SIMPLEST CHANGE RULE for PARAMETER
+PARAMETER_change = ERROR
+PARAMETER = PARAMETER + PARAMETER_change
+Because the brain has just one PARAMETER — WEIGHT — we obtain:
+SIMPLEST CHANGE RULE for WEIGHT
+WEIGHT_change = ERROR
+WEIGHT = WEIGHT + WEIGHT_change
+Don't worry — each step is simple. Just follow the calculations below.
+Training
+LESSON 1
+WEIGHT = 0.0
+EXAMPLE1:
+INPUT = 0.6
+TARGET = 3.0
+Forward Pass
+PRODUCT = INPUT * WEIGHT = 0.6 * 0.0 = 0.0
+OUTPUT = PRODUCT = 0.0
+Error
+ERROR = TARGET − OUTPUT = 3.0 − 0.0 = 3.0
+The ERROR tells us how far the OUTPUT is off from the TARGET.
+
+Backward Pass
+The brain changes the PARAMETER that caused this ERROR.
+Imagine the brain asking itself:
+"How should I change my WEIGHT so the OUTPUT gets closer to the TARGET?"
+The ERROR provides the answer:
+"Your OUTPUT is 3.0 below the TARGET, so increase the WEIGHT by the exact same 3.0."
+And that's exactly what the SIMPLEST CHANGE RULE tells us to do:
+SIMPLEST CHANGE RULE for WEIGHT
+WEIGHT_change = ERROR
+WEIGHT = WEIGHT + WEIGHT_change
+WEIGHT_change = ERROR = 3.0
+WEIGHT = WEIGHT + WEIGHT_change = 0.0 + 3.0 = 3.0
+So the WEIGHT becomes 3.0.
+WEIGHT = 3.0
+What just happened?
+The brain has just improved itself.
+Now, if it receives the same INPUT of 0.6, the OUTPUT becomes 1.8 (0.6 * 3.0) — which is closer to the TARGET (3.0) than the previous OUTPUT (0.0) was.
+The ERROR becomes smaller:
+ERROR = 1.2
+
+
+LESSON 1 ends here.
+
+
+LESSON 2
+WEIGHT = 3.0
+EXAMPLE 2:
+INPUT = 1.0
+TARGET = 5.0
+Forward Pass
+PRODUCT = INPUT * WEIGHT = 1.0 * 3.0 = 3.0
+OUTPUT = PRODUCT = 3.0
+Error
+ERROR = TARGET − OUTPUT = 5.0 − 3.0 = 2.0
+The ERROR tells us how far the OUTPUT is off from the TARGET.
+
+Backward Pass
+The brain changes the PARAMETER that caused this ERROR.
+Imagine the brain asking itself:
+"How should I change my WEIGHT so the OUTPUT gets closer to the TARGET?"
+The ERROR provides the answer:
+"Your OUTPUT is 2.0 below the TARGET, so increase the WEIGHT by the exact same 2.0."
+And that's exactly what the SIMPLEST CHANGE RULE tells us to do:
+SIMPLEST CHANGE RULE for WEIGHT
+WEIGHT_change = ERROR
+WEIGHT = WEIGHT + WEIGHT_change
+WEIGHT_change = ERROR = 2.0
+WEIGHT = WEIGHT + WEIGHT_change = 3.0 + 2.0 = 5.0
+So the WEIGHT becomes 5.0.
+WEIGHT = 5.0
+What just happened?
+The brain has just improved itself again.
+Now, if it receives the same INPUT of 1.0, the OUTPUT becomes 5.0 (1.0 * 5.0) — which is closer to the TARGET (5.0) than the previous OUTPUT (3.0) was.
+Wait — it's not just closer. It's exact!
+The OUTPUT is now 5.0 — exactly the same as the TARGET.
+The ERROR becomes zero:
+ERROR = 0.0
+
+
+LESSON 2 ends here.
+✓   DONE   ✓
+Testing
+To test the brain, we give it a new EXAMPLE it has never seen before.
+WEIGHT = 5.0
+EXAMPLE for TESTING:
+INPUT = 10.0
+TARGET = 50.0
+Forward Pass
+PRODUCT = INPUT * WEIGHT = 10.0 * 5.0 = 50.0
+OUTPUT = PRODUCT = 50.0
+Error
+ERROR = TARGET − OUTPUT = 50.0 − 50.0 = 0.0
+
+Since ERROR = 0.0, this brain works perfectly!
+It has learned the rule: multiply any number by 5.0.
+The Multiplier-by-Five can now think: solve problems it has never encountered before.
+The brain is now this formula:
+OUTPUT = INPUT * 5.0
+Code
+Just click RUN.
+TRAIN THE BRAIN 🧠
+
+EXAMPLES = 2
+WEIGHT = 0.0
+INPUTS  = [0.6,
+           1.0]
+TARGETS = [3.0,
+           5.0]
+for EXAMPLE in range(EXAMPLES):
+    INPUT  = INPUTS[EXAMPLE]
+    TARGET = TARGETS[EXAMPLE]
+    PRODUCT = INPUT * WEIGHT
+    OUTPUT = PRODUCT
+    ERROR = TARGET - OUTPUT
+    #SIMPLEST CHANGE RULE FOR WEIGHT
+    WEIGHT_change = ERROR
+    WEIGHT = WEIGHT + WEIGHT_change
+print(f"🔥 TRAINING complete:")
+print(f"WEIGHT = {WEIGHT}")
+RUN
+Ready for math!
+PRINTOUT:
+🔥 TRAINING complete:
+WEIGHT = 5.0
+TEST THE BRAIN 🧠
+
+WEIGHT = 5.0
+INPUT  = 10.0
+TARGET = 50.0
+PRODUCT = INPUT * WEIGHT
+OUTPUT = PRODUCT
+ERROR = TARGET - OUTPUT
+print(f"🔥 Testing complete:")
+print(f"ERROR = {ERROR}")
+RUN
+Ready for math!
+PRINTOUT:
+🔥 Testing complete:
+ERROR = 0.0
+
+
+
+
+RUN
+Ready for math!
+Here, we use standard Python code.
+If you have any questions about this code, remember this: in today’s world, knowing how to find answers is a superpower.
+You can copy the code, paste it into an AI assistant like ChatGPT, and ask something like: "Can you explain this code line by line?" This is one of the best ways to learn.
+In Lesson 5, instead of using standard Python code, we'll start using PyTorch — a handy shortcut that makes writing AI code much easier!
+On Hugging Face , a famous website where people share smart AI models, almost everyone uses PyTorch. So you’ll be learning the same tool the pros use.
+With The Best Intentions
+Plus,foryourfirsttwomonths,youcanaskanyquestiontoyourpersonalAIteacher—usingyourvoiceJusttapthepulsingbuttonandstarttalking.What'smore,yourteachercanevenguideyouthrougheachlesson—stepbystep.
+Note
+Our first intuition:
+This machine brain has a PARAMETER (WEIGHT) set randomly.
+It takes in an INPUT and makes a guess (OUTPUT).
+It compares its guess (OUTPUT) to the right answer (TARGET).
+It calculates the difference (ERROR).
+It changes its PARAMETER, using the CHANGE RULE that depends on this difference (ERROR).
+So this brain learns from its own ERRORS and improves its answers by changing its PARAMETER.
+In the same way, modern machines learn from their own ERRORS.
+While our SIMPLEST CHANGE RULE worked well here, we are building step by step the FUNDAMENTAL CHANGE RULE — with just two steps remaining.
+And look at that — you just built a working machine brain! 🏆
+But what happens if the DATASET contains negative numbers?
+In Lesson 2, we unlock the real secret weapon used by modern AI — INFLUENCE — and continue our journey.
+HOW
+MACHINES
+LEARN AND
+THINK
+Zero To Hero
+TRANSFORMERS
+20 Lessons: $10 each
+$199 total
+Per family or individual
+
+Get the full journey
+20 Lessons: $190
+Join
+Syllabus
+The course covers the following topics:
+NEURONS
+INPUTS
+WEIGHTS
+BIASES
+OUTPUTS
+FORWARD PASS
+BACKWARD PASS (BACKPROPAGATION)
+CHANGE RULE
+GRADIENT DESCENT
+CHAIN RULE
+ACTIVATION FUNCTIONS
+VECTORS
+NEURAL NETWORKS
+TRANSFORMERS
+TOKENIZATION
+EMBEDDINGS
+MATRICES
+MATRIX MULTIPLICATION
+ATTENTION
+SELF-ATTENTION
+MULTI-HEAD ATTENTION
+POSITIONAL ENCODING
+LAYER NORMALIZATION
+RESIDUAL CONNECTIONS
+FEED-FORWARD NETWORKS
+OPTIMIZATION
+SOFTMAX
+TRANSFORMER BLOCKS
+GENERALIZATION
+Don't worry — this course builds your understanding gradually.
+Together, we will reinvent modern AI from scratch — step by step.
+Up Next: Lesson 2
+DATASETS often contain negative numbers.
+To handle them, we additionally bring INFLUENCE into our CHANGE RULE.
+
+© 2026 Machine Intelligence School
+
 
 
 
