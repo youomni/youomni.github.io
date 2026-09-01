@@ -35,569 +35,1051 @@ Use ONLY the knowledge base below.
 
 === KNOWLEDGE BASE START ===
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
-A unique opportunity for your family to explore high‑tech together
-Mind-Expanding Course:
-HOW
-MACHINES
-LEARN AND
-THINK
-The Surprisingly
-Simple Math Behind
-Modern AI
-For kids (10+)
-and adults —
-together
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 1. FIRST BRAIN</title>
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
 
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
 
-Right now, the world is talking about AI — the most transformative technology of our era. Yet very few people actually understand how it works. This course changes that: it reveals the math behind modern AI in a way the whole family can enjoy.
-And the best part? It's designed for almost absolute beginners. NO PRIOR KNOWLEDGE NEEDED. Even if you only know that 5 / 4 = 1.25 and 2 − 3 = −1, you’re ready! 🎉
-You’ll discover how the most advanced AI systems — called Transformers (like ChatGPT, Claude, Gemini, or Grok) — actually work under the hood. Together as a family, you’ll uncover how they think and, most importantly, how they learn.
-Use this knowledge for fun or as a foundation for a top-tier career in today’s AI-driven world.
-MORE
-Our materials are carefully crafted to be clear and accessible even for very young learners — intentionally using repetition by design. We believe that if a typical 10-year-old can understand an idea, most adults can too.
-While built for beginners, the course is fully detailed and technical. You’ll gain both a deep conceptual understanding of AI and hands-on experience of building it.
-What might otherwise take years of study can be understood here in just hours.
-An amusement park for the mind — for anyone curious.
-This course can also be eye-opening for university students who are already studying AI in depth.
-👉 Try the TRIAL LESSON — and experience a new way of learning AI.
+  <style>
+  </style>
+
+</head> 
 
 
-🚀 TRIAL LESSON
-Hey explorers! 🎉
-We're going to dive into something amazing: the real secrets of how machines learn and think.
-Ready? Let’s go!
-Brains 🧠
-Nowadays, there are two kinds of brains: biological brains and non-biological brains — often called machine brains.
-For example:
-Biological brains are the brains of humans or animals.
-Machine brains are AI systems — the most powerful of which are called Transformers, like ChatGPT, Claude, Gemini, or Grok.
-The main job of every brain — whether biological or machine — is to learn and think.
-And here’s the surprise: at their core, learning and thinking are just doing math. Yes, really! 😯
-Math happens in each kind of brain — biological or machine — though through different means.
-Interestingly, when we build a machine brain, it learns on its own — so creating it feels less like assembling a LEGO house and more like training or nurturing a living thing.
+<body>
 
-How is all this even possible?
-In this course, you’ll discover the answer.
-Building Blocks of Every Brain
-Every brain is, in essence, a neural network — something like this:
-
-It’s called neural because it’s made of NEURONS.
-
-It’s called a network because NEURONS connect to each other and work together.
-Think of each NEURON as a tiny yet cool helper.
-You can find these helpers in both biological brains and machine brains — even though biological NEURONS and machine NEURONS are made of completely different materials.
-But what does every NEURON do?
-Actually, every NEURON takes in input SIGNALS and sends out one output SIGNAL.
-For example, a NEURON might take in two input SIGNALS and send out one output SIGNAL.
-
-What's a SIGNAL?
-Simply put, a SIGNAL is anything — like an electrical impulse — that can be measured or calculated and represented as a number, such as 0.36 or 0.53.
-At this point, we don't need to worry about how SIGNALS are measured or calculated. We just need to remember one thing:
-Every SIGNAL is something that can be represented as a number.
-In more detail, every NEURON:
-Takes in input SIGNALS (e.g., 0.36 and 0.53)
-Does simple math on them to calculate its output SIGNAL (e.g., 0.65)
-Sends out that output SIGNAL
-
-For brevity:
-The input SIGNALS are called INPUTS.
-The output SIGNAL is called OUTPUT.
-
-And here’s the key insight: an OUTPUT from one NEURON can become an INPUT for many other NEURONS in the next layer — connecting the whole team together!
-
-Math Every Neuron Does
-When a brain thinks, every NEURON does very simple math.
-At its core, every NEURON works just like a store receipt.
-Analogy: RECEIPT
-Imagine buying donuts and cupcakes at a store:
-RECEIPT
+<header><br/>
+    <div class="pricing-title">HOW<br/>MACHINES<br/>LEARN AND<br/>THINK</div>
+    <div class="green-title">Lesson 1</div>
+    <div class="blue-title">Our First Machine Brain</div>
+  </header>
 
 
 
-
-UNITS
-PRICES
-AMOUNTS
- donut
-4
-2.00
-8.00
- cupcake
-2
-3.00
-6.00
+<div class="page">
 
 
- DISCOUNT
+    <!-- INTRODUCTION -->
+    <div class="section-label">Introduction</div>
+    
+    <div class="card">
+      <div class="card-body">
+        <p>A <strong>NEURON</strong> needs at least one <strong>PARAMETER</strong> to do anything useful.</p>
+        <p>So our <strong>NEURON</strong> will have one: <strong>WEIGHT</strong>.</p>
+        <p>To learn from its own <strong>ERRORS</strong>, our <strong>NEURON</strong> also needs a <strong>CHANGE RULE</strong>  —  to change its <strong>PARAMETER</strong> step by step.</p>
+        <br/>
+       
+
+      </div>
+    </div>
 
 
--0.50
+    <!-- THE BRAIN -->
+    <div class="section-label">Brain</div>
+    <div class="card">
+      <div class="card-body">
+        <p>We're going to build a machine brain that can multiply any number by <strong>5.0</strong>.</p>
+        <p>In this scenario, the <strong>INPUT</strong> represents the number being multiplied, and the <strong>OUTPUT</strong> represents the result of the multiplication.</p>
+        <p>Let's call this brain the <strong>Multiplier-by-Five</strong>.</p>
+        <p>As said, the brain will have a single <strong>PARAMETER</strong>: <strong>WEIGHT</strong>.</p>
+        <p>The brain will be a formula like this:</p>
+        <div class="callout callout-neutral">
+<p>OUTPUT = INPUT * WEIGHT</p>
+        </div>
+        <p>We need to find the correct <strong>PARAMETER</strong>: <strong>WEIGHT</strong>.</p>
+      </div>
+    </div>
 
 
- TOTAL
+    <!-- Initial PARAMETER -->
+    <div class="section-label">Initial PARAMETER</div>
+    <div class="card">
+      <div class="card-body">
+        <p>Suppose we don't yet know what the <strong>PARAMETER</strong> should be, so let's start by setting it to <strong>zero</strong>:</p>
+        <div class="callout callout-neutral">
+<p>WEIGHT = 0.0</p>
+        </div>
+        <p>At first, the brain will generate nonsense, since with any <strong>INPUT</strong> the <strong>OUTPUT</strong> is <strong>zero</strong>.</p>
+      </div>
+    </div>
 
 
-13.50
+    <!-- THE DATASET -->
+    <div class="section-label">Dataset</div>
+    <div class="card">
+      <div class="card-body">
+        <p>We will use this training <strong>DATASET</strong>, which has two <strong>EXAMPLES</strong>:</p>
 
-The math is straightforward:
-TOTAL = 4.00 * 2.00 + 2.00 * 3.00 + (-0.50)
-TOTAL = 8.00 + 6.00 - 0.50
-TOTAL = 13.50
-This math can also be represented this way:
- 4.00 
- 2.00 
- UNITS 
- 2.00 
- 3.00 
- PRICES 
- 8.00 
- 6.00 
- AMOUNTS 
- -0.50 
- DISCOUNT 
- 13.50 
- TOTAL 
+        <div class="table-wrap">
+  <table class="doc-table">
+    
+    <!-- ROW 1: HEADERS -->
+    <tr class="col-header">
+      <td></td>
+      <td style="text-align: center !important;">
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+          &nbsp;<strong>INPUT</strong>&nbsp;
+        </div>
+      </td>
+      <td style="text-align: center !important;">
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+          &nbsp;<strong>TARGET</strong>&nbsp;
+        </div>
+      </td>
+    </tr>
+    
+    <!-- EXAMPLE1 -->
+    <tr>
+      <td style="text-align: center !important;">
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+          &nbsp;<strong>EXAMPLE1</strong>&nbsp;
+        </div>
+      </td>
+      <td style="text-align: center !important;">
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+          &nbsp;<strong>0.6</strong>&nbsp;
+        </div>
+      </td>
+      <td style="text-align: center !important;">
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+          &nbsp;<strong>3.0</strong>&nbsp;
+        </div>
+      </td>
+    </tr>
+    
+    <!-- EXAMPLE2 -->
+    <tr>
+      <td style="text-align: center !important;">
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+          &nbsp;<strong>EXAMPLE2</strong>&nbsp;
+        </div>
+      </td>
+      <td style="text-align: center !important;">
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+          &nbsp;<strong>1.0</strong>&nbsp;
+        </div>
+      </td>
+      <td style="text-align: center !important;">
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+          &nbsp;<strong>5.0</strong>&nbsp;
+        </div>
+      </td>
+    </tr>
 
-At its core, every RECEIPT is just a formula like this:
-TOTAL = UNITS1 * PRICE1 + UNITS2 * PRICE2 + DISCOUNT
-TOTAL = 4.00 * 2.00 + 2.00 * 3.00 + (-0.50)
-TOTAL = 8.00 + 6.00 - 0.50
-TOTAL = 13.50
-In terms of a NEURON, the same math can be represented this way:
- 4.00 
- 2.00 
- INPUTS 
- 2.00 
- 3.00 
- WEIGHTS 
- 8.00 
- 6.00 
- PRODUCTS 
- -0.50 
- BIAS 
- 13.50 
- OUTPUT 
+  </table>
+</div>
 
-At its core, every NEURON is also just a formula like this:
-OUTPUT = INPUT1 * WEIGHT1 + INPUT2 * WEIGHT2 + BIAS
-OUTPUT = 4.00 * 2.00 + 2.00 * 3.00 + (-0.50)
-OUTPUT = 8.00 + 6.00 - 0.50
-OUTPUT = 13.50
-Ultra simple. No math changed. Only names changed.
-Importantly, in the case of the RECEIPT, when UNITS change, the TOTAL changes too:
- 3.00 
- 5.00 
- UNITS 
- 2.00 
- 3.00 
- PRICES 
- 6.00 
- 15.00 
- AMOUNTS 
- -0.50 
- DISCOUNT 
- 20.50 
- TOTAL 
+        <p>The <strong>TARGET</strong> represents the correct <strong>OUTPUT</strong>.</p>
+        <p><strong>EXAMPLE1</strong> means when the <strong>INPUT</strong> is <strong>0.6</strong>, the <strong>OUTPUT</strong> must be <strong>3.0</strong>.</p>
+        <p><strong>EXAMPLE2</strong> means when the <strong>INPUT</strong> is <strong>1.0</strong>, the <strong>OUTPUT</strong> must be <strong>5.0</strong>.</p>
+        <p>So, our <strong>DATASET</strong> contains two <strong>EXAMPLES</strong>:</p>
 
-Similarly, in the case of the NEURON, when INPUTS change, the OUTPUT changes too:
- 3.00 
- 5.00 
- INPUTS 
- 2.00 
- 3.00 
- WEIGHTS 
- 6.00 
- 15.00 
- PRODUCTS 
- -0.50 
- BIAS 
- 20.50 
- OUTPUT 
-
-Again, no math changed. Only names changed.
-The Python code below makes all these calculations instantly.
-CODE:
-Just click RUN.
-
-INPUT1 = 3.00
-INPUT2 = 5.00
-WEIGHT1 = 2.00
-WEIGHT2 = 3.00
-BIAS = -0.50
-PRODUCT1 = INPUT1 * WEIGHT1
-PRODUCT2 = INPUT2 * WEIGHT2
-OUTPUT = PRODUCT1 + PRODUCT2 + BIAS 
-print(f"🔥 OUTPUT = {OUTPUT}")
-RUN
-Ready for math!PRINTOUT:
-🔥 OUTPUT = 20.5
+        <div class="callout callout-neutral">
+<p>EXAMPLES = 2</p>
+        </div>
+        <p>
+          During <strong>TRAINING</strong>, in each <strong>LESSON</strong>, the brain <strong>changes</strong> its <strong>PARAMETER</strong> so that the <strong>OUTPUT</strong> gets closer to the <strong>TARGET</strong>.
+        </p>
+      </div>
+    </div>
 
 
-Congratulations! 🎉 You’ve just run your very first machine NEURON.
-Try changing INPUT1 to 10 and INPUT2 to 20. Guess the OUTPUT before pressing RUN. 😉
-Hopefully, your guess matches! 👍
-The mapping:
- RECEIPT 
- → 
- NEURON 
- UNITS 
- → 
- INPUTS 
- PRICES 
- → 
- WEIGHTS 
- AMOUNTS 
- → 
- PRODUCTS 
- DISCOUNT 
- → 
- BIAS 
- TOTAL 
- → 
- OUTPUT 
+    <!-- THE CHANGE RULE -->
+    <div class="section-label">Change Rule</div>
+    <div class="card">
+      <div class="card-body">
+        <p>The brain <strong>changes</strong> the <strong>PARAMETER</strong> using this <strong>CHANGE RULE</strong>:</p>
 
-A machine NEURON can have many WEIGHTS, but only one BIAS.
-In AI, WEIGHTS and BIASES are called PARAMETERS.
-If you understand this, you already understand a lot about AI.
-Every answer from ChatGPT ultimately comes from billions of tiny calculations that look surprisingly similar to the example above.
-But at the very beginning, every machine brain starts with random PARAMETERS, generating nonsense. And the most exciting part is how every brain improves itself after making ERRORS. Indeed, every brain simply changes its PARAMETERS — step by step. This process is called LEARNING or TRAINING.
-Scale: Billions and Trillions
-Today's largest machine brains may each have over 10 trillion PARAMETERS — which sounds massive! But your own brain is still way more complex. Inside your head, you have:
-~500 trillion SYNAPSES
-~86 billion NEURONS
-You can think of each SYNAPSE as playing the role of a WEIGHT, while each biological NEURON also has properties that loosely resemble a BIAS.
-Metaphorically, your brain has over 500 trillion "PARAMETERS" — combining 500 trillion "WEIGHTS" with 86 billion "BIASES".
-So, even though a single NEURON does simple math, a massive network of NEURONS can create remarkably intelligent behavior.
-🌺 Our First Machine Brain
-To quickly understand the main idea of how machines learn and think, let’s start by building the simplest possible brain: a one-neuron brain. A single NEURON. That’s it.
-Even better, this NEURON will only have one PARAMETER: a single WEIGHT. No other WEIGHTS and no BIAS. Just one WEIGHT. That’s it!
-In Lesson 1, you’ll watch this NEURON start with a random WEIGHT, make ERRORS, and gradually improve itself — simply by changing this PARAMETER step by step.
-So this tiniest-ever brain will first learn from its own ERRORS. Then, after LEARNING, it will be able to think, solving problems it has never seen before.
-Indeed, that’s the true power of every good brain: solving problems it has never encountered before.
-The tiniest-ever brain is the perfect starting point.
-Let’s see how it works!
-HOW
-MACHINES
-LEARN AND
-THINK
-Zero To Hero
-TRANSFORMERS
-20 Lessons: $10 each
-$199 total
-Per family or individual
+        <div class="formula-block">
+          <div class="formula-block-label">SIMPLEST CHANGE RULE for PARAMETER</div>
+          <p><span class="formula">PARAMETER_change = ERROR</span></p>
+          <p><span class="formula">PARAMETER = PARAMETER + PARAMETER_change</span></p>
+        </div>
 
-Start small with Lesson 1
-Lesson 1: $9
-Join
-Or get the full journey
-20 Lessons: $199
-Join
-Syllabus
-The course covers the following topics:
-NEURONS
-INPUTS
-WEIGHTS
-BIASES
-OUTPUTS
-FORWARD PASS
-BACKWARD PASS (BACKPROPAGATION)
-CHANGE RULE
-GRADIENT DESCENT
-CHAIN RULE
-ACTIVATION FUNCTIONS
-VECTORS
-NEURAL NETWORKS
-TRANSFORMERS
-TOKENIZATION
-EMBEDDINGS
-MATRICES
-MATRIX MULTIPLICATION
-ATTENTION
-SELF-ATTENTION
-MULTI-HEAD ATTENTION
-POSITIONAL ENCODING
-LAYER NORMALIZATION
-RESIDUAL CONNECTIONS
-FEED-FORWARD NETWORKS
-OPTIMIZATION
-SOFTMAX
-TRANSFORMER BLOCKS
-GENERALIZATION
-Don't worry — this course builds your understanding gradually.
-Together, we will reinvent modern AI from scratch — step by step.
+        <p>Because the brain has just one <strong>PARAMETER</strong>  —  <strong>WEIGHT</strong>  —  we obtain:</p>
 
-© 2026 Machine Intelligence School
+        <div class="formula-block">
+          <div class="formula-block-label">SIMPLEST CHANGE RULE for WEIGHT</div>
+          <p><span class="formula">WEIGHT_change = ERROR</span></p>
+          <p><span class="formula">WEIGHT = WEIGHT + WEIGHT_change</span></p>
+        </div>
+
+        <p>Don't worry  —  each step is simple. Just follow the calculations below.</p>
+      </div>
+    </div>
 
 
-
-—--
-Lesson 1:
-
-
-HOW
-MACHINES
-LEARN AND
-THINK
-Lesson 1
-Our First Machine Brain
-Introduction
-A NEURON needs at least one PARAMETER to do anything useful.
-So our NEURON will have one: WEIGHT.
-To learn from its own ERRORS, our NEURON also needs a CHANGE RULE — to change its PARAMETER step by step.
+    <!-- TRAINING -->
+    <div class="section-label">Training</div>
 
 
-Brain
-We're going to build a machine brain that can multiply any number by 5.0.
-In this scenario, the INPUT represents the number being multiplied, and the OUTPUT represents the result of the multiplication.
-Let's call this brain the Multiplier-by-Five.
-As said, the brain will have a single PARAMETER: WEIGHT.
-The brain will be a formula like this:
-OUTPUT = INPUT * WEIGHT
-We need to find the correct PARAMETER: WEIGHT.
-Initial PARAMETER
-Suppose we don't yet know what the PARAMETER should be, so let's start by setting it to zero:
-WEIGHT = 0.0
-At first, the brain will generate nonsense, since with any INPUT the OUTPUT is zero.
-Dataset
-We will use this training DATASET, which has two EXAMPLES:
+    <!-- LESSON 1 -->
+    <div class="card">
+      <div class="card-header"><strong style="color:#F0ABFC;">LESSON 1</strong></div>
+      <div class="card-body">
+
+        <div class="callout callout-neutral">
+<p>WEIGHT = 0.0</p>
+        </div>
+
+        <p><strong>EXAMPLE1</strong>:</p>
+        <div class="callout callout-neutral">
+<p>INPUT  = 0.6</p>
+<p>TARGET = 3.0</p>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">Forward Pass</div>
+<p>PRODUCT = INPUT * WEIGHT = 0.6 * 0.0 = 0.0</p>
+<p>OUTPUT = PRODUCT = 0.0</p>
+        </div>
+
+        <div class="callout callout-error">
+          <div class="callout-title">Error</div>
+<p>ERROR = TARGET − OUTPUT = 3.0 − 0.0 = 3.0</p>
+<p>The <strong>ERROR</strong> tells us how far the <strong>OUTPUT</strong> is off from the <strong>TARGET</strong>.</p>
+        </div>
+
+        <div class="diagram">
+          <img src="graph_L1_before.png" alt="Neuron diagram — Lesson 1 before change" />
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">Backward Pass</div>
+          <p>The brain changes the PARAMETER that caused this ERROR.</p>
+          <p>Imagine the brain asking itself:</p>
+          <p>"How should I change my WEIGHT so the OUTPUT gets closer to the TARGET?"</p>
+          <p>The <strong>ERROR</strong> provides the answer:</p>
+          <p>"Your OUTPUT is <strong>3.0</strong> below the TARGET, so increase the WEIGHT by the exact same <strong>3.0</strong>."</p>
+          <p>And that's exactly what the <strong>SIMPLEST CHANGE RULE</strong> tells us to do:</p>
+
+          <div class="formula-block">
+            <div class="formula-block-label">SIMPLEST CHANGE RULE for WEIGHT</div>
+            <p><span class="formula">WEIGHT_change = ERROR</span></p>
+            <p><span class="formula">WEIGHT = WEIGHT + WEIGHT_change</span></p>
+          </div>
+<p>WEIGHT_change = ERROR = 3.0</p>
+
+<p>WEIGHT = WEIGHT + WEIGHT_change = 0.0 + 3.0 = 3.0</p>
+
+<p>So the <strong>WEIGHT</strong> becomes <strong>3.0</strong>.</p>
+        </div>
+
+        <div class="result-banner">
+<p>WEIGHT = 3.0</p>
+        </div>
+
+        <div class="callout callout-warning">
+          <strong>What just happened?</strong>
+          <p>The brain has just improved itself.</p>
+          <p>Now, if it receives the same <strong>INPUT</strong> of <strong>0.6</strong>, 
+            the <strong>OUTPUT</strong> becomes <strong>1.8</strong> (0.6 * 3.0)  —  
+            which is closer to the <strong>TARGET</strong> (<strong>3.0</strong>) 
+            than the previous <strong>OUTPUT</strong> (<strong>0.0</strong>) was.</p>
+          <p>The <strong>ERROR</strong> becomes smaller:</p>
+          <p><span class="error-chip">ERROR = 1.2</span></p>
+        </div>
+
+        <div class="diagram">
+          <img src="graph_L1_after.png" alt="Neuron diagram — Lesson 1 after change" />
+        </div>
+
+        <p><br/><strong>LESSON 1</strong> ends here.</p>
+      </div>
+    </div>
+
+<br/><br/>
+    <!-- LESSON 2 -->
+    <div class="card">
+      <div class="card-header"><strong style="color:#F0ABFC;">LESSON 2</strong></div>
+      <div class="card-body">
+
+        <div class="callout callout-neutral">
+<p>WEIGHT = 3.0</p>
+        </div>
+
+        <p><strong>EXAMPLE 2</strong>:</p>
+        <div class="callout callout-neutral">
+<p>INPUT  = 1.0</p>
+<p>TARGET = 5.0</p>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">Forward Pass</div>
+<p>PRODUCT = INPUT * WEIGHT = 1.0 * 3.0 = 3.0</p>
+<p>OUTPUT = PRODUCT = 3.0</p>
+        </div>
+
+        <div class="callout callout-error">
+          <div class="callout-title">Error</div>
+<p>ERROR = TARGET − OUTPUT = 5.0 − 3.0 = 2.0</p>
+<p>The <strong>ERROR</strong> tells us how far the <strong>OUTPUT</strong> is off from the <strong>TARGET</strong>.</p>
+        </div>
+
+        <div class="diagram">
+          <img src="graph_L2_before.png" alt="Neuron diagram — Lesson 2 before change" />
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">Backward Pass</div>
+          <p>The brain changes the PARAMETER that caused this ERROR.</p>
+          <p>Imagine the brain asking itself:</p>
+          <p>"How should I change my WEIGHT so the OUTPUT gets closer to the TARGET?"</p>
+          <p>The <strong>ERROR</strong> provides the answer:</p>
+          <p>"Your OUTPUT is <strong>2.0</strong> below the TARGET, so increase the WEIGHT by the exact same <strong>2.0</strong>."</p>
+          <p>And that's exactly what the <strong>SIMPLEST CHANGE RULE</strong> tells us to do:</p>
+
+          <div class="formula-block">
+            <div class="formula-block-label">SIMPLEST CHANGE RULE for WEIGHT</div>
+            <p><span class="formula">WEIGHT_change = ERROR</span></p>
+            <p><span class="formula">WEIGHT = WEIGHT + WEIGHT_change</span></p>
+          </div>
+<p>WEIGHT_change = ERROR = 2.0</p>
+
+<p>WEIGHT = WEIGHT + WEIGHT_change = 3.0 + 2.0 = 5.0</p>
+
+<p>So the <strong>WEIGHT</strong> becomes <strong>5.0</strong>.</p>
+        </div>
+
+        <div class="result-banner">
+<p>WEIGHT = 5.0</p>
+        </div>
+
+        <div class="callout callout-warning">
+          <strong>What just happened?</strong>
+          <p>The brain has just improved itself again.</p>
+          <p>Now, if it receives the same <strong>INPUT</strong> of <strong>1.0</strong>, 
+            the <strong>OUTPUT</strong> becomes <strong>5.0</strong> (1.0 * 5.0)  —  
+            which is closer to the <strong>TARGET</strong> (<strong>5.0</strong>) 
+            than the previous <strong>OUTPUT</strong> (<strong>3.0</strong>) was.</p>
+        </div>
+
+        <div class="success-callout">
+          <p>Wait  —  it's not just closer. It's exact!</p>
+          <p>The <strong>OUTPUT</strong> is now 5.0  —  exactly the same as the <strong>TARGET</strong>.</p>
+          <p>The <strong>ERROR</strong> becomes <strong>zero</strong>:</p>
+          <p><span class="error-chip" style="margin-left: 20px;">ERROR = 0.0</span></p>
+        </div>
+
+        <div class="diagram">
+          <img src="graph_L2_after.png" alt="Neuron diagram — Lesson 2 after change" />
+        </div>
+
+        <p><br/><strong>LESSON 2</strong> ends here.</p>
+      </div>
+    </div>
 
 
- INPUT 
- TARGET 
- EXAMPLE1 
- 0.6 
- 3.0 
- EXAMPLE2 
- 1.0 
- 5.0 
+    <div class="completion-banner">✓ &nbsp; DONE &nbsp; ✓</div>
 
-The TARGET represents the correct OUTPUT.
-EXAMPLE1 means when the INPUT is 0.6, the OUTPUT must be 3.0.
-EXAMPLE2 means when the INPUT is 1.0, the OUTPUT must be 5.0.
-So, our DATASET contains two EXAMPLES:
+
+    <!-- TESTING -->
+    <div class="section-label">Testing</div>
+    <div class="card">
+      <div class="card-body">
+
+        <p>To <strong>test</strong> the brain, we give it a new <strong>EXAMPLE</strong> it has never seen before.</p>
+
+        <div class="callout callout-neutral">
+<p>WEIGHT = 5.0</p>
+        </div>
+
+        <p><strong>EXAMPLE</strong> for <strong>TESTING</strong>:</p>
+
+        <div class="callout callout-neutral">
+<p>INPUT  = 10.0</p>
+<p>TARGET = 50.0</p>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">Forward Pass</div>
+<p>PRODUCT = INPUT * WEIGHT = 10.0 * 5.0 = 50.0</p>
+<p>OUTPUT = PRODUCT = 50.0</p>
+        </div>
+
+        <div class="callout callout-error">
+          <div class="callout-title">Error</div>
+<p>ERROR = TARGET − OUTPUT = 50.0 − 50.0 = 0.0</p>
+        </div>
+
+        <div class="diagram">
+          <img src="graph_validation.png" alt="Neuron diagram — Validation" />
+        </div>
+
+        <div class="callout callout-warning">
+          <p>Since <strong>ERROR = 0.0</strong>, this brain works perfectly!</p>
+          <p>It has learned the rule: <strong>multiply any number by 5.0</strong>.</p>
+          <p>The <strong>Multiplier-by-Five</strong> can now think: solve problems it has never encountered before.</p>
+          <p>The brain is now this formula:</p>
+          <div class="callout callout-neutral">
+<p>OUTPUT = INPUT * 5.0</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- CODE -->
+    <div class="section-label">Code</div>
+
+    <div class="card">
+      <div class="card-body">
+
+        <!-- TRAIN THE BRAIN -->
+         <p>Just click <strong>RUN</strong>.</p>
+         <h3><p>TRAIN THE BRAIN 🧠</p></h3>
+        <p></p>  
+
+
+  <!-- CODE BLOCK 1 -->
+  <div class="pythoncode">
+    <div class="textarea-wrap">
+<textarea id="code-input1" style="line-height: 1.2;">
 EXAMPLES = 2
-During TRAINING, in each LESSON, the brain changes its PARAMETER so that the OUTPUT gets closer to the TARGET.
-Change Rule
-The brain changes the PARAMETER using this CHANGE RULE:
-SIMPLEST CHANGE RULE for PARAMETER
-PARAMETER_change = ERROR
-PARAMETER = PARAMETER + PARAMETER_change
-Because the brain has just one PARAMETER — WEIGHT — we obtain:
-SIMPLEST CHANGE RULE for WEIGHT
-WEIGHT_change = ERROR
-WEIGHT = WEIGHT + WEIGHT_change
-Don't worry — each step is simple. Just follow the calculations below.
-Training
-LESSON 1
+
 WEIGHT = 0.0
-EXAMPLE1:
-INPUT = 0.6
-TARGET = 3.0
-Forward Pass
-PRODUCT = INPUT * WEIGHT = 0.6 * 0.0 = 0.0
-OUTPUT = PRODUCT = 0.0
-Error
-ERROR = TARGET − OUTPUT = 3.0 − 0.0 = 3.0
-The ERROR tells us how far the OUTPUT is off from the TARGET.
 
-Backward Pass
-The brain changes the PARAMETER that caused this ERROR.
-Imagine the brain asking itself:
-"How should I change my WEIGHT so the OUTPUT gets closer to the TARGET?"
-The ERROR provides the answer:
-"Your OUTPUT is 3.0 below the TARGET, so increase the WEIGHT by the exact same 3.0."
-And that's exactly what the SIMPLEST CHANGE RULE tells us to do:
-SIMPLEST CHANGE RULE for WEIGHT
-WEIGHT_change = ERROR
-WEIGHT = WEIGHT + WEIGHT_change
-WEIGHT_change = ERROR = 3.0
-WEIGHT = WEIGHT + WEIGHT_change = 0.0 + 3.0 = 3.0
-So the WEIGHT becomes 3.0.
-WEIGHT = 3.0
-What just happened?
-The brain has just improved itself.
-Now, if it receives the same INPUT of 0.6, the OUTPUT becomes 1.8 (0.6 * 3.0) — which is closer to the TARGET (3.0) than the previous OUTPUT (0.0) was.
-The ERROR becomes smaller:
-ERROR = 1.2
-
-
-LESSON 1 ends here.
-
-
-LESSON 2
-WEIGHT = 3.0
-EXAMPLE 2:
-INPUT = 1.0
-TARGET = 5.0
-Forward Pass
-PRODUCT = INPUT * WEIGHT = 1.0 * 3.0 = 3.0
-OUTPUT = PRODUCT = 3.0
-Error
-ERROR = TARGET − OUTPUT = 5.0 − 3.0 = 2.0
-The ERROR tells us how far the OUTPUT is off from the TARGET.
-
-Backward Pass
-The brain changes the PARAMETER that caused this ERROR.
-Imagine the brain asking itself:
-"How should I change my WEIGHT so the OUTPUT gets closer to the TARGET?"
-The ERROR provides the answer:
-"Your OUTPUT is 2.0 below the TARGET, so increase the WEIGHT by the exact same 2.0."
-And that's exactly what the SIMPLEST CHANGE RULE tells us to do:
-SIMPLEST CHANGE RULE for WEIGHT
-WEIGHT_change = ERROR
-WEIGHT = WEIGHT + WEIGHT_change
-WEIGHT_change = ERROR = 2.0
-WEIGHT = WEIGHT + WEIGHT_change = 3.0 + 2.0 = 5.0
-So the WEIGHT becomes 5.0.
-WEIGHT = 5.0
-What just happened?
-The brain has just improved itself again.
-Now, if it receives the same INPUT of 1.0, the OUTPUT becomes 5.0 (1.0 * 5.0) — which is closer to the TARGET (5.0) than the previous OUTPUT (3.0) was.
-Wait — it's not just closer. It's exact!
-The OUTPUT is now 5.0 — exactly the same as the TARGET.
-The ERROR becomes zero:
-ERROR = 0.0
-
-
-LESSON 2 ends here.
-✓   DONE   ✓
-Testing
-To test the brain, we give it a new EXAMPLE it has never seen before.
-WEIGHT = 5.0
-EXAMPLE for TESTING:
-INPUT = 10.0
-TARGET = 50.0
-Forward Pass
-PRODUCT = INPUT * WEIGHT = 10.0 * 5.0 = 50.0
-OUTPUT = PRODUCT = 50.0
-Error
-ERROR = TARGET − OUTPUT = 50.0 − 50.0 = 0.0
-
-Since ERROR = 0.0, this brain works perfectly!
-It has learned the rule: multiply any number by 5.0.
-The Multiplier-by-Five can now think: solve problems it has never encountered before.
-The brain is now this formula:
-OUTPUT = INPUT * 5.0
-Code
-Just click RUN.
-TRAIN THE BRAIN 🧠
-
-EXAMPLES = 2
-WEIGHT = 0.0
 INPUTS  = [0.6,
            1.0]
+
 TARGETS = [3.0,
            5.0]
+
 for EXAMPLE in range(EXAMPLES):
+
     INPUT  = INPUTS[EXAMPLE]
+
     TARGET = TARGETS[EXAMPLE]
+
     PRODUCT = INPUT * WEIGHT
+
     OUTPUT = PRODUCT
+
     ERROR = TARGET - OUTPUT
+
     #SIMPLEST CHANGE RULE FOR WEIGHT
+
     WEIGHT_change = ERROR
+
     WEIGHT = WEIGHT + WEIGHT_change
+
 print(f"🔥 TRAINING complete:")
 print(f"WEIGHT = {WEIGHT}")
-RUN
-Ready for math!
-PRINTOUT:
-🔥 TRAINING complete:
-WEIGHT = 5.0
-TEST THE BRAIN 🧠
+</textarea>
+    </div>
+    <div class="code-row">
+      <button onclick="runPython(1, this)"><strong>RUN</strong></button>
+      <button class="copy_btn copy_btn--inline" onclick="copyCode('code-input1', this)" data-tooltip="Copy code">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </button>
+    </div>
+    <div id="output-window1">Ready for math!</div>
+  </div>
+        <p><br/></p>
+        <h3><p>TEST THE BRAIN 🧠</p></h3>
+        <p></p>
 
+
+ <!-- CODE BLOCK 2 -->
+  <div class="pythoncode">
+    <div class="textarea-wrap">
+<textarea id="code-input2" style="line-height: 1.2;">
 WEIGHT = 5.0
+
 INPUT  = 10.0
 TARGET = 50.0
+
 PRODUCT = INPUT * WEIGHT
+
 OUTPUT = PRODUCT
+
 ERROR = TARGET - OUTPUT
+
 print(f"🔥 Testing complete:")
 print(f"ERROR = {ERROR}")
-RUN
-Ready for math!
-PRINTOUT:
-🔥 Testing complete:
-ERROR = 0.0
+</textarea>
+    </div>
+    <div class="code-row">
+      <button onclick="runPython(2, this)"><strong>RUN</strong></button>
+      <button class="copy_btn copy_btn--inline" onclick="copyCode('code-input2', this)" data-tooltip="Copy code">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </button>
+    </div>
+    <div id="output-window2">Ready for math!</div>
+  </div>
+
+
+<p>Here, we use standard <strong>Python</strong> code.</p>
+<p>If you have any questions about this code, remember this: in today’s world, knowing how to find answers is a superpower.  
+<p>You can copy the code, paste it into an AI assistant like <a href="https://chatgpt.com" target="_blank">ChatGPT</a>, and ask something like: "Can you explain this code line by line?"
+This is one of the best ways to learn.</p>
+<p>In <strong>Lesson 5</strong>, instead of using standard <strong>Python</strong> code, we'll start using <strong>PyTorch</strong>  —  a handy shortcut that makes writing AI code much easier!</p>
+<p>On <strong>Hugging Face</strong> , a famous website where people share smart AI models, almost everyone uses <strong>PyTorch</strong>. So you’ll be learning the same tool the pros use.</p>
+      </div>
+    </div>
+
+
+<div class="section-label">With The Best Intentions</div>
+
+<img src="ai-teacher.png" style="display:block; width:100%; height:auto; margin:0 0; border-radius:16px;">
+
+<div class="card" style="margin-top:32px;">
+    <div class="card-body">
+
+<p style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px; line-height: 1.6; font-size: 18px; color: #1e293b; font-family: system-ui, sans-serif;">
+  Plus, for your first two months, you can ask any question to your personal AI teacher — 
+  using your <strong style="display: inline-flex; align-items: center; gap: 4px;">voice
+    <svg width="26" height="26" viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle;">
+      <defs>
+        <linearGradient id="faceGradVoice" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#FFE082" />
+          <stop offset="100%" stop-color="#FFB300" />
+        </linearGradient>
+        <linearGradient id="waveGradVoice" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#00E5FF" />
+          <stop offset="100%" stop-color="#2979FF" />
+        </linearGradient>
+      </defs>
+      <!-- Face -->
+      <circle cx="55" cy="60" r="45" fill="url(#faceGradVoice)" stroke="#FFFFFF" stroke-width="4"/>
+      <!-- Happy Eyes -->
+      <path d="M 35 48 Q 43 36 51 48" fill="none" stroke="#3E2723" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 65 48 Q 73 36 81 48" fill="none" stroke="#3E2723" stroke-width="6" stroke-linecap="round"/>
+      <!-- Open Talking Mouth -->
+      <path d="M 40 68 C 40 88, 70 88, 70 68 Z" fill="#3E2723"/>
+      <path d="M 46 76 C 50 86, 60 86, 64 76 Z" fill="#FF5252"/>
+      <!-- Sound Waves -->
+      <path d="M 112 45 A 20 20 0 0 1 112 75" fill="none" stroke="url(#waveGradVoice)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M 128 35 A 32 32 0 0 1 128 85" fill="none" stroke="url(#waveGradVoice)" stroke-width="7" stroke-linecap="round"/>
+    </svg>
+  </strong>Just tap the pulsing button and start talking. What's more, your teacher can even guide you through each lesson — step by step.
+</p>
+
+
+    </div>
+  </div>
+
+
+<!-- NOTE -->
+<div class="section-label">Note</div>
+<div class="card">
+  <div class="card-body">
+    <p>Our first intuition:</p>
+    <ul class="prose-list">
+      <li>This machine brain has a <strong>PARAMETER</strong> (<strong>WEIGHT</strong>) set randomly.</li>
+      <li>It takes in an <strong>INPUT</strong> and makes a guess (<strong>OUTPUT</strong>).</li>
+      <li>It compares its guess (<strong>OUTPUT</strong>) to the right answer (<strong>TARGET</strong>).</li>
+      <li>It calculates the difference (<strong>ERROR</strong>).</li>
+      <li>It changes its <strong>PARAMETER</strong>, using the <strong>CHANGE RULE</strong> that depends on this difference (<strong>ERROR</strong>).</li>
+    </ul>
+
+    <p>So this brain learns from its own <strong>ERRORS</strong> and improves its answers by changing its <strong>PARAMETER</strong>.</p>
+    
+    <p>In the same way, modern machines learn from their own <strong>ERRORS</strong>.</p>
+
+    <p>While our <strong>SIMPLEST CHANGE RULE</strong> worked well here, we are building step by step the <strong>FUNDAMENTAL CHANGE RULE</strong> — with just two steps remaining.</p>
+  </div>
+</div>
+
+
+         <div class="success-callout" style="margin-top: 24px; border-left: 4px solid var(--green); padding: 16px; background: rgba(16, 185, 129, 0.1); border-radius: 16px;">
+          <p style="font-size: 20px; margin-bottom: 8px;"><strong>And look at that  —  you just built a working machine brain! 🏆</strong></p>
+          <p>But what happens if the <strong>DATASET</strong> contains negative numbers?</p>
+          <p>In <strong>Lesson 2</strong>, 
+            we unlock the real secret weapon used by modern AI  —  <strong>INFLUENCE</strong>  —  
+            and continue our journey.</p>          
+        </div>
+
+
+
+<div style="display: flex; justify-content: center; width: 100%; margin-top: 24px;">
+  <div class="pricing-block" style="width: 280px; text-align:center;">
+    <div class="pricing-title">HOW<br/>MACHINES<br/>LEARN AND<br/>THINK</div>
+    <div class="pricing-sub">Zero To Hero</div>
+ 
+    <div class="green-title" style="margin-top:12px;">TRANSFORMERS</div>
+    <div style="color:#cccccc; font-weight:700; margin-top:4px;">
+      20 Lessons: <strong style="color:var(--yellow);">$10</strong> each
+    </div>
+    <div class="pricing-price">$199 total</div>
+    <div class="family">Per family or individual</div>
+  </div>
+</div>
+
+
+<br/>
+<p style="text-align: center; color: var(--white);"><strong>Get the full journey</strong></p>
+        <div style="text-align: center; margin-bottom: 28px;">
+  <span class="price-pill" style="display: inline-block !important; padding: 10px 16px !important;">
+    20 Lessons: <strong style="color: var(--yellow);">$190</strong><br/>Join
+  </span>
+</div>
 
 
 
 
-RUN
-Ready for math!
-Here, we use standard Python code.
-If you have any questions about this code, remember this: in today’s world, knowing how to find answers is a superpower.
-You can copy the code, paste it into an AI assistant like ChatGPT, and ask something like: "Can you explain this code line by line?" This is one of the best ways to learn.
-In Lesson 5, instead of using standard Python code, we'll start using PyTorch — a handy shortcut that makes writing AI code much easier!
-On Hugging Face , a famous website where people share smart AI models, almost everyone uses PyTorch. So you’ll be learning the same tool the pros use.
-With The Best Intentions
-Plus,foryourfirsttwomonths,youcanaskanyquestiontoyourpersonalAIteacher—usingyourvoiceJusttapthepulsingbuttonandstarttalking.What'smore,yourteachercanevenguideyouthrougheachlesson—stepbystep.
-Note
-Our first intuition:
-This machine brain has a PARAMETER (WEIGHT) set randomly.
-It takes in an INPUT and makes a guess (OUTPUT).
-It compares its guess (OUTPUT) to the right answer (TARGET).
-It calculates the difference (ERROR).
-It changes its PARAMETER, using the CHANGE RULE that depends on this difference (ERROR).
-So this brain learns from its own ERRORS and improves its answers by changing its PARAMETER.
-In the same way, modern machines learn from their own ERRORS.
-While our SIMPLEST CHANGE RULE worked well here, we are building step by step the FUNDAMENTAL CHANGE RULE — with just two steps remaining.
-And look at that — you just built a working machine brain! 🏆
-But what happens if the DATASET contains negative numbers?
-In Lesson 2, we unlock the real secret weapon used by modern AI — INFLUENCE — and continue our journey.
-HOW
-MACHINES
-LEARN AND
-THINK
-Zero To Hero
-TRANSFORMERS
-20 Lessons: $10 each
-$199 total
-Per family or individual
 
-Get the full journey
-20 Lessons: $190
-Join
-Syllabus
-The course covers the following topics:
-NEURONS
-INPUTS
-WEIGHTS
-BIASES
-OUTPUTS
-FORWARD PASS
-BACKWARD PASS (BACKPROPAGATION)
-CHANGE RULE
-GRADIENT DESCENT
-CHAIN RULE
-ACTIVATION FUNCTIONS
-VECTORS
-NEURAL NETWORKS
-TRANSFORMERS
-TOKENIZATION
-EMBEDDINGS
-MATRICES
-MATRIX MULTIPLICATION
-ATTENTION
-SELF-ATTENTION
-MULTI-HEAD ATTENTION
-POSITIONAL ENCODING
-LAYER NORMALIZATION
-RESIDUAL CONNECTIONS
-FEED-FORWARD NETWORKS
-OPTIMIZATION
-SOFTMAX
-TRANSFORMER BLOCKS
-GENERALIZATION
-Don't worry — this course builds your understanding gradually.
-Together, we will reinvent modern AI from scratch — step by step.
-Up Next: Lesson 2
-DATASETS often contain negative numbers.
-To handle them, we additionally bring INFLUENCE into our CHANGE RULE.
+<div class="section-label">Syllabus</div>
 
-© 2026 Machine Intelligence School
+<div class="card">
+  <div class="card-body">
+
+    <p>The course covers the following topics:</p>
+    <ul class="prose-list">
+      <li><strong>NEURONS</strong></li>
+      <li><strong>INPUTS</strong></li>
+      <li><strong>WEIGHTS</strong></li>
+      <li><strong>BIASES</strong></li>
+      <li><strong>OUTPUTS</strong></li>
+      <li><strong>FORWARD PASS</strong></li>
+      <li><strong>BACKWARD PASS (BACKPROPAGATION)</strong></li>
+      <li><strong>CHANGE RULE</strong></li>
+      <li><strong>GRADIENT DESCENT</strong></li>
+      <li><strong>CHAIN RULE</strong></li>
+      <li><strong>ACTIVATION FUNCTIONS</strong></li>   
+      <li><strong>VECTORS</strong></li>   
+      <li><strong>NEURAL NETWORKS</strong></li>
+      <li><strong>TRANSFORMERS</strong></li>
+      <li><strong>TOKENIZATION</strong></li>
+      <li><strong>EMBEDDINGS</strong></li>
+      <li><strong>MATRICES</strong></li>
+      <li><strong>MATRIX MULTIPLICATION</strong></li>
+      <li><strong>ATTENTION</strong></li>
+      <li><strong>SELF-ATTENTION</strong></li>
+      <li><strong>MULTI-HEAD ATTENTION</strong></li>
+      <li><strong>POSITIONAL ENCODING</strong></li>
+      <li><strong>LAYER NORMALIZATION</strong></li>
+      <li><strong>RESIDUAL CONNECTIONS</strong></li>
+      <li><strong>FEED-FORWARD NETWORKS</strong></li>
+      <li><strong>OPTIMIZATION</strong></li>
+      <li><strong>SOFTMAX</strong></li>
+      <li><strong>TRANSFORMER BLOCKS</strong></li>
+      <li><strong>GENERALIZATION</strong></li>
+    </ul>
+
+    <p>Don't worry — this course builds your understanding gradually.</p>
+    <p>Together, we will reinvent modern AI from scratch — step by step.</p>
+
+  </div>
+</div>
+
+
+
+    <div class="teaser">
+      <div class="teaser-next">Up Next: Lesson 2</div>
+        <p><strong style="color:var(--yellow);">DATASETS</strong> often contain negative numbers.</p>
+        <p>To handle them,
+        we additionally bring <strong style="color:var(--yellow);">INFLUENCE</strong>
+        into our <strong style="color:var(--yellow);">CHANGE RULE</strong>.</p>
+    </div>
+
+<!-- FOOTER -->
+     <footer class="footer">
+      <img src="../logo.png" class="footer-logo" />
+      <div class="footer-copyright">&copy; 2026 Machine Intelligence School</div>
+    </footer>
+
+
+  </div>
+  <!-- /page -->
+
+
+
+
+<!-- SCRIPTS AND EVERYTHING ELSE OUTSIDE THE MAIN PAGE <page> -->
+
+
+
+<!-- round-button -->
+<!-- AI TEACHER BUTTON -->
+<button class="round-button" id="aiTeacherBtn" data-tooltip="" aria-label="Toggle AI Teacher">
+  <svg class="sphere-indicator" viewBox="0 0 20 20" aria-hidden="true">
+    <defs>
+      <radialGradient id="sphereGrad" cx="35%" cy="35%" r="65%">
+        <stop offset="0%" stop-color="#fff" stop-opacity="0.8" />
+        <stop offset="50%" stop-color="var(--sphere-color)" stop-opacity="0.6" />
+        <stop offset="100%" stop-color="var(--sphere-color)" stop-opacity="0.25" />
+      </radialGradient>
+    </defs>
+    <circle cx="10" cy="10" r="9" fill="url(#sphereGrad)" />
+  </svg>
+</button>
+
+<!-- round-button -->
+<!-- AI TEACHER BUTTON -->
+<script>
+const BUTTON_ELEMENT = document.getElementById('aiTeacherBtn');
+let IS_TEACHER_ACTIVE = false;
+let NOTIFICATION_TIMER = null;
+
+BUTTON_ELEMENT.addEventListener('click', function () {
+  this.blur();
+  IS_TEACHER_ACTIVE = !IS_TEACHER_ACTIVE;
+
+  BUTTON_ELEMENT.classList.toggle('is-on', IS_TEACHER_ACTIVE);
+  BUTTON_ELEMENT.setAttribute('data-tooltip', IS_TEACHER_ACTIVE ? 'AI teacher ON' : 'AI teacher OFF');
+
+  if (IS_TEACHER_ACTIVE) {
+    startTalking();
+  } else {
+    stopTalking();
+  }
+
+  BUTTON_ELEMENT.classList.add('is-tooltip-visible');
+  clearTimeout(NOTIFICATION_TIMER);
+
+  NOTIFICATION_TIMER = setTimeout(() => {
+    BUTTON_ELEMENT.classList.remove('is-tooltip-visible');
+  }, 1500);
+});
+</script>
+
+
+
+
+
+
+<!-- PULSING STOPPING AND STARTING -->
+<script>
+    function copyCode(id, btn) {
+      // Stop pulsing animation on click
+      btn.classList.add('is-copied');
+
+      const text = document.getElementById(id).value;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('copy_btn--copied');
+        btn.setAttribute('data-tooltip', 'Copied!');
+        setTimeout(() => {
+          btn.classList.remove('copy_btn--copied');
+          btn.setAttribute('data-tooltip', 'Copy code');
+        }, 1800);
+      });
+    }
+
+    function outf(text, outputId) {
+      var mypre = document.getElementById(outputId);
+      mypre.innerHTML = mypre.innerHTML + text;
+    }
+
+    function runPython(index, btn) {
+      if (btn) {
+        btn.classList.add("is-ran");
+      }
+
+      const codeId   = "code-input" + index;
+      const outputId = "output-window" + index;
+
+      var code  = document.getElementById(codeId).value;
+      var mypre = document.getElementById(outputId);
+      mypre.innerHTML = '';
+
+      Sk.sysmodules = {};
+      Sk.pre = outputId;
+      Sk.configure({ output: (text) => outf(text, outputId) });
+
+      var myPromise = Sk.misceval.asyncToPromise(function () {
+        return Sk.importMainWithBody("<stdin>", false, code, true);
+      });
+
+      myPromise.then(
+        function (mod) { console.log('Success!'); },
+        function (err)  { mypre.innerHTML = err.toString(); }
+      );
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const codeBlocks = document.querySelectorAll(".pythoncode");
+
+      codeBlocks.forEach(function (block, idx) {
+        const index = idx + 1;
+        const runBtn = block.querySelector("button:not(.copy_btn)");
+        const copyBtn = block.querySelector(".copy_btn");
+        const codeArea = document.getElementById("code-input" + index);
+
+        if (codeArea) {
+          // Whenever the code changes in this textarea, restart pulsing for its buttons
+          codeArea.addEventListener("input", function () {
+            if (runBtn) runBtn.classList.remove("is-ran");
+            if (copyBtn) copyBtn.classList.remove("is-copied");
+          });
+        }
+      });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- FOCUS -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const selector = "p, li, .callout p, .formula-block, .step-heading, .inner-heading";
+  const elements = document.querySelectorAll(selector);
+
+  // Filter valid elements
+  const validElements = Array.from(elements).filter(el => {
+    return !el.closest(".pythoncode, .pricing-block, .table-wrap, .img-block, .diagram, header, .footer");
+  });
+
+  // Wrap words
+  function wrapWordsInNode(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      if (node.nodeValue.trim() !== "") {
+        const words = node.nodeValue.split(/(\s+)/);
+        const fragment = document.createDocumentFragment();
+
+        words.forEach(word => {
+          if (word.trim() !== "") {
+            const span = document.createElement("span");
+            span.className = "focus-word";
+            span.textContent = word;
+            fragment.appendChild(span);
+          } else {
+            fragment.appendChild(document.createTextNode(word));
+          }
+        });
+
+        node.parentNode.replaceChild(fragment, node);
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      Array.from(node.childNodes).forEach(wrapWordsInNode);
+    }
+  }
+
+  validElements.forEach(el => wrapWordsInNode(el));
+
+  const allWords = Array.from(document.querySelectorAll(".focus-word"));
+  const normalize = w => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+
+  let currentHighlightedWord = null;
+  let matchPointer = 0;
+
+  let autoScrollEnabled = true;
+  let programmaticScroll = false;
+  let programmaticScrollTimeout = null;
+
+  let pendingBuffer = "";
+  let userScrollTimeout = null;
+
+  let lastScrollTime = 0;
+
+  function setHighlight(word) {
+    if (currentHighlightedWord === word) return;
+
+    if (currentHighlightedWord) {
+      currentHighlightedWord.classList.remove("focus-line-target");
+    }
+
+    if (word) {
+      word.classList.add("focus-line-target");
+    }
+
+    currentHighlightedWord = word;
+  }
+
+  function getCenterWord() {
+    const viewportCenter = window.innerHeight / 2;
+    let closestWord = null;
+    let minDistance = Infinity;
+
+    allWords.forEach(word => {
+      const rect = word.getBoundingClientRect();
+      const wordCenter = rect.top + rect.height / 2;
+      const distance = Math.abs(viewportCenter - wordCenter);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestWord = word;
+      }
+    });
+
+    return closestWord;
+  }
+
+  function updateCenterFocus() {
+    const word = getCenterWord();
+    setHighlight(word);
+  }
+
+  function scrollToWord(word) {
+    const now = Date.now();
+
+    // Prevent too frequent scrolling
+    if (now - lastScrollTime < 350) return;
+    lastScrollTime = now;
+
+    programmaticScroll = true;
+    clearTimeout(programmaticScrollTimeout);
+
+    word.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+
+    programmaticScrollTimeout = setTimeout(() => {
+      programmaticScroll = false;
+    }, 600);
+  }
+
+  let ticking = false;
+
+  window.addEventListener("scroll", function () {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        updateCenterFocus();
+        ticking = false;
+      });
+      ticking = true;
+    }
+
+    // Manual scroll override
+    if (!programmaticScroll) {
+      autoScrollEnabled = false;
+
+      const centerWord = getCenterWord();
+      if (centerWord) {
+        const idx = allWords.indexOf(centerWord);
+        if (idx !== -1) {
+          matchPointer = idx;
+          pendingBuffer = "";
+          console.log("User moved to:", idx);
+        }
+      }
+
+      clearTimeout(userScrollTimeout);
+      userScrollTimeout = setTimeout(() => {
+        autoScrollEnabled = true;
+        console.log("Auto-scroll resumed");
+      }, 2000);
+    }
+  }, { passive: true });
+
+  updateCenterFocus();
+
+  // =========================
+  // VOICE SYNC (FINAL STABLE)
+  // =========================
+  window.advanceFocusToText = function (chunk) {
+    console.log("Chunk:", chunk);
+
+    // Hard reject giant chunks (Gemini sometimes sends full page)
+    if (chunk.length > 200) {
+      console.log("⚠️ Large chunk ignored");
+      return;
+    }
+
+    pendingBuffer += chunk;
+
+    let parts = pendingBuffer.split(/\s+/);
+
+    const incomplete = /\s$/.test(chunk) ? "" : parts.pop();
+    pendingBuffer = incomplete;
+
+    // 🔥 CRITICAL LIMIT: process max N words per tick
+    const MAX_WORDS = 4;
+    parts = parts.slice(0, MAX_WORDS);
+
+    let misses = 0;
+
+    parts.forEach(raw => {
+      const target = normalize(raw);
+
+      if (!target || target.length > 20) return;
+
+      const windowSize = 25;
+      let found = false;
+
+      for (let i = matchPointer; i < Math.min(matchPointer + windowSize, allWords.length); i++) {
+        if (normalize(allWords[i].textContent) === target) {
+
+          // Prevent large jumps
+          if (Math.abs(i - matchPointer) > 15) {
+            console.log("⚠️ Jump blocked");
+            return;
+          }
+
+          matchPointer = i;
+          found = true;
+          misses = 0;
+
+          console.log("Match:", target, "→", i);
+
+          if (autoScrollEnabled) {
+            scrollToWord(allWords[i]);
+          }
+
+          break;
+        }
+      }
+
+      if (!found) {
+        misses++;
+      }
+
+      // Auto-resync if drift detected
+      if (misses >= 3) {
+        const centerWord = getCenterWord();
+        if (centerWord) {
+          const idx = allWords.indexOf(centerWord);
+          if (idx !== -1) {
+            matchPointer = idx;
+            console.log("Resync →", idx);
+          }
+        }
+        misses = 0;
+      }
+    });
+  };
+
+  window.resumeAutoScroll = function (fromWord) {
+    autoScrollEnabled = true;
+
+    if (fromWord) {
+      const idx = allWords.indexOf(fromWord);
+      if (idx !== -1) matchPointer = idx;
+    }
+
+    pendingBuffer = "";
+  };
+
+  window.pauseAutoScroll = function () {
+    autoScrollEnabled = false;
+  };
+});
+</script>
+
+
+
+
+
+
+
+
+<script src="../js.js"></script>
+</body>
+</html>
 
 
 
