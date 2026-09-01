@@ -800,7 +800,7 @@ BUTTON_ELEMENT.addEventListener('click', function () {
 document.addEventListener("DOMContentLoaded", function () {
 
   // =========================
-  // SELECTORS (YOUR HTML)
+  // CONFIG (YOUR HTML SAFE)
   // =========================
   const TEXT_SELECTOR = `
     .card-body p,
@@ -812,121 +812,124 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const EXCLUDE_SELECTOR = `
     .pythoncode,
-    .pricing-block,
-    .table-wrap,
-    .diagram,
     header,
     footer,
     script,
-    style
+    style,
+    .diagram,
+    .table-wrap,
+    .pricing-block
   `;
 
   // =========================
-  // COLLECT TEXT
+  // COLLECT TEXT NODES
   // =========================
   const elements = Array.from(document.querySelectorAll(TEXT_SELECTOR))
     .filter(el => !el.closest(EXCLUDE_SELECTOR));
 
   // =========================
-  // WRAP WORDS
+  // WORD WRAPPING
   // =========================
-  function wrapWords(node) {
+  function wrap(node) {
     if (node.nodeType === Node.TEXT_NODE) {
       if (!node.nodeValue.trim()) return;
 
       const parts = node.nodeValue.split(/(\s+)/);
       const frag = document.createDocumentFragment();
 
-      parts.forEach(part => {
-        if (part.trim()) {
+      parts.forEach(p => {
+        if (p.trim()) {
           const span = document.createElement("span");
           span.className = "focus-word";
-          span.textContent = part;
+          span.textContent = p;
           frag.appendChild(span);
         } else {
-          frag.appendChild(document.createTextNode(part));
+          frag.appendChild(document.createTextNode(p));
         }
       });
 
       node.parentNode.replaceChild(frag, node);
     } else if (node.nodeType === Node.ELEMENT_NODE) {
-      Array.from(node.childNodes).forEach(wrapWords);
+      Array.from(node.childNodes).forEach(wrap);
     }
   }
 
-  elements.forEach(el => wrapWords(el));
+  elements.forEach(wrap);
 
-  const allWords = Array.from(document.querySelectorAll(".focus-word"));
+  const words = Array.from(document.querySelectorAll(".focus-word"));
 
-  const normalize = w =>
+  const norm = w =>
     w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
 
   // =========================
   // STATE
   // =========================
   let pointer = 0;
-  let currentWord = null;
-  let autoScroll = true;
+  let current = null;
 
+  let autoScroll = true;
   let buffer = "";
+
   let initialized = false;
 
-  let lastScrollTime = 0;
-  let programmaticScroll = false;
-
   // =========================
-  // HIGHLIGHT (FIXED)
+  // HIGHLIGHT (ALWAYS SAFE)
   // =========================
-  function highlight(word) {
-    if (!word) return;
+  function highlight(el) {
+    if (!el) return;
 
-    if (currentWord) {
-      currentWord.classList.remove("focus-line-target");
+    if (current) {
+      current.classList.remove("focus-line-target");
     }
 
-    word.classList.add("focus-line-target");
-    currentWord = word;
+    el.classList.add("focus-line-target");
+    current = el;
   }
 
-  // 👉 IMPORTANT: show first highlight immediately
-  highlight(allWords[0]);
+  // initial highlight ALWAYS visible
+  if (words.length > 0) {
+    highlight(words[0]);
+  }
 
   // =========================
-  // SAFE SCROLL
+  // SCROLL SAFE
   // =========================
-  function scrollTo(word) {
+  let lastScroll = 0;
+  let programmatic = false;
+
+  function scrollTo(el) {
     const now = Date.now();
-    if (now - lastScrollTime < 400) return;
+    if (now - lastScroll < 300) return;
+    lastScroll = now;
 
-    lastScrollTime = now;
-    programmaticScroll = true;
+    programmatic = true;
 
-    word.scrollIntoView({
+    el.scrollIntoView({
       behavior: "smooth",
       block: "center"
     });
 
     setTimeout(() => {
-      programmaticScroll = false;
-    }, 500);
+      programmatic = false;
+    }, 400);
   }
 
   // =========================
-  // CENTER WORD
+  // CENTER DETECTION (RECOVERY)
   // =========================
-  function getCenterWord() {
-    const center = window.innerHeight / 2;
+  function centerWord() {
+    const mid = window.innerHeight / 2;
 
     let best = null;
-    let bestDist = Infinity;
+    let dist = Infinity;
 
-    allWords.forEach(w => {
+    words.forEach(w => {
       const r = w.getBoundingClientRect();
       const c = r.top + r.height / 2;
-      const d = Math.abs(center - c);
+      const d = Math.abs(mid - c);
 
-      if (d < bestDist) {
-        bestDist = d;
+      if (d < dist) {
+        dist = d;
         best = w;
       }
     });
@@ -935,21 +938,21 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // =========================
-  // USER SCROLL DETECTION
+  // SCROLL LISTENER
   // =========================
   let scrollTimer = null;
 
   window.addEventListener("scroll", () => {
-    if (programmaticScroll) return;
+    if (programmatic) return;
 
     autoScroll = false;
 
-    const center = getCenterWord();
-    if (center) {
-      pointer = allWords.indexOf(center);
-      highlight(center);
+    const c = centerWord();
+    if (c) {
+      pointer = words.indexOf(c);
+      highlight(c);
       buffer = "";
-      console.log("User moved to:", pointer);
+      console.log("User moved →", pointer);
     }
 
     clearTimeout(scrollTimer);
@@ -960,33 +963,30 @@ document.addEventListener("DOMContentLoaded", function () {
   }, { passive: true });
 
   // =========================
-  // 🔥 INITIAL SYNC (CRITICAL)
+  // INIT SYNC (FIRST TIME FIX)
   // =========================
-  function tryInitialize(words) {
-    const searchWindow = 120;
+  function tryInit(chunkWords) {
 
-    for (let start = 0; start < Math.min(searchWindow, allWords.length); start++) {
+    for (let i = 0; i < Math.min(120, words.length); i++) {
 
-      let matched = 0;
+      let ok = 0;
 
-      for (let j = 0; j < words.length; j++) {
-        if (
-          normalize(allWords[start + j]?.textContent || "") === words[j]
-        ) {
-          matched++;
+      for (let j = 0; j < chunkWords.length; j++) {
+        if (norm(words[i + j]?.textContent || "") === chunkWords[j]) {
+          ok++;
         } else {
           break;
         }
       }
 
-      if (matched >= 2) { // 🔥 require at least 2 matches
-        pointer = start + matched - 1;
-        highlight(allWords[pointer]);
+      if (ok >= 2) {
+        pointer = i + ok - 1;
+        highlight(words[pointer]);
         initialized = true;
 
-        console.log("✅ INIT at", pointer);
+        console.log("INIT OK →", pointer);
 
-        if (autoScroll) scrollTo(allWords[pointer]);
+        if (autoScroll) scrollTo(words[pointer]);
         return true;
       }
     }
@@ -995,66 +995,75 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // =========================
-  // 🔥 MAIN SYNC
+  // MAIN ENGINE (STABLE TRACKING)
   // =========================
   window.advanceFocusToText = function (chunk) {
 
-    if (!chunk || chunk.length > 120) {
-      console.log("⚠️ Ignored chunk");
-      return;
-    }
+    if (!chunk || chunk.length > 120) return;
 
     buffer += chunk;
 
-    let words = buffer.split(/\s+/).map(normalize).filter(Boolean);
+    let chunkWords = buffer
+      .split(/\s+/)
+      .map(norm)
+      .filter(Boolean);
 
     buffer = "";
 
-    if (!words.length) return;
+    if (!chunkWords.length) return;
 
-    console.log("Chunk words:", words);
+    console.log("VOICE:", chunkWords);
 
-    // =========================
-    // STEP 1: INIT
-    // =========================
+    // -------------------------
+    // FIRST SYNC
+    // -------------------------
     if (!initialized) {
-      tryInitialize(words.slice(0, 5));
+      tryInit(chunkWords.slice(0, 5));
       return;
     }
 
-    // =========================
-    // STEP 2: FORWARD TRACK
-    // =========================
-    const SEARCH_AHEAD = 25;
+    // -------------------------
+    // FOLLOW MODE (FORWARD ONLY)
+    // -------------------------
+    const WINDOW = 30;
 
-    for (let w = 0; w < words.length; w++) {
+    for (let w = 0; w < chunkWords.length; w++) {
 
-      const target = words[w];
+      const target = chunkWords[w];
+
       let found = false;
 
-      for (let i = pointer; i < Math.min(pointer + SEARCH_AHEAD, allWords.length); i++) {
+      for (let i = pointer; i < Math.min(pointer + WINDOW, words.length); i++) {
 
-        if (normalize(allWords[i].textContent) === target) {
+        if (norm(words[i].textContent) === target) {
 
           pointer = i;
-          highlight(allWords[i]);
+          highlight(words[i]);
 
-          if (autoScroll) scrollTo(allWords[i]);
+          if (autoScroll) scrollTo(words[i]);
 
-          console.log("→", target, "@", i);
+          console.log("MATCH →", target, i);
+
           found = true;
           break;
         }
       }
 
+      // -------------------------
+      // RESYNC IF LOST
+      // -------------------------
       if (!found) {
-        console.log("Miss:", target);
+        const c = centerWord();
+        if (c) {
+          pointer = words.indexOf(c);
+          console.log("RESYNC →", pointer);
+        }
       }
     }
   };
 
   // =========================
-  // CONTROL
+  // CONTROL API
   // =========================
   window.pauseAutoScroll = () => autoScroll = false;
 
