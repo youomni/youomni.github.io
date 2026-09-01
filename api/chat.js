@@ -2,7 +2,6 @@ import http from "http";
 import { WebSocketServer } from "ws";
 import { GoogleGenAI, Modality } from "@google/genai";
 
-// Optional for later (Google Docs)
 const GOOGLE_DOC_ID = process.env.GOOGLE_DOC;
 
 const server = http.createServer();
@@ -17,6 +16,7 @@ wss.on("connection", (ws) => {
       model: "gemini-3.1-flash-live-preview",
       config: {
         responseModalities: [Modality.AUDIO],
+        outputAudioTranscription: {},
 
         systemInstruction: {
           parts: [

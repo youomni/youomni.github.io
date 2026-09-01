@@ -788,16 +788,13 @@ BUTTON_ELEMENT.addEventListener('click', function () {
 <!-- FOCUS -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  // Select readable text containers
   const selector = "p, li, .callout p, .formula-block, .step-heading, .inner-heading";
   const elements = document.querySelectorAll(selector);
 
-  // Exclude containers like code blocks, tables, images, and headers
   const validElements = Array.from(elements).filter(el => {
     return !el.closest(".pythoncode, .pricing-block, .table-wrap, .img-block, .diagram, header, .footer");
   });
 
-  // Recursive function to wrap text nodes inside elements (including inside <strong>, <em>, etc.)
   function wrapWordsInNode(node) {
     if (node.nodeType === Node.TEXT_NODE) {
       if (node.nodeValue.trim() !== "") {
@@ -816,59 +813,77 @@ document.addEventListener("DOMContentLoaded", function () {
         node.parentNode.replaceChild(fragment, node);
       }
     } else if (node.nodeType === Node.ELEMENT_NODE) {
-      // Traverse child elements (like <strong>, <em>, <i>) without disrupting their tags
       Array.from(node.childNodes).forEach(wrapWordsInNode);
     }
   }
 
   validElements.forEach(el => wrapWordsInNode(el));
 
+  const allWords = Array.from(document.querySelectorAll(".focus-word"));
+  const normalize = w => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+
   let currentHighlightedWord = null;
+  let matchPointer = 0;
+  let autoScrollEnabled = true;
+  let programmaticScroll = false;
+  let programmaticScrollTimeout = null;
+  let pendingBuffer = "";
 
-  function updateCenterFocus() {
-    const viewportCenter = window.innerHeight / 2;
-    const allWords = document.querySelectorAll(".focus-word");
-    let closestWord = null;
-    let minDistance = Infinity;
-
-    allWords.forEach(word => {
-      const rect = word.getBoundingClientRect();
-      const wordCenter = rect.top + rect.height / 2;
-      const distance = Math.abs(viewportCenter - wordCenter);
-
-      if (distance < minDistance) {
-        minDistance = distance;
-        closestWord = word;
-      }
-    });
-
-    // Highlight the word closest to vertical center (threshold: 80px)
-    if (closestWord && minDistance < 80) {
-      if (currentHighlightedWord !== closestWord) {
-        if (currentHighlightedWord) {
-          currentHighlightedWord.classList.remove("focus-line-target");
-        }
-        closestWord.classList.add("focus-line-target");
-        currentHighlightedWord = closestWord;
-      }
-    } else if (currentHighlightedWord) {
-      currentHighlightedWord.classList.remove("focus-line-target");
-      currentHighlightedWord = null;
-    }
+  function setHighlight(word) {
+    if (currentHighlightedWord === word) return;
+    if (currentHighlightedWord) currentHighlightedWord.classList.remove("focus-line-target");
+    if (word) word.classList.add("focus-line-target");
+    currentHighlightedWord = word;
   }
 
-  let ticking = false;
-  window.addEventListener("scroll", function () {
-    if (!ticking) {
-      window.requestAnimationFrame(() => {
-        updateCenterFocus();
-        ticking = false;
-      });
-      ticking = true;
-    }
-  });
+  function scrollToWord(word) {
+    programmaticScroll = true;
+    clearTimeout(programmaticScrollTimeout);
+    word.scrollIntoView({ behavior: "smooth", block: "center" });
+    programmaticScrollTimeout = setTimeout(() => { programmaticScroll = false; }, 700);
+  }
 
-  updateCenterFocus();
+  // Manual scroll by the child disables autoscroll until resumeAutoScroll() is called
+  window.addEventListener("scroll", function () {
+    if (programmaticScroll) return;
+    autoScrollEnabled = false;
+  }, { passive: true });
+
+  // Called by js.js with each transcript chunk from the teacher's voice
+  window.advanceFocusToText = function (chunk) {
+    pendingBuffer += chunk;
+    const parts = pendingBuffer.split(/\s+/);
+    const incomplete = /\s$/.test(chunk) ? "" : parts.pop();
+    pendingBuffer = incomplete;
+
+    parts.forEach(raw => {
+      const target = normalize(raw);
+      if (!target) return;
+      const window_ = 25;
+      for (let i = matchPointer; i < Math.min(matchPointer + window_, allWords.length); i++) {
+        if (normalize(allWords[i].textContent) === target) {
+          matchPointer = i;
+          setHighlight(allWords[i]);
+          if (autoScrollEnabled) scrollToWord(allWords[i]);
+          break;
+        }
+      }
+    });
+  };
+
+  // Called when teacher resumes reading after answering a question / child asked to jump back
+  window.resumeAutoScroll = function (fromWord) {
+    autoScrollEnabled = true;
+    if (fromWord) {
+      const idx = allWords.findIndex(w => w === fromWord);
+      if (idx !== -1) matchPointer = idx;
+    }
+    pendingBuffer = "";
+  };
+
+  window.pauseAutoScroll = function () {
+    autoScrollEnabled = false;
+  };
 });
 </script>
 
