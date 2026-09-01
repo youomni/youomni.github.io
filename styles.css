@@ -786,10 +786,3 @@ html, body {
 
 
 
-/* Highlighted paragraph during AI reading */
-.active-paragraph {
-  background: #fff7b2;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-

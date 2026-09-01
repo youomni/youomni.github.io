@@ -2,6 +2,9 @@ import http from "http";
 import { WebSocketServer } from "ws";
 import { GoogleGenAI, Modality } from "@google/genai";
 
+// Optional for later (Google Docs)
+const GOOGLE_DOC_ID = process.env.GOOGLE_DOC;
+
 const server = http.createServer();
 const wss = new WebSocketServer({ server });
 
@@ -12,20 +15,20 @@ wss.on("connection", (ws) => {
   (async () => {
     liveSession = await ai.live.connect({
       model: "gemini-3.1-flash-live-preview",
-
       config: {
-        responseModalities: [Modality.AUDIO, Modality.TEXT],
+        responseModalities: [Modality.AUDIO],
 
         systemInstruction: {
-          parts: [{
-            text: `
+          parts: [
+            {
+              text: `
 You are an AI tutor teaching a student using the provided course material.
 
 You must:
-- Teach and explain step-by-step according to precisely this text
+- Teach step-by-step
 - Explain simply
 - Act like a real teacher
-- Speak in the language the student is speaking
+- Speak in the language of the student
 
 Use ONLY the knowledge base below.
 
@@ -601,8 +604,9 @@ To handle them, we additionally bring INFLUENCE into our CHANGE RULE.
 
 
 === KNOWLEDGE BASE END ===
-            `
-          }]
+              `,
+            },
+          ],
         },
 
         realtimeInputConfig: {
@@ -618,20 +622,22 @@ To handle them, we additionally bring INFLUENCE into our CHANGE RULE.
         onmessage: (message) => {
           ws.send(JSON.stringify(message));
         },
-        onerror: console.error,
+        onerror: (err) => {
+          console.error("Gemini Live error:", err);
+        },
       },
     });
   })();
 
   ws.on("message", (data) => {
-    if (!liveSession) return;
-
-    liveSession.sendRealtimeInput({
-      audio: {
-        data: data.toString(),
-        mimeType: "audio/pcm;rate=16000",
-      },
-    });
+    if (liveSession) {
+      liveSession.sendRealtimeInput({
+        audio: {
+          data: data.toString(),
+          mimeType: "audio/pcm;rate=16000",
+        },
+      });
+    }
   });
 
   ws.on("close", () => {
