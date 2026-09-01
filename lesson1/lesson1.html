@@ -801,12 +801,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const selector = "p, li, .callout p, .formula-block, .step-heading, .inner-heading";
   const elements = document.querySelectorAll(selector);
 
-  // Filter out unwanted blocks
+  // Filter valid elements
   const validElements = Array.from(elements).filter(el => {
     return !el.closest(".pythoncode, .pricing-block, .table-wrap, .img-block, .diagram, header, .footer");
   });
 
-  // Wrap each word in a span
+  // Wrap words
   function wrapWordsInNode(node) {
     if (node.nodeType === Node.TEXT_NODE) {
       if (node.nodeValue.trim() !== "") {
@@ -834,8 +834,6 @@ document.addEventListener("DOMContentLoaded", function () {
   validElements.forEach(el => wrapWordsInNode(el));
 
   const allWords = Array.from(document.querySelectorAll(".focus-word"));
-
-  // Normalize words (lowercase + remove punctuation)
   const normalize = w => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
 
   let currentHighlightedWord = null;
@@ -891,8 +889,8 @@ document.addEventListener("DOMContentLoaded", function () {
   function scrollToWord(word) {
     const now = Date.now();
 
-    // Limit scroll frequency
-    if (now - lastScrollTime < 400) return;
+    // Prevent too frequent scrolling
+    if (now - lastScrollTime < 350) return;
     lastScrollTime = now;
 
     programmaticScroll = true;
@@ -905,7 +903,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     programmaticScrollTimeout = setTimeout(() => {
       programmaticScroll = false;
-    }, 700);
+    }, 600);
   }
 
   let ticking = false;
@@ -919,7 +917,7 @@ document.addEventListener("DOMContentLoaded", function () {
       ticking = true;
     }
 
-    // Manual scroll → user takes control
+    // Manual scroll override
     if (!programmaticScroll) {
       autoScrollEnabled = false;
 
@@ -929,7 +927,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (idx !== -1) {
           matchPointer = idx;
           pendingBuffer = "";
-          console.log("User moved to:", idx, centerWord.textContent);
+          console.log("User moved to:", idx);
         }
       }
 
@@ -944,40 +942,50 @@ document.addEventListener("DOMContentLoaded", function () {
   updateCenterFocus();
 
   // =========================
-  // VOICE SYNC (STABLE)
+  // VOICE SYNC (FINAL STABLE)
   // =========================
   window.advanceFocusToText = function (chunk) {
     console.log("Chunk:", chunk);
 
-    // Ignore very large chunks (prevents big jumps)
-    if (chunk.length > 40) return;
+    // Hard reject giant chunks (Gemini sometimes sends full page)
+    if (chunk.length > 200) {
+      console.log("⚠️ Large chunk ignored");
+      return;
+    }
 
     pendingBuffer += chunk;
 
-    const parts = pendingBuffer.split(/\s+/);
+    let parts = pendingBuffer.split(/\s+/);
+
     const incomplete = /\s$/.test(chunk) ? "" : parts.pop();
     pendingBuffer = incomplete;
 
-    let missesInRow = 0;
+    // 🔥 CRITICAL LIMIT: process max N words per tick
+    const MAX_WORDS = 4;
+    parts = parts.slice(0, MAX_WORDS);
+
+    let misses = 0;
 
     parts.forEach(raw => {
       const target = normalize(raw);
 
-      // Skip invalid tokens
       if (!target || target.length > 20) return;
 
-      const windowSize = 40;
+      const windowSize = 25;
       let found = false;
 
       for (let i = matchPointer; i < Math.min(matchPointer + windowSize, allWords.length); i++) {
         if (normalize(allWords[i].textContent) === target) {
 
-          // Only allow small jumps (prevents runaway)
-          if (Math.abs(i - matchPointer) > 25) break;
+          // Prevent large jumps
+          if (Math.abs(i - matchPointer) > 15) {
+            console.log("⚠️ Jump blocked");
+            return;
+          }
 
           matchPointer = i;
           found = true;
-          missesInRow = 0;
+          misses = 0;
 
           console.log("Match:", target, "→", i);
 
@@ -990,21 +998,20 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       if (!found) {
-        missesInRow++;
-        console.log("Miss:", target);
+        misses++;
       }
 
-      // If too many misses → resync to what user sees
-      if (missesInRow >= 5) {
+      // Auto-resync if drift detected
+      if (misses >= 3) {
         const centerWord = getCenterWord();
         if (centerWord) {
           const idx = allWords.indexOf(centerWord);
           if (idx !== -1) {
             matchPointer = idx;
-            console.log("Resynced to center:", idx);
+            console.log("Resync →", idx);
           }
         }
-        missesInRow = 0;
+        misses = 0;
       }
     });
   };
