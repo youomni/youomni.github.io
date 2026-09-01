@@ -33,10 +33,21 @@ Use ONLY the knowledge base below.
 
 === KNOWLEDGE BASE START ===
 
-A NEURON takes INPUT and produces OUTPUT.
-OUTPUT = INPUT * WEIGHT.
+Nowadays, there are two kinds of brains: biological brains and non-biological brains — often called machine brains.
 
-The neuron learns by changing the WEIGHT using ERROR.
+For example:
+
+Biological brains are the brains of humans or animals.
+Machine brains are AI systems — the most powerful of which are called Transformers, like ChatGPT, Claude, Gemini, or Grok.
+The main job of every brain — whether biological or machine — is to learn and think.
+
+And here’s the surprise: at their core, learning and thinking are just doing math. Yes, really! 😯
+
+Math happens in each kind of brain — biological or machine — though through different means.
+
+Interestingly, when we build a machine brain, it learns on its own — so creating it feels less like assembling a LEGO house and more like training or nurturing a living thing.
+
+
 
 === KNOWLEDGE BASE END ===
               `,
