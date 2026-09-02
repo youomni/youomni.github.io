@@ -1,51 +1,51 @@
 // ==== Settings ====
 const WS_URL = "wss://youomni-github-io.vercel.app/api/chat";
 
-let socket = null;
-let audioContext = null;
-let micStream = null;
-let isTalking = false;
+let SOCKET = null;
+let AUDIO_CONTEXT = null;
+let MIC_STREAM = null;
+let IS_TALKING = false;
 
-let workletNode = null;
+let WORKLET_NODE = null;
 
 // Playback state
-let playbackContext = null;
-let playbackTime = 0;
-let playbackGain = null;
-let scheduledSources = [];
+let PLAYBACK_CONTEXT = null;
+let PLAYBACK_TIME = 0;
+let PLAYBACK_GAIN = null;
+let SCHEDULED_SOURCES = [];
 const OUTPUT_VOLUME = 2.0;
 
 async function startTalking() {
-  if (isTalking) return;
-  isTalking = true;
+  if (IS_TALKING) return;
+  IS_TALKING = true;
 
-  socket = new WebSocket(WS_URL);
+  SOCKET = new WebSocket(WS_URL);
 
-  socket.onopen = async () => {
+  SOCKET.onopen = async () => {
     await startMic();
   };
 
-  socket.onmessage = (event) => {
+  SOCKET.onmessage = (event) => {
     handleServerMessage(event.data);
   };
 
-  socket.onclose = () => {
+  SOCKET.onclose = () => {
     stopMic();
   };
 
-  socket.onerror = (err) => {
-    console.error("WebSocket error:", err);
+  SOCKET.onerror = (ERR) => {
+    console.error("WebSocket error:", ERR);
   };
 }
 
 function stopTalking() {
-  if (!isTalking) return;
-  isTalking = false;
+  if (!IS_TALKING) return;
+  IS_TALKING = false;
 
   stopMic();
   stopPlayback();
 
-  if (socket) socket.close();
+  if (SOCKET) SOCKET.close();
 }
 
 window.startTalking = startTalking;
@@ -55,85 +55,81 @@ window.stopTalking = stopTalking;
 // MICROPHONE (AudioWorklet)
 // =========================
 async function startMic() {
-  micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  MIC_STREAM = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-  audioContext = new AudioContext({ sampleRate: 16000 });
+  AUDIO_CONTEXT = new AudioContext({ sampleRate: 16000 });
 
-  // Absolute path — audio-processor.js lives at repo root and is shared
-  // across all lesson pages (e.g. /lesson1/lesson1.html, /lesson2/lesson2.html, ...)
-  await audioContext.audioWorklet.addModule("/audio-processor.js");
+  await AUDIO_CONTEXT.audioWorklet.addModule("/audio-processor.js");
 
-  const source = audioContext.createMediaStreamSource(micStream);
+  const SOURCE = AUDIO_CONTEXT.createMediaStreamSource(MIC_STREAM);
 
-  workletNode = new AudioWorkletNode(audioContext, "mic-processor");
+  WORKLET_NODE = new AudioWorkletNode(AUDIO_CONTEXT, "mic-processor");
 
-  workletNode.port.onmessage = (event) => {
-    if (!isTalking || !socket || socket.readyState !== WebSocket.OPEN) return;
+  WORKLET_NODE.port.onmessage = (EVENT) => {
+    if (!IS_TALKING || !SOCKET || SOCKET.readyState !== WebSocket.OPEN) return;
 
-    const pcm16 = event.data; // Int16Array
-    const base64Data = arrayBufferToBase64(pcm16.buffer);
-    socket.send(base64Data);
+    const PCM16 = EVENT.data; // Int16Array
+    const BASE64_DATA = arrayBufferToBase64(PCM16.buffer);
+    SOCKET.send(BASE64_DATA);
   };
 
-  source.connect(workletNode);
-  workletNode.connect(audioContext.destination);
+  SOURCE.connect(WORKLET_NODE);
+  WORKLET_NODE.connect(AUDIO_CONTEXT.destination);
 }
 
 function stopMic() {
-  if (workletNode) {
-    workletNode.disconnect();
-    workletNode = null;
+  if (WORKLET_NODE) {
+    WORKLET_NODE.disconnect();
+    WORKLET_NODE = null;
   }
 
-  if (micStream) {
-    micStream.getTracks().forEach((t) => t.stop());
-    micStream = null;
+  if (MIC_STREAM) {
+    MIC_STREAM.getTracks().forEach((T) => T.stop());
+    MIC_STREAM = null;
   }
 
-  if (audioContext) {
-    audioContext.close();
-    audioContext = null;
+  if (AUDIO_CONTEXT) {
+    AUDIO_CONTEXT.close();
+    AUDIO_CONTEXT = null;
   }
 }
 
-function arrayBufferToBase64(buffer) {
-  let binary = "";
-  const bytes = new Uint8Array(buffer);
-  for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i]);
+function arrayBufferToBase64(BUFFER) {
+  let BINARY = "";
+  const BYTES = new Uint8Array(BUFFER);
+  for (let I = 0; I < BYTES.byteLength; I++) {
+    BINARY += String.fromCharCode(BYTES[I]);
   }
-  return btoa(binary);
+  return btoa(BINARY);
 }
 
 // =========================
 // SERVER AUDIO HANDLING
 // =========================
-function handleServerMessage(rawData) {
-  let message;
+function handleServerMessage(RAW_DATA) {
+  let MESSAGE;
   try {
-    message = JSON.parse(rawData);
-  } catch (e) {
-    console.error(e);
+    MESSAGE = JSON.parse(RAW_DATA);
+  } catch (E) {
+    console.error(E);
     return;
   }
 
-  // Text transcript of what the teacher is currently saying, used to
-  // sync the on-page focus highlight and autoscroll with the voice
-  if (message?.serverContent?.outputTranscription?.text) {
-    window.advanceFocusToText(message.serverContent.outputTranscription.text);
+  if (MESSAGE?.serverContent?.outputTranscription?.text) {
+    window.advanceFocusToText(MESSAGE.serverContent.outputTranscription.text);
   }
 
-  if (message?.serverContent?.interrupted) {
+  if (MESSAGE?.serverContent?.interrupted) {
     stopPlayback();
     return;
   }
 
-  const parts = message?.serverContent?.modelTurn?.parts;
-  if (!parts) return;
+  const PARTS = MESSAGE?.serverContent?.modelTurn?.parts;
+  if (!PARTS) return;
 
-  for (const part of parts) {
-    const audioBase64 = part?.inlineData?.data;
-    if (audioBase64) playAudioChunk(audioBase64);
+  for (const PART of PARTS) {
+    const AUDIO_BASE64 = PART?.inlineData?.data;
+    if (AUDIO_BASE64) playAudioChunk(AUDIO_BASE64);
   }
 }
 
@@ -141,52 +137,51 @@ function handleServerMessage(rawData) {
 // PLAYBACK
 // =========================
 function stopPlayback() {
-  for (const source of scheduledSources) {
-    try { source.stop(); } catch {}
+  for (const SOURCE of SCHEDULED_SOURCES) {
+    try { SOURCE.stop(); } catch {}
   }
-  scheduledSources = [];
+  SCHEDULED_SOURCES = [];
 }
 
-function playAudioChunk(base64Data) {
-  if (!playbackContext) {
-    playbackContext = new AudioContext({ sampleRate: 24000 });
-    playbackTime = playbackContext.currentTime;
+function playAudioChunk(BASE64_DATA) {
+  if (!PLAYBACK_CONTEXT) {
+    PLAYBACK_CONTEXT = new AudioContext({ sampleRate: 24000 });
+    PLAYBACK_TIME = PLAYBACK_CONTEXT.currentTime;
 
-    playbackGain = playbackContext.createGain();
-    playbackGain.gain.value = OUTPUT_VOLUME;
-    playbackGain.connect(playbackContext.destination);
+    PLAYBACK_GAIN = PLAYBACK_CONTEXT.createGain();
+    PLAYBACK_GAIN.gain.value = OUTPUT_VOLUME;
+    PLAYBACK_GAIN.connect(PLAYBACK_CONTEXT.destination);
   }
 
-  const binary = atob(base64Data);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i);
+  const BINARY = atob(BASE64_DATA);
+  const BYTES = new Uint8Array(BINARY.length);
+  for (let I = 0; I < BINARY.length; I++) {
+    BYTES[I] = BINARY.charCodeAt(I);
   }
 
-  const int16 = new Int16Array(bytes.buffer);
-  const float32 = new Float32Array(int16.length);
+  const INT16 = new Int16Array(BYTES.buffer);
+  const FLOAT32 = new Float32Array(INT16.length);
 
-  for (let i = 0; i < int16.length; i++) {
-    float32[i] = int16[i] / 0x8000;
+  for (let I = 0; I < INT16.length; I++) {
+    FLOAT32[I] = INT16[I] / 0x8000;
   }
 
-  const buffer = playbackContext.createBuffer(1, float32.length, 24000);
-  buffer.copyToChannel(float32, 0);
+  const BUFFER = PLAYBACK_CONTEXT.createBuffer(1, FLOAT32.length, 24000);
+  BUFFER.copyToChannel(FLOAT32, 0);
 
-  const source = playbackContext.createBufferSource();
-  source.buffer = buffer;
-  source.connect(playbackGain);
+  const SOURCE = PLAYBACK_CONTEXT.createBufferSource();
+  SOURCE.buffer = BUFFER;
+  SOURCE.connect(PLAYBACK_GAIN);
 
-  const now = playbackContext.currentTime;
-  const startAt = Math.max(now, playbackTime);
+  const NOW = PLAYBACK_CONTEXT.currentTime;
+  const START_AT = Math.max(NOW, PLAYBACK_TIME);
 
-  source.start(startAt);
-  playbackTime = startAt + buffer.duration;
+  SOURCE.start(START_AT);
+  PLAYBACK_TIME = START_AT + BUFFER.duration;
 
-  scheduledSources.push(source);
+  SCHEDULED_SOURCES.push(SOURCE);
 
-  source.onended = () => {
-    scheduledSources = scheduledSources.filter((s) => s !== source);
+  SOURCE.onended = () => {
+    SCHEDULED_SOURCES = SCHEDULED_SOURCES.filter((S) => S !== SOURCE);
   };
 }
-

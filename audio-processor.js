@@ -1,18 +1,18 @@
 class MicProcessor extends AudioWorkletProcessor {
-  process(inputs) {
-    const input = inputs[0];
-    if (input && input[0]) {
-      const channelData = input[0]; // Float32Array, values -1..1
+  process(INPUTS) {
+    const INPUT = INPUTS[0];
+    if (INPUT && INPUT[0]) {
+      const CHANNEL_DATA = INPUT[0];
 
-      const pcm16 = new Int16Array(channelData.length);
-      for (let i = 0; i < channelData.length; i++) {
-        const s = Math.max(-1, Math.min(1, channelData[i]));
-        pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+      const PCM16 = new Int16Array(CHANNEL_DATA.length);
+      for (let I = 0; I < CHANNEL_DATA.length; I++) {
+        const S = Math.max(-1, Math.min(1, CHANNEL_DATA[I]));
+        PCM16[I] = S < 0 ? S * 0x8000 : S * 0x7fff;
       }
 
-      this.port.postMessage(pcm16);
+      this.port.postMessage(PCM16);
     }
-    return true; // keep processor alive
+    return true;
   }
 }
 
