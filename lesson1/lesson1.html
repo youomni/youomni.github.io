@@ -792,6 +792,7 @@ BUTTON_ELEMENT.addEventListener('click', function () {
 
 
 
+
 <!-- FOCUS -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -815,7 +816,11 @@ document.addEventListener("DOMContentLoaded", function () {
     style,
     .diagram,
     .table-wrap,
-    .pricing-block
+    .pricing-block,
+    button,
+    .btn,
+    a,
+    nav
   `;
 
   const elements = Array.from(document.querySelectorAll(TEXT_SELECTOR))
@@ -954,18 +959,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // =========================
   // MAIN API — matches one word at a time against a persistent buffer.
-  // WINDOW narrowed from 40 to 10: the teacher reads mostly linearly,
-  // so the real next word is almost always close by — a wide window
-  // was catching far-away repeats of common words (output, input, etc.)
-  // and yanking the pointer forward. Also only accept matches that are
-  // at or after the current pointer, never behind it.
+  // WINDOW narrowed to 10 words ahead of pointer.
   // =========================
   window.advanceFocusToText = function (chunk) {
     if (!chunk) return;
 
     buffer += chunk;
     const parts = buffer.split(/\s+/);
-    // keep the last (possibly incomplete) fragment in the buffer
     buffer = /\s$/.test(chunk) ? "" : (parts.pop() || "");
 
     const targets = parts.map(norm).filter(Boolean);
@@ -999,6 +999,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+
 
 
 
