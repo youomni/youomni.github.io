@@ -117,7 +117,14 @@ function handleServerMessage(rawData) {
     return;
   }
 
-  console.log("RAW MESSAGE:", JSON.stringify(message, null, 2)); // TEMP DEBUG
+  const parts = message?.serverContent?.modelTurn?.parts;
+  const hasAudio = Array.isArray(parts) && parts.some((p) => p?.inlineData?.data);
+
+  // Skip logging when the message carries raw audio chunks — those are
+  // huge base64 blobs that flood the console and are useless to read.
+  if (!hasAudio) {
+    console.log("RAW MESSAGE:", JSON.stringify(message, null, 2)); // TEMP DEBUG
+  }
 
   if (message?.serverContent?.outputTranscription?.text) {
     window.advanceFocusToText(message.serverContent.outputTranscription.text);
@@ -128,7 +135,6 @@ function handleServerMessage(rawData) {
     return;
   }
 
-  const parts = message?.serverContent?.modelTurn?.parts;
   if (!parts) return;
 
   for (const part of parts) {
