@@ -8,6 +8,10 @@ var IS_TALKING = false;
 
 var WORKLET_NODE = null;
 
+// Pre-fetched Token Cache
+var CACHED_TOKEN = null;
+var TOKEN_FETCH_PROMISE = null;
+
 // Playback state
 var PLAYBACK_CONTEXT = null;
 var PLAYBACK_TIME = 0;
@@ -137,34 +141,59 @@ class MicProcessor extends AudioWorkletProcessor {
 registerProcessor('mic-processor', MicProcessor);
 `;
 
+// Pre-fetch token on script load to eliminate API roundtrip delay on first click
+function prefetchToken() {
+  if (TOKEN_FETCH_PROMISE) return TOKEN_FETCH_PROMISE;
+  
+  TOKEN_FETCH_PROMISE = fetch(VERCEL_TOKEN_URL)
+    .then((RESP) => RESP.json())
+    .then((DATA) => {
+      if (DATA.token) {
+        CACHED_TOKEN = DATA.token;
+        return DATA.token;
+      }
+      throw new Error("No token returned");
+    })
+    .catch((ERR) => {
+      console.error("Token prefetch error:", ERR);
+      TOKEN_FETCH_PROMISE = null; // Reset on failure so retry works
+    });
+
+  return TOKEN_FETCH_PROMISE;
+}
+
+// Trigger prefetch immediately
+prefetchToken();
+
 async function startTalking() {
   if (IS_TALKING) return;
   IS_TALKING = true;
 
   try {
-    const RESPONSE = await fetch(VERCEL_TOKEN_URL);
-    if (!RESPONSE.ok) {
-      const ERROR_DATA = await RESPONSE.json().catch(() => ({}));
-      console.error("HTTP error fetching token:", RESPONSE.status, ERROR_DATA);
+    // Parallelize getting the token and requested microphone permissions
+    const TOKEN_PROMISE = CACHED_TOKEN ? Promise.resolve(CACHED_TOKEN) : prefetchToken();
+    const MIC_PROMISE = startMic();
+
+    const [TOKEN] = await Promise.all([TOKEN_PROMISE, MIC_PROMISE]);
+
+    if (!TOKEN) {
+      console.error("No valid ephemeral token available.");
       IS_TALKING = false;
       return;
     }
 
-    const DATA = await RESPONSE.json();
+    // Clear cached token since it has single-use scope
+    CACHED_TOKEN = null;
+    TOKEN_FETCH_PROMISE = null;
 
-    if (!DATA.token) {
-      console.error("Failed to retrieve token:", DATA);
-      IS_TALKING = false;
-      return;
-    }
-
-    // Connect using BidiGenerateContentConstrained endpoint
-    const GEMINI_WS_URL = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=${DATA.token}`;
+    // Open WebSocket connection
+    const GEMINI_WS_URL = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=${TOKEN}`;
     SOCKET = new WebSocket(GEMINI_WS_URL);
 
-    SOCKET.onopen = async () => {
+    SOCKET.onopen = () => {
       console.log("WebSocket connected to Gemini");
 
+      // 1. Send session setup configuration
       const SETUP_PAYLOAD = {
         setup: {
           model: "models/gemini-3.1-flash-live-preview",
@@ -185,7 +214,26 @@ async function startTalking() {
       };
 
       SOCKET.send(JSON.stringify(SETUP_PAYLOAD));
-      await startMic();
+
+      // 2. Send initial text prompt to trigger the model to speak first immediately
+      const GREETING_PAYLOAD = {
+        clientContent: {
+          turns: [
+            {
+              role: "user",
+              parts: [
+                { text: "Hello! Please introduce yourself and start reading Lesson 1 according to your instructions." }
+              ]
+            }
+          ],
+          turnComplete: true
+        }
+      };
+
+      SOCKET.send(JSON.stringify(GREETING_PAYLOAD));
+
+      // Request background prefetch for the NEXT token immediately
+      setTimeout(prefetchToken, 1000);
     };
 
     SOCKET.onmessage = async (EVENT) => {
@@ -229,11 +277,17 @@ window.stopTalking = stopTalking;
 // MICROPHONE (AudioWorklet)
 // =========================
 async function startMic() {
+  if (MIC_STREAM) return; // Prevent re-initializing if already active
+
   MIC_STREAM = await navigator.mediaDevices.getUserMedia({ audio: true });
 
   AUDIO_CONTEXT = new AudioContext({ sampleRate: 16000 });
 
-  // Load AudioWorklet from inline Blob URL to prevent path errors
+  // Resume context immediately in case browser autoplay policy suspended it
+  if (AUDIO_CONTEXT.state === "suspended") {
+    await AUDIO_CONTEXT.resume();
+  }
+
   const BLOB = new Blob([WORKLET_CODE], { type: "application/javascript" });
   const WORKLET_URL = URL.createObjectURL(BLOB);
   await AUDIO_CONTEXT.audioWorklet.addModule(WORKLET_URL);
@@ -248,7 +302,6 @@ async function startMic() {
     const PCM16_DATA = EVENT.data;
     const BASE64_DATA = arrayBufferToBase64(PCM16_DATA.buffer);
 
-    // Replaced mediaChunks with direct audio Blob definition
     const AUDIO_PAYLOAD = {
       realtimeInput: {
         audio: {
