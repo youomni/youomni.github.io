@@ -132,7 +132,7 @@ async function startTalking() {
       return;
     }
 
-    // 2. Open direct WebSocket to Gemini Live API using ephemeral token
+    // 2. Open direct WebSocket connection to Gemini Live API
     const GEMINI_WS_URL = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${DATA.token}`;
     SOCKET = new WebSocket(GEMINI_WS_URL);
 
@@ -208,10 +208,9 @@ async function startMic() {
   WORKLET_NODE.port.onmessage = (EVENT) => {
     if (!IS_TALKING || !SOCKET || SOCKET.readyState !== WebSocket.OPEN) return;
 
-    const PCM16 = EVENT.data; // Int16Array
-    const BASE64_DATA = arrayBufferToBase64(PCM16.buffer);
+    const PCM16_DATA = EVENT.data; // Int16Array from mic-processor
+    const BASE64_DATA = arrayBufferToBase64(PCM16_DATA.buffer);
 
-    // Send realtime audio directly in Gemini protocol format
     const AUDIO_PAYLOAD = {
       realtimeInput: {
         mediaChunks: [
