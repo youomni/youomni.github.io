@@ -139,13 +139,13 @@ async function startTalking() {
       return;
     }
 
-    // 2. Open direct WebSocket connection using the access_token query param and v1beta endpoint
-    const GEMINI_WS_URL = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContentConstrained?access_token=${DATA.token}`;
+    // 2. Open direct WebSocket connection to Gemini Live API using access token query param
+    const GEMINI_WS_URL = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?access_token=${DATA.token}`;
     SOCKET = new WebSocket(GEMINI_WS_URL);
 
     SOCKET.onopen = async () => {
-      console.log("WebSocket connected. Sending setup payload...");
-      
+      console.log("WebSocket connected to Gemini");
+
       // Send initial setup payload directly to Gemini
       const SETUP_PAYLOAD = {
         setup: {
@@ -315,6 +315,11 @@ function playAudioChunk(BASE64_DATA) {
     PLAYBACK_GAIN = PLAYBACK_CONTEXT.createGain();
     PLAYBACK_GAIN.gain.value = OUTPUT_VOLUME;
     PLAYBACK_GAIN.connect(PLAYBACK_CONTEXT.destination);
+  }
+
+  // Resume WebAudio context if browser auto-suspended it
+  if (PLAYBACK_CONTEXT.state === "suspended") {
+    PLAYBACK_CONTEXT.resume();
   }
 
   const BINARY = atob(BASE64_DATA);
