@@ -117,8 +117,8 @@ function handleServerMessage(rawData) {
     return;
   }
 
-  // Text transcript of what the teacher is currently saying, used to
-  // sync the on-page focus highlight and autoscroll with the voice
+  console.log("RAW MESSAGE:", JSON.stringify(message, null, 2)); // TEMP DEBUG
+
   if (message?.serverContent?.outputTranscription?.text) {
     window.advanceFocusToText(message.serverContent.outputTranscription.text);
   }
