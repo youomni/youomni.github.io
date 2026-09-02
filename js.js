@@ -188,8 +188,14 @@ async function startTalking() {
       await startMic();
     };
 
-    SOCKET.onmessage = (EVENT) => {
-      handleServerMessage(EVENT.data);
+    SOCKET.onmessage = async (EVENT) => {
+      let DATA_TEXT = EVENT.data;
+      if (DATA_TEXT instanceof Blob) {
+        DATA_TEXT = await DATA_TEXT.text();
+      } else if (DATA_TEXT instanceof ArrayBuffer) {
+        DATA_TEXT = new TextDecoder().decode(DATA_TEXT);
+      }
+      handleServerMessage(DATA_TEXT);
     };
 
     SOCKET.onclose = (EVENT) => {
@@ -242,6 +248,7 @@ async function startMic() {
     const PCM16_DATA = EVENT.data;
     const BASE64_DATA = arrayBufferToBase64(PCM16_DATA.buffer);
 
+    // Updated realtimeInput payload format using non-deprecated 'realtimeInput.mediaChunks' structure or 'realtimeInput' schema
     const AUDIO_PAYLOAD = {
       realtimeInput: {
         mediaChunks: [
@@ -294,7 +301,7 @@ function handleServerMessage(RAW_DATA) {
   try {
     MESSAGE = JSON.parse(RAW_DATA);
   } catch (E) {
-    console.error(E);
+    console.error("JSON parse error on message:", E, RAW_DATA);
     return;
   }
 
