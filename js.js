@@ -97,20 +97,20 @@ Error!
 ERROR = TARGET − OUTPUT = 3.0 − 0.0 = 3.0
 The ERROR tells us how far the OUTPUT is off from the TARGET.
 
-DIAGRAM!!!
-          (0.6)                INPUT
-            |
-            v
-       /---------\
-      /   (3.0)   \             WEIGHT
-     |      |      |
-NEURON      v      |
-     |    (1.8)    |            PRODUCT = INPUT * WEIGHT
-      \           /
-       \---------/
-            |
-            v
- ( 1.2 ) = ( 3.0 ) - ( 1.8 )     OUTPUT = PRODUCT
+DIAGRAM BEFORE LEARNING !!!
+                     (0.6)      INPUT
+                       |
+                       v
+                  /---------\
+                 /   (0.0)   \  WEIGHT
+                |      |      |
+         NEURON |      v      |
+                |    (0.8)    | PRODUCT = INPUT * WEIGHT
+                 \           /
+                  \---------/
+                        |
+                        v
+ ( 3.0 ) = ( 3.0 ) - ( 0.8 )    OUTPUT = PRODUCT
   ERROR  =  TARGET -  OUTPUT
 
 Backward Pass!
@@ -134,6 +134,21 @@ Now, if it receives the same INPUT of 0.6, the OUTPUT becomes 1.8 (0.6 * 3.0) �
 The ERROR becomes smaller:
 ERROR = 1.2
 
+DIAGRAM AFTER LEARNIN !!!
+                     (0.6)      INPUT
+                       |
+                       v
+                  /---------\
+                 /   (3.0)   \  WEIGHT
+                |      |      |
+         NEURON |      v      |
+                |    (1.8)    | PRODUCT = INPUT * WEIGHT
+                 \           /
+                  \---------/
+                        |
+                        v
+ ( 1.2 ) = ( 3.0 ) - ( 1.8 )    OUTPUT = PRODUCT
+  ERROR  =  TARGET -  OUTPUT
 
 LESSON 1 ends here.
 
@@ -153,6 +168,9 @@ OUTPUT = PRODUCT = 3.0
 Error!
 ERROR = TARGET − OUTPUT = 5.0 − 3.0 = 2.0
 The ERROR tells us how far the OUTPUT is off from the TARGET.
+
+
+
 
 Backward Pass!
 The brain changes the PARAMETER that caused this ERROR.
