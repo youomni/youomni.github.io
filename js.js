@@ -1,19 +1,19 @@
 // ==== Settings ====
-const WS_URL = "wss://youomni-github-io.vercel.app/api/chat";
+var WS_URL = "wss://youomni-github-io.vercel.app/api/chat";
 
-let SOCKET = null;
-let AUDIO_CONTEXT = null;
-let MIC_STREAM = null;
-let IS_TALKING = false;
+var SOCKET = null;
+var AUDIO_CONTEXT = null;
+var MIC_STREAM = null;
+var IS_TALKING = false;
 
-let WORKLET_NODE = null;
+var WORKLET_NODE = null;
 
 // Playback state
-let PLAYBACK_CONTEXT = null;
-let PLAYBACK_TIME = 0;
-let PLAYBACK_GAIN = null;
-let SCHEDULED_SOURCES = [];
-const OUTPUT_VOLUME = 2.0;
+var PLAYBACK_CONTEXT = null;
+var PLAYBACK_TIME = 0;
+var PLAYBACK_GAIN = null;
+var SCHEDULED_SOURCES = [];
+var OUTPUT_VOLUME = 2.0;
 
 async function startTalking() {
   if (IS_TALKING) return;
@@ -116,7 +116,9 @@ function handleServerMessage(RAW_DATA) {
   }
 
   if (MESSAGE?.serverContent?.outputTranscription?.text) {
-    window.advanceFocusToText(MESSAGE.serverContent.outputTranscription.text);
+    if (typeof window.advanceFocusToText === "function") {
+      window.advanceFocusToText(MESSAGE.serverContent.outputTranscription.text);
+    }
   }
 
   if (MESSAGE?.serverContent?.interrupted) {
@@ -164,7 +166,7 @@ function playAudioChunk(BASE64_DATA) {
   const FLOAT32 = new Float32Array(INT16_COUNT);
 
   for (let I = 0; I < INT16_COUNT; I++) {
-    const INT16_VAL = DATA_VIEW.getInt16(I * 2, true); // Little-endian conversion
+    const INT16_VAL = DATA_VIEW.getInt16(I * 2, true);
     FLOAT32[I] = INT16_VAL / 32768.0;
   }
 
