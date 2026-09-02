@@ -121,19 +121,30 @@ ERROR = 1.2
 === KNOWLEDGE BASE END ===
 `;
 
-// Inline AudioWorklet code string
+// Inline AudioWorklet code string with internal buffering (~100ms)
 const WORKLET_CODE = `
 class MicProcessor extends AudioWorkletProcessor {
+  constructor() {
+    super();
+    this.buffer = [];
+    // 16000 Hz / 10 = 1600 samples (~100ms chunks)
+    this.targetBufferSize = 1600; 
+  }
+
   process(inputs, outputs, parameters) {
     const input = inputs[0];
     if (input && input.length > 0) {
       const float32Data = input[0];
-      const int16Data = new Int16Array(float32Data.length);
       for (let i = 0; i < float32Data.length; i++) {
         let s = Math.max(-1, Math.min(1, float32Data[i]));
-        int16Data[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+        this.buffer.push(s < 0 ? s * 0x8000 : s * 0x7FFF);
       }
-      this.port.postMessage(int16Data);
+
+      if (this.buffer.length >= this.targetBufferSize) {
+        const int16Data = new Int16Array(this.buffer);
+        this.port.postMessage(int16Data);
+        this.buffer = [];
+      }
     }
     return true;
   }
@@ -141,7 +152,6 @@ class MicProcessor extends AudioWorkletProcessor {
 registerProcessor('mic-processor', MicProcessor);
 `;
 
-// Pre-fetch token on script load to eliminate API roundtrip delay on first click
 function prefetchToken() {
   if (TOKEN_FETCH_PROMISE) return TOKEN_FETCH_PROMISE;
   
@@ -156,13 +166,12 @@ function prefetchToken() {
     })
     .catch((ERR) => {
       console.error("Token prefetch error:", ERR);
-      TOKEN_FETCH_PROMISE = null; // Reset on failure so retry works
+      TOKEN_FETCH_PROMISE = null;
     });
 
   return TOKEN_FETCH_PROMISE;
 }
 
-// Trigger prefetch immediately
 prefetchToken();
 
 async function startTalking() {
@@ -170,7 +179,6 @@ async function startTalking() {
   IS_TALKING = true;
 
   try {
-    // Parallelize getting the token and requested microphone permissions
     const TOKEN_PROMISE = CACHED_TOKEN ? Promise.resolve(CACHED_TOKEN) : prefetchToken();
     const MIC_PROMISE = startMic();
 
@@ -182,18 +190,15 @@ async function startTalking() {
       return;
     }
 
-    // Clear cached token since it has single-use scope
     CACHED_TOKEN = null;
     TOKEN_FETCH_PROMISE = null;
 
-    // Open WebSocket connection
     const GEMINI_WS_URL = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=${TOKEN}`;
     SOCKET = new WebSocket(GEMINI_WS_URL);
 
     SOCKET.onopen = () => {
       console.log("WebSocket connected to Gemini");
 
-      // 1. Send session setup configuration
       const SETUP_PAYLOAD = {
         setup: {
           model: "models/gemini-3.1-flash-live-preview",
@@ -215,7 +220,6 @@ async function startTalking() {
 
       SOCKET.send(JSON.stringify(SETUP_PAYLOAD));
 
-      // 2. Send initial text prompt to trigger the model to speak first immediately
       const GREETING_PAYLOAD = {
         clientContent: {
           turns: [
@@ -232,7 +236,6 @@ async function startTalking() {
 
       SOCKET.send(JSON.stringify(GREETING_PAYLOAD));
 
-      // Request background prefetch for the NEXT token immediately
       setTimeout(prefetchToken, 1000);
     };
 
@@ -277,13 +280,12 @@ window.stopTalking = stopTalking;
 // MICROPHONE (AudioWorklet)
 // =========================
 async function startMic() {
-  if (MIC_STREAM) return; // Prevent re-initializing if already active
+  if (MIC_STREAM) return;
 
   MIC_STREAM = await navigator.mediaDevices.getUserMedia({ audio: true });
 
   AUDIO_CONTEXT = new AudioContext({ sampleRate: 16000 });
 
-  // Resume context immediately in case browser autoplay policy suspended it
   if (AUDIO_CONTEXT.state === "suspended") {
     await AUDIO_CONTEXT.resume();
   }
@@ -298,6 +300,9 @@ async function startMic() {
 
   WORKLET_NODE.port.onmessage = (EVENT) => {
     if (!IS_TALKING || !SOCKET || SOCKET.readyState !== WebSocket.OPEN) return;
+
+    // Do not transmit microphone input while the teacher is currently speaking
+    if (SCHEDULED_SOURCES.length > 0) return;
 
     const PCM16_DATA = EVENT.data;
     const BASE64_DATA = arrayBufferToBase64(PCM16_DATA.buffer);
