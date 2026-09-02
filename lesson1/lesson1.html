@@ -15,7 +15,7 @@
 
   <style>
   </style>
-
+<script src="/js.js"></script>
 </head> 
 
 
@@ -681,29 +681,40 @@ This is one of the best ways to learn.</p>
 <!-- round-button -->
 <!-- AI TEACHER BUTTON -->
 <script>
-const BUTTON_ELEMENT = document.getElementById('aiTeacherBtn');
-let IS_TEACHER_ACTIVE = false;
-let NOTIFICATION_TIMER = null;
+document.addEventListener("DOMContentLoaded", function () {
+  const BUTTON_ELEMENT = document.getElementById('aiTeacherBtn');
+  if (!BUTTON_ELEMENT) return;
 
-BUTTON_ELEMENT.addEventListener('click', function () {
-  this.blur();
-  IS_TEACHER_ACTIVE = !IS_TEACHER_ACTIVE;
+  let IS_TEACHER_ACTIVE = false;
+  let NOTIFICATION_TIMER = null;
 
-  BUTTON_ELEMENT.classList.toggle('is-on', IS_TEACHER_ACTIVE);
-  BUTTON_ELEMENT.setAttribute('data-tooltip', IS_TEACHER_ACTIVE ? 'AI teacher ON' : 'AI teacher OFF');
+  BUTTON_ELEMENT.addEventListener('click', function () {
+    this.blur();
 
-  if (IS_TEACHER_ACTIVE) {
-    startTalking();
-  } else {
-    stopTalking();
-  }
+    // Check if the functions exist on window before proceeding
+    if (typeof window.startTalking !== 'function' || typeof window.stopTalking !== 'function') {
+      console.error('AI Teacher script (js.js) is not loaded or failed to initialize.');
+      return;
+    }
 
-  BUTTON_ELEMENT.classList.add('is-tooltip-visible');
-  clearTimeout(NOTIFICATION_TIMER);
+    IS_TEACHER_ACTIVE = !IS_TEACHER_ACTIVE;
 
-  NOTIFICATION_TIMER = setTimeout(() => {
-    BUTTON_ELEMENT.classList.remove('is-tooltip-visible');
-  }, 1500);
+    BUTTON_ELEMENT.classList.toggle('is-on', IS_TEACHER_ACTIVE);
+    BUTTON_ELEMENT.setAttribute('data-tooltip', IS_TEACHER_ACTIVE ? 'AI teacher ON' : 'AI teacher OFF');
+
+    if (IS_TEACHER_ACTIVE) {
+      window.startTalking();
+    } else {
+      window.stopTalking();
+    }
+
+    BUTTON_ELEMENT.classList.add('is-tooltip-visible');
+    clearTimeout(NOTIFICATION_TIMER);
+
+    NOTIFICATION_TIMER = setTimeout(() => {
+      BUTTON_ELEMENT.classList.remove('is-tooltip-visible');
+    }, 1500);
+  });
 });
 </script>
 
