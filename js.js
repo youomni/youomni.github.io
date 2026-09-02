@@ -98,19 +98,19 @@ ERROR = TARGET − OUTPUT = 3.0 − 0.0 = 3.0
 The ERROR tells us how far the OUTPUT is off from the TARGET.
 
 DIAGRAM BEFORE LEARNING !!!
-                     (0.6)      INPUT
-                       |
-                       v
-                  /---------\
-                 /   (0.0)   \  WEIGHT
-                |      |      |
-         NEURON |      v      |
-                |    (0.8)    | PRODUCT = INPUT * WEIGHT
-                 \           /
-                  \---------/
+                      (0.6)      INPUT
                         |
                         v
- ( 3.0 ) = ( 3.0 ) - ( 0.8 )    OUTPUT = PRODUCT
+                   /---------\
+                  /   (0.0)   \  WEIGHT
+                 |      |      |
+          NEURON |      v      |
+                 |    (0.8)    | PRODUCT = INPUT * WEIGHT
+                  \           /
+                   \---------/
+                        |
+                        v
+ ( 3.0 ) = ( 3.0 ) - ( 0.8 )      OUTPUT = PRODUCT
   ERROR  =  TARGET -  OUTPUT
 
 Backward Pass!
@@ -135,19 +135,19 @@ The ERROR becomes smaller:
 ERROR = 1.2
 
 DIAGRAM AFTER LEARNIN !!!
-                     (0.6)      INPUT
-                       |
-                       v
-                  /---------\
-                 /   (3.0)   \  WEIGHT
-                |      |      |
-         NEURON |      v      |
-                |    (1.8)    | PRODUCT = INPUT * WEIGHT
-                 \           /
-                  \---------/
+                      (0.6)      INPUT
                         |
                         v
- ( 1.2 ) = ( 3.0 ) - ( 1.8 )    OUTPUT = PRODUCT
+                   /---------\
+                  /   (3.0)   \  WEIGHT
+                 |      |      |
+          NEURON |      v      |
+                 |    (1.8)    | PRODUCT = INPUT * WEIGHT
+                  \           /
+                   \---------/
+                        |
+                        v
+ ( 1.2 ) = ( 3.0 ) - ( 1.8 )      OUTPUT = PRODUCT
   ERROR  =  TARGET -  OUTPUT
 
 LESSON 1 ends here.
