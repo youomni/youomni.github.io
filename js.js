@@ -277,7 +277,6 @@ class MicProcessor extends AudioWorkletProcessor {
     if (input && input.length > 0) {
       const float32Data = input[0];
       
-      // Calculate Root Mean Square (RMS) volume level
       let sum = 0;
       for (let i = 0; i < float32Data.length; i++) {
         sum += float32Data[i] * float32Data[i];
@@ -415,14 +414,29 @@ async function startTalking() {
   }
 }
 
-function stopTalking() {
+async function stopTalking() {
   if (!IS_TALKING) return;
   IS_TALKING = false;
 
-  stopMic();
+  await stopMic();
   stopPlayback();
 
-  if (SOCKET) SOCKET.close();
+  if (PLAYBACK_CONTEXT) {
+    try {
+      await PLAYBACK_CONTEXT.close();
+    } catch (E) {
+      console.error("Error closing PLAYBACK_CONTEXT:", E);
+    }
+    PLAYBACK_CONTEXT = null;
+  }
+
+  if (SOCKET) {
+    SOCKET.onclose = null; // Remove listener to avoid duplicate stopMic calls
+    SOCKET.close();
+    SOCKET = null;
+  }
+
+  prefetchToken(); // Warm up token for the next press
 }
 
 window.startTalking = startTalking;
@@ -434,7 +448,6 @@ window.stopTalking = stopTalking;
 async function startMic() {
   if (MIC_STREAM) return;
 
-  // Request acoustic echo cancellation to prevent speaker playback from re-entering mic
   MIC_STREAM = await navigator.mediaDevices.getUserMedia({
     audio: {
       echoCancellation: true,
@@ -463,10 +476,8 @@ async function startMic() {
     const PCM16_DATA = EVENT.data.pcm;
     const RMS = EVENT.data.rms;
 
-    // Threshold for detecting student speech (e.g. RMS > 0.035)
     const IS_USER_SPEAKING = RMS > 0.035;
 
-    // If student speaks while the teacher is playing audio, interrupt locally instantly
     if (IS_USER_SPEAKING && SCHEDULED_SOURCES.length > 0) {
       stopPlayback();
     }
@@ -489,7 +500,7 @@ async function startMic() {
   WORKLET_NODE.connect(AUDIO_CONTEXT.destination);
 }
 
-function stopMic() {
+async function stopMic() {
   if (WORKLET_NODE) {
     WORKLET_NODE.disconnect();
     WORKLET_NODE = null;
@@ -501,7 +512,11 @@ function stopMic() {
   }
 
   if (AUDIO_CONTEXT) {
-    AUDIO_CONTEXT.close();
+    try {
+      await AUDIO_CONTEXT.close();
+    } catch (E) {
+      console.error("Error closing AUDIO_CONTEXT:", E);
+    }
     AUDIO_CONTEXT = null;
   }
 }
@@ -533,7 +548,6 @@ function handleServerMessage(RAW_DATA) {
     }
   }
 
-  // Handle server-side interruption signal
   if (MESSAGE?.serverContent?.interrupted) {
     stopPlayback();
     return;
