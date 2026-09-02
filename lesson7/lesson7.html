@@ -320,13 +320,14 @@ LEARN AND
 THINK
 Lesson 1
 Our First Machine Brain
-Introduction
+
+Introduction!
 A NEURON needs at least one PARAMETER to do anything useful.
 So our NEURON will have one: WEIGHT.
 To learn from its own ERRORS, our NEURON also needs a CHANGE RULE — to change its PARAMETER step by step.
 
 
-Brain
+Brain!
 We're going to build a machine brain that can multiply any number by 5.0.
 In this scenario, the INPUT represents the number being multiplied, and the OUTPUT represents the result of the multiplication.
 Let's call this brain the Multiplier-by-Five.
@@ -338,7 +339,8 @@ Initial PARAMETER
 Suppose we don't yet know what the PARAMETER should be, so let's start by setting it to zero:
 WEIGHT = 0.0
 At first, the brain will generate nonsense, since with any INPUT the OUTPUT is zero.
-Dataset
+
+Dataset!
 We will use this training DATASET, which has two EXAMPLES:
 
 
@@ -357,7 +359,8 @@ EXAMPLE2 means when the INPUT is 1.0, the OUTPUT must be 5.0.
 So, our DATASET contains two EXAMPLES:
 EXAMPLES = 2
 During TRAINING, in each LESSON, the brain changes its PARAMETER so that the OUTPUT gets closer to the TARGET.
-Change Rule
+
+Change Rule!
 The brain changes the PARAMETER using this CHANGE RULE:
 SIMPLEST CHANGE RULE for PARAMETER
 PARAMETER_change = ERROR
@@ -367,20 +370,26 @@ SIMPLEST CHANGE RULE for WEIGHT
 WEIGHT_change = ERROR
 WEIGHT = WEIGHT + WEIGHT_change
 Don't worry — each step is simple. Just follow the calculations below.
-Training
+
+Training!
+
 LESSON 1
+
 WEIGHT = 0.0
+
 EXAMPLE1:
 INPUT = 0.6
 TARGET = 3.0
-Forward Pass
+
+Forward Pass!
 PRODUCT = INPUT * WEIGHT = 0.6 * 0.0 = 0.0
 OUTPUT = PRODUCT = 0.0
-Error
+
+Error!
 ERROR = TARGET − OUTPUT = 3.0 − 0.0 = 3.0
 The ERROR tells us how far the OUTPUT is off from the TARGET.
 
-Backward Pass
+Backward Pass!
 The brain changes the PARAMETER that caused this ERROR.
 Imagine the brain asking itself:
 "How should I change my WEIGHT so the OUTPUT gets closer to the TARGET?"
@@ -394,6 +403,7 @@ WEIGHT_change = ERROR = 3.0
 WEIGHT = WEIGHT + WEIGHT_change = 0.0 + 3.0 = 3.0
 So the WEIGHT becomes 3.0.
 WEIGHT = 3.0
+
 What just happened?
 The brain has just improved itself.
 Now, if it receives the same INPUT of 0.6, the OUTPUT becomes 1.8 (0.6 * 3.0) — which is closer to the TARGET (3.0) than the previous OUTPUT (0.0) was.
@@ -404,19 +414,23 @@ ERROR = 1.2
 LESSON 1 ends here.
 
 
-LESSON 2
+LESSON 2!
+
 WEIGHT = 3.0
+
 EXAMPLE 2:
 INPUT = 1.0
 TARGET = 5.0
-Forward Pass
+
+Forward Pass!
 PRODUCT = INPUT * WEIGHT = 1.0 * 3.0 = 3.0
 OUTPUT = PRODUCT = 3.0
-Error
+
+Error!
 ERROR = TARGET − OUTPUT = 5.0 − 3.0 = 2.0
 The ERROR tells us how far the OUTPUT is off from the TARGET.
 
-Backward Pass
+Backward Pass!
 The brain changes the PARAMETER that caused this ERROR.
 Imagine the brain asking itself:
 "How should I change my WEIGHT so the OUTPUT gets closer to the TARGET?"
@@ -430,9 +444,11 @@ WEIGHT_change = ERROR = 2.0
 WEIGHT = WEIGHT + WEIGHT_change = 3.0 + 2.0 = 5.0
 So the WEIGHT becomes 5.0.
 WEIGHT = 5.0
+
 What just happened?
 The brain has just improved itself again.
 Now, if it receives the same INPUT of 1.0, the OUTPUT becomes 5.0 (1.0 * 5.0) — which is closer to the TARGET (5.0) than the previous OUTPUT (3.0) was.
+
 Wait — it's not just closer. It's exact!
 The OUTPUT is now 5.0 — exactly the same as the TARGET.
 The ERROR becomes zero:
@@ -440,8 +456,10 @@ ERROR = 0.0
 
 
 LESSON 2 ends here.
-✓   DONE   ✓
-Testing
+
+✓   DONE
+   ✓
+Testing!
 To test the brain, we give it a new EXAMPLE it has never seen before.
 WEIGHT = 5.0
 EXAMPLE for TESTING:
@@ -458,9 +476,11 @@ It has learned the rule: multiply any number by 5.0.
 The Multiplier-by-Five can now think: solve problems it has never encountered before.
 The brain is now this formula:
 OUTPUT = INPUT * 5.0
-Code
+
+Code!
+
 Just click RUN.
-TRAIN THE BRAIN 🧠
+TRAIN THE BRAIN 🧠!
 
 EXAMPLES = 2
 WEIGHT = 0.0
@@ -484,8 +504,8 @@ Ready for math!
 PRINTOUT:
 🔥 TRAINING complete:
 WEIGHT = 5.0
-TEST THE BRAIN 🧠
 
+TEST THE BRAIN 🧠!
 WEIGHT = 5.0
 INPUT  = 10.0
 TARGET = 50.0
@@ -500,16 +520,12 @@ PRINTOUT:
 🔥 Testing complete:
 ERROR = 0.0
 
-
-
-
-RUN
-Ready for math!
 Here, we use standard Python code.
 If you have any questions about this code, remember this: in today’s world, knowing how to find answers is a superpower.
 You can copy the code, paste it into an AI assistant like ChatGPT, and ask something like: "Can you explain this code line by line?" This is one of the best ways to learn.
 In Lesson 5, instead of using standard Python code, we'll start using PyTorch — a handy shortcut that makes writing AI code much easier!
 On Hugging Face , a famous website where people share smart AI models, almost everyone uses PyTorch. So you’ll be learning the same tool the pros use.
+
 With The Best Intentions
 Plus,foryourfirsttwomonths,youcanaskanyquestiontoyourpersonalAIteacher—usingyourvoiceJusttapthepulsingbuttonandstarttalking.What'smore,yourteachercanevenguideyouthrougheachlesson—stepbystep.
 Note

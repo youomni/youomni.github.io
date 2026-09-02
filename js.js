@@ -23,8 +23,8 @@ const SYSTEM_INSTRUCTION_TEXT = `
 You are an AI tutor teaching a student using the provided course material.
 
 You must:
-- literally read the text word by word, including each headline
 - Teach and explain step-by-step according to precisely this text
+- Read the text word by word, including each headline, but stop immediately when the user interrupts or asks a question
 - Explain simply
 - Act like a real teacher
 - Speak in the language the student is speaking
@@ -121,20 +121,27 @@ ERROR = 1.2
 === KNOWLEDGE BASE END ===
 `;
 
-// Inline AudioWorklet code string with internal buffering (~100ms)
+// Inline AudioWorklet code string with speech volume detection
 const WORKLET_CODE = `
 class MicProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
     this.buffer = [];
-    // 16000 Hz / 10 = 1600 samples (~100ms chunks)
-    this.targetBufferSize = 1600; 
+    this.targetBufferSize = 1600; // ~100ms chunks at 16kHz
   }
 
   process(inputs, outputs, parameters) {
     const input = inputs[0];
     if (input && input.length > 0) {
       const float32Data = input[0];
+      
+      // Calculate Root Mean Square (RMS) volume level
+      let sum = 0;
+      for (let i = 0; i < float32Data.length; i++) {
+        sum += float32Data[i] * float32Data[i];
+      }
+      const rms = Math.sqrt(sum / float32Data.length);
+
       for (let i = 0; i < float32Data.length; i++) {
         let s = Math.max(-1, Math.min(1, float32Data[i]));
         this.buffer.push(s < 0 ? s * 0x8000 : s * 0x7FFF);
@@ -142,7 +149,10 @@ class MicProcessor extends AudioWorkletProcessor {
 
       if (this.buffer.length >= this.targetBufferSize) {
         const int16Data = new Int16Array(this.buffer);
-        this.port.postMessage(int16Data);
+        this.port.postMessage({
+          pcm: int16Data,
+          rms: rms
+        });
         this.buffer = [];
       }
     }
@@ -282,7 +292,14 @@ window.stopTalking = stopTalking;
 async function startMic() {
   if (MIC_STREAM) return;
 
-  MIC_STREAM = await navigator.mediaDevices.getUserMedia({ audio: true });
+  // Request acoustic echo cancellation to prevent speaker playback from re-entering mic
+  MIC_STREAM = await navigator.mediaDevices.getUserMedia({
+    audio: {
+      echoCancellation: true,
+      noiseSuppression: true,
+      autoGainControl: true
+    }
+  });
 
   AUDIO_CONTEXT = new AudioContext({ sampleRate: 16000 });
 
@@ -301,10 +318,17 @@ async function startMic() {
   WORKLET_NODE.port.onmessage = (EVENT) => {
     if (!IS_TALKING || !SOCKET || SOCKET.readyState !== WebSocket.OPEN) return;
 
-    // Do not transmit microphone input while the teacher is currently speaking
-    if (SCHEDULED_SOURCES.length > 0) return;
+    const PCM16_DATA = EVENT.data.pcm;
+    const RMS = EVENT.data.rms;
 
-    const PCM16_DATA = EVENT.data;
+    // Threshold for detecting student speech (e.g. RMS > 0.035)
+    const IS_USER_SPEAKING = RMS > 0.035;
+
+    // If student speaks while the teacher is playing audio, interrupt locally instantly
+    if (IS_USER_SPEAKING && SCHEDULED_SOURCES.length > 0) {
+      stopPlayback();
+    }
+
     const BASE64_DATA = arrayBufferToBase64(PCM16_DATA.buffer);
 
     const AUDIO_PAYLOAD = {
@@ -367,6 +391,7 @@ function handleServerMessage(RAW_DATA) {
     }
   }
 
+  // Handle server-side interruption signal
   if (MESSAGE?.serverContent?.interrupted) {
     stopPlayback();
     return;
@@ -389,6 +414,7 @@ function stopPlayback() {
     try { SOURCE.stop(); } catch {}
   }
   SCHEDULED_SOURCES = [];
+  PLAYBACK_TIME = PLAYBACK_CONTEXT ? PLAYBACK_CONTEXT.currentTime : 0;
 }
 
 function playAudioChunk(BASE64_DATA) {
