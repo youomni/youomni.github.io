@@ -248,15 +248,13 @@ async function startMic() {
     const PCM16_DATA = EVENT.data;
     const BASE64_DATA = arrayBufferToBase64(PCM16_DATA.buffer);
 
-    // Updated realtimeInput payload format using non-deprecated 'realtimeInput.mediaChunks' structure or 'realtimeInput' schema
+    // Replaced mediaChunks with direct audio Blob definition
     const AUDIO_PAYLOAD = {
       realtimeInput: {
-        mediaChunks: [
-          {
-            mimeType: "audio/pcm;rate=16000",
-            data: BASE64_DATA
-          }
-        ]
+        audio: {
+          mimeType: "audio/pcm;rate=16000",
+          data: BASE64_DATA
+        }
       }
     };
 
