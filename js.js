@@ -117,15 +117,8 @@ function handleServerMessage(rawData) {
     return;
   }
 
-  const parts = message?.serverContent?.modelTurn?.parts;
-  const hasAudio = Array.isArray(parts) && parts.some((p) => p?.inlineData?.data);
-
-  // Skip logging when the message carries raw audio chunks — those are
-  // huge base64 blobs that flood the console and are useless to read.
-  if (!hasAudio) {
-    console.log("RAW MESSAGE:", JSON.stringify(message, null, 2)); // TEMP DEBUG
-  }
-
+  // Text transcript of what the teacher is currently saying, used to
+  // sync the on-page focus highlight and autoscroll with the voice
   if (message?.serverContent?.outputTranscription?.text) {
     window.advanceFocusToText(message.serverContent.outputTranscription.text);
   }
@@ -135,6 +128,7 @@ function handleServerMessage(rawData) {
     return;
   }
 
+  const parts = message?.serverContent?.modelTurn?.parts;
   if (!parts) return;
 
   for (const part of parts) {
@@ -195,3 +189,4 @@ function playAudioChunk(base64Data) {
     scheduledSources = scheduledSources.filter((s) => s !== source);
   };
 }
+
