@@ -793,11 +793,19 @@ BUTTON_ELEMENT.addEventListener('click', function () {
 
 
 <!-- FOCUS -->
+<style>
+  .focus-user-word {
+    background: #fff59d; /* yellow */
+  }
+  .focus-teacher-word {
+    background: #a5d6a7; /* green */
+  }
+</style>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
   // =========================
-  // TEXT TARGETS (your HTML)
+  // TEXT TARGETS
   // =========================
   const TEXT_SELECTOR = `
     .card-body p,
@@ -855,38 +863,41 @@ document.addEventListener("DOMContentLoaded", function () {
   elements.forEach(wrap);
 
   const words = Array.from(document.querySelectorAll(".focus-word"));
-
-  const norm = w =>
-    w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+  const norm = w => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
 
   // =========================
   // STATE
   // =========================
-  let pointer = 0;
-  let current = null;
+  let teacherPointer = 0;
+  let userWordEl = null;
+  let teacherWordEl = null;
   let autoScroll = true;
-
   let buffer = "";
 
   // =========================
-  // HIGHLIGHT (stable)
+  // HIGHLIGHT (two independent tracks)
   // =========================
-  function highlight(el) {
-    if (!el) return;
-
-    if (current) current.classList.remove("focus-line-target");
-
-    el.classList.add("focus-line-target");
-    current = el;
+  function setUserHighlight(el) {
+    if (userWordEl === el) return;
+    if (userWordEl) userWordEl.classList.remove("focus-user-word");
+    if (el) el.classList.add("focus-user-word");
+    userWordEl = el;
   }
 
-  // initial highlight ALWAYS
+  function setTeacherHighlight(el) {
+    if (teacherWordEl === el) return;
+    if (teacherWordEl) teacherWordEl.classList.remove("focus-teacher-word");
+    if (el) el.classList.add("focus-teacher-word");
+    teacherWordEl = el;
+  }
+
   if (words.length > 0) {
-    highlight(words[0]);
+    setUserHighlight(words[0]);
+    setTeacherHighlight(words[0]);
   }
 
   // =========================
-  // SCROLL SAFE
+  // SCROLL SAFE (programmatic scrollTo, used by teacher tracking)
   // =========================
   let lastScroll = 0;
   let programmatic = false;
@@ -897,23 +908,17 @@ document.addEventListener("DOMContentLoaded", function () {
     lastScroll = now;
 
     programmatic = true;
-
-    el.scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
-
-    setTimeout(() => {
-      programmatic = false;
-    }, 600);
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    setTimeout(() => { programmatic = false; }, 600);
   }
 
   // =========================
-  // SCROLL RESYNC
+  // USER FOCUS (yellow) — always tracks the word nearest the
+  // viewport center, purely based on scroll position. Harmless,
+  // runs on every scroll regardless of cause.
   // =========================
   function getCenterWord() {
     const mid = window.innerHeight / 2;
-
     let best = null;
     let dist = Infinity;
 
@@ -921,44 +926,65 @@ document.addEventListener("DOMContentLoaded", function () {
       const r = w.getBoundingClientRect();
       const c = r.top + r.height / 2;
       const d = Math.abs(mid - c);
-
-      if (d < dist) {
-        dist = d;
-        best = w;
-      }
+      if (d < dist) { dist = d; best = w; }
     });
 
     return best;
   }
 
+  function updateUserFocus() {
+    const center = getCenterWord();
+    if (center) setUserHighlight(center);
+  }
+
   // =========================
-  // USER SCROLL
+  // Distinguish REAL user-driven scrolling (wheel / touch / keys)
+  // from incidental scroll events (e.g. the browser auto-scrolling
+  // to a focused button) — only real input pauses teacher autoscroll.
   // =========================
+  let recentUserInput = false;
+  let userInputTimer = null;
+
+  function markUserInput() {
+    recentUserInput = true;
+    clearTimeout(userInputTimer);
+    userInputTimer = setTimeout(() => { recentUserInput = false; }, 400);
+  }
+
+  window.addEventListener("wheel", markUserInput, { passive: true });
+  window.addEventListener("touchmove", markUserInput, { passive: true });
+  window.addEventListener("keydown", (e) => {
+    if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "].includes(e.key)) {
+      markUserInput();
+    }
+  });
+
+  let ticking = false;
   let scrollTimer = null;
 
   window.addEventListener("scroll", () => {
-    if (programmatic) return;
-
-    autoScroll = false;
-
-    const center = getCenterWord();
-    if (center) {
-      pointer = words.indexOf(center);
-      highlight(center);
-      buffer = "";
-      console.log("User moved →", pointer);
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        updateUserFocus();
+        ticking = false;
+      });
+      ticking = true;
     }
 
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(() => {
-      autoScroll = true;
-    }, 1500);
+    if (programmatic) return; // our own scrollTo() call — ignore
 
+    if (recentUserInput) {
+      // Genuine user scroll — pause teacher autoscroll for a bit
+      autoScroll = false;
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => { autoScroll = true; }, 1500);
+    }
+    // else: incidental scroll (e.g. browser focusing a button) —
+    // ignore entirely, do not touch teacher pointer or autoScroll
   }, { passive: true });
 
   // =========================
-  // MAIN API — matches one word at a time against a persistent buffer.
-  // WINDOW narrowed to 10 words ahead of pointer.
+  // TEACHER FOCUS (green) — word-by-word, driven by voice transcript
   // =========================
   window.advanceFocusToText = function (chunk) {
     if (!chunk) return;
@@ -973,12 +999,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const WINDOW = 10;
 
     targets.forEach(target => {
-      for (let i = pointer; i < Math.min(pointer + WINDOW, words.length); i++) {
+      for (let i = teacherPointer; i < Math.min(teacherPointer + WINDOW, words.length); i++) {
         if (norm(words[i].textContent) === target) {
-          pointer = i;
-          highlight(words[pointer]);
-          if (autoScroll) scrollTo(words[pointer]);
-          console.log("MATCH →", pointer, target);
+          teacherPointer = i;
+          setTeacherHighlight(words[i]);
+          if (autoScroll) scrollTo(words[i]);
+          console.log("MATCH →", teacherPointer, target);
           return;
         }
       }
@@ -986,9 +1012,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
-  // =========================
-  // CONTROL
-  // =========================
   window.pauseAutoScroll = () => autoScroll = false;
 
   window.resumeAutoScroll = () => {
@@ -998,7 +1021,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
-
 
 
 
