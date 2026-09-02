@@ -1,5 +1,5 @@
 // ==== Settings ====
-var WS_URL = "wss://youomni-github-io.vercel.app/api/chat";
+var VERCEL_TOKEN_URL = "https://youomni-github-io.vercel.app/api/chat";
 
 var SOCKET = null;
 var AUDIO_CONTEXT = null;
@@ -15,27 +15,167 @@ var PLAYBACK_GAIN = null;
 var SCHEDULED_SOURCES = [];
 var OUTPUT_VOLUME = 2.0;
 
+const SYSTEM_INSTRUCTION_TEXT = `
+You are an AI tutor teaching a student using the provided course material.
+
+You must:
+- literally read the text word by word, including each headline
+- Teach and explain step-by-step according to precisely this text
+- Explain simply
+- Act like a real teacher
+- Speak in the language the student is speaking
+
+Use ONLY the knowledge base below.
+
+=== KNOWLEDGE BASE START ===
+Lesson 1:
+
+HOW
+MACHINES
+LEARN AND
+THINK
+Lesson 1
+Our First Machine Brain
+Introduction
+A NEURON needs at least one PARAMETER to do anything useful.
+So our NEURON will have one: WEIGHT.
+To learn from its own ERRORS, our NEURON also needs a CHANGE RULE — to change its PARAMETER step by step.
+
+Brain
+We're going to build a machine brain that can multiply any number by 5.0.
+In this scenario, the INPUT represents the number being multiplied, and the OUTPUT represents the result of the multiplication.
+Let's call this brain the Multiplier-by-Five.
+As said, the brain will have a single PARAMETER: WEIGHT.
+The brain will be a formula like this:
+OUTPUT = INPUT * WEIGHT
+We need to find the correct PARAMETER: WEIGHT.
+Initial PARAMETER
+Suppose we don't yet know what the PARAMETER should be, so let's start by setting it to zero:
+WEIGHT = 0.0
+At first, the brain will generate nonsense, since with any INPUT the OUTPUT is zero.
+Dataset
+We will use this training DATASET, which has two EXAMPLES:
+
+ INPUT 
+ TARGET 
+ EXAMPLE1 
+ 0.6 
+ 3.0 
+ EXAMPLE2 
+ 1.0 
+ 5.0 
+
+The TARGET represents the correct OUTPUT.
+EXAMPLE1 means when the INPUT is 0.6, the OUTPUT must be 3.0.
+EXAMPLE2 means when the INPUT is 1.0, the OUTPUT must be 5.0.
+So, our DATASET contains two EXAMPLES:
+EXAMPLES = 2
+During TRAINING, in each LESSON, the brain changes its PARAMETER so that the OUTPUT gets closer to the TARGET.
+Change Rule
+The brain changes the PARAMETER using this CHANGE RULE:
+SIMPLEST CHANGE RULE for PARAMETER
+PARAMETER_change = ERROR
+PARAMETER = PARAMETER + PARAMETER_change
+Because the brain has just one PARAMETER — WEIGHT — we obtain:
+SIMPLEST CHANGE RULE for WEIGHT
+WEIGHT_change = ERROR
+WEIGHT = WEIGHT + WEIGHT_change
+Don't worry — each step is simple. Just follow the calculations below.
+Training
+LESSON 1
+WEIGHT = 0.0
+EXAMPLE1:
+INPUT = 0.6
+TARGET = 3.0
+Forward Pass
+PRODUCT = INPUT * WEIGHT = 0.6 * 0.0 = 0.0
+OUTPUT = PRODUCT = 0.0
+Error
+ERROR = TARGET − OUTPUT = 3.0 − 0.0 = 3.0
+The ERROR tells us how far the OUTPUT is off from the TARGET.
+
+Backward Pass
+The brain changes the PARAMETER that caused this ERROR.
+Imagine the brain asking itself:
+"How should I change my WEIGHT so the OUTPUT gets closer to the TARGET?"
+The ERROR provides the answer:
+"Your OUTPUT is 3.0 below the TARGET, so increase the WEIGHT by the exact same 3.0."
+And that's exactly what the SIMPLEST CHANGE RULE tells us to do:
+SIMPLEST CHANGE RULE for WEIGHT
+WEIGHT_change = ERROR
+WEIGHT = WEIGHT + WEIGHT_change
+WEIGHT_change = ERROR = 3.0
+WEIGHT = WEIGHT + WEIGHT_change = 0.0 + 3.0 = 3.0
+So the WEIGHT becomes 3.0.
+WEIGHT = 3.0
+What just happened?
+The brain has just improved itself.
+Now, if it receives the same INPUT of 0.6, the OUTPUT becomes 1.8 (0.6 * 3.0) — which is closer to the TARGET (3.0) than the previous OUTPUT (0.0) was.
+The ERROR becomes smaller:
+ERROR = 1.2
+
+=== KNOWLEDGE BASE END ===
+`;
+
 async function startTalking() {
   if (IS_TALKING) return;
   IS_TALKING = true;
 
-  SOCKET = new WebSocket(WS_URL);
+  try {
+    // 1. Fetch ephemeral token from Vercel
+    const RESPONSE = await fetch(VERCEL_TOKEN_URL);
+    const DATA = await RESPONSE.json();
 
-  SOCKET.onopen = async () => {
-    await startMic();
-  };
+    if (!DATA.token) {
+      console.error("Failed to retrieve token:", DATA);
+      IS_TALKING = false;
+      return;
+    }
 
-  SOCKET.onmessage = (event) => {
-    handleServerMessage(event.data);
-  };
+    // 2. Open direct WebSocket to Gemini Live API using ephemeral token
+    const GEMINI_WS_URL = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${DATA.token}`;
+    SOCKET = new WebSocket(GEMINI_WS_URL);
 
-  SOCKET.onclose = () => {
-    stopMic();
-  };
+    SOCKET.onopen = async () => {
+      // Send initial setup payload directly to Gemini
+      const SETUP_PAYLOAD = {
+        setup: {
+          model: "models/gemini-3.1-flash-live-preview",
+          generationConfig: {
+            responseModalities: ["AUDIO"],
+            speechConfig: {
+              voiceConfig: {
+                prebuiltVoiceConfig: {
+                  voiceName: "Puck"
+                }
+              }
+            }
+          },
+          systemInstruction: {
+            parts: [{ text: SYSTEM_INSTRUCTION_TEXT }]
+          }
+        }
+      };
 
-  SOCKET.onerror = (ERR) => {
-    console.error("WebSocket error:", ERR);
-  };
+      SOCKET.send(JSON.stringify(SETUP_PAYLOAD));
+      await startMic();
+    };
+
+    SOCKET.onmessage = (EVENT) => {
+      handleServerMessage(EVENT.data);
+    };
+
+    SOCKET.onclose = () => {
+      stopMic();
+    };
+
+    SOCKET.onerror = (ERR) => {
+      console.error("WebSocket error:", ERR);
+    };
+  } catch (E) {
+    console.error("Failed to initialize session:", E);
+    IS_TALKING = false;
+  }
 }
 
 function stopTalking() {
@@ -70,7 +210,20 @@ async function startMic() {
 
     const PCM16 = EVENT.data; // Int16Array
     const BASE64_DATA = arrayBufferToBase64(PCM16.buffer);
-    SOCKET.send(BASE64_DATA);
+
+    // Send realtime audio directly in Gemini protocol format
+    const AUDIO_PAYLOAD = {
+      realtimeInput: {
+        mediaChunks: [
+          {
+            mimeType: "audio/pcm;rate=16000",
+            data: BASE64_DATA
+          }
+        ]
+      }
+    };
+
+    SOCKET.send(JSON.stringify(AUDIO_PAYLOAD));
   };
 
   SOURCE.connect(WORKLET_NODE);
