@@ -146,10 +146,10 @@ async function startTalking() {
     SOCKET.onopen = async () => {
       console.log("WebSocket connected to Gemini");
 
-      // Send initial setup payload directly to Gemini
+      // Send initial setup payload directly to Gemini using the supported Live model
       const SETUP_PAYLOAD = {
         setup: {
-          model: "models/gemini-2.0-flash-exp",
+          model: "models/gemini-2.0-flash",
           generationConfig: {
             responseModalities: ["AUDIO"],
             speechConfig: {
