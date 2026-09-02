@@ -19,9 +19,9 @@ export default async function handler(REQ, RES) {
   try {
     const AI = new GoogleGenAI({ apiKey: process.env.GOOGLE });
 
-    // Generate an ephemeral token valid for 5 minutes (300 seconds)
+    // Set expiration time to 5 minutes (300 seconds)
     const EXPIRE_TIME = new Date(Date.now() + 300 * 1000).toISOString();
-    
+
     const TOKEN_RESPONSE = await AI.authTokens.create({
       config: {
         uses: 1,
@@ -29,7 +29,6 @@ export default async function handler(REQ, RES) {
       },
     });
 
-    // TOKEN_RESPONSE.name contains the generated key/token string
     const TOKEN_VALUE = TOKEN_RESPONSE.name || TOKEN_RESPONSE.value;
 
     RES.status(200).json({ token: TOKEN_VALUE });
