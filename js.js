@@ -159,11 +159,13 @@ function playAudioChunk(BASE64_DATA) {
     BYTES[I] = BINARY.charCodeAt(I);
   }
 
-  const INT16 = new Int16Array(BYTES.buffer);
-  const FLOAT32 = new Float32Array(INT16.length);
+  const DATA_VIEW = new DataView(BYTES.buffer);
+  const INT16_COUNT = Math.floor(BYTES.length / 2);
+  const FLOAT32 = new Float32Array(INT16_COUNT);
 
-  for (let I = 0; I < INT16.length; I++) {
-    FLOAT32[I] = INT16[I] / 0x8000;
+  for (let I = 0; I < INT16_COUNT; I++) {
+    const INT16_VAL = DATA_VIEW.getInt16(I * 2, true); // Little-endian conversion
+    FLOAT32[I] = INT16_VAL / 32768.0;
   }
 
   const BUFFER = PLAYBACK_CONTEXT.createBuffer(1, FLOAT32.length, 24000);
