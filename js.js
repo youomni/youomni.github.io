@@ -117,12 +117,31 @@ ERROR = 1.2
 === KNOWLEDGE BASE END ===
 `;
 
+// Inline AudioWorklet code string
+const WORKLET_CODE = `
+class MicProcessor extends AudioWorkletProcessor {
+  process(inputs, outputs, parameters) {
+    const input = inputs[0];
+    if (input && input.length > 0) {
+      const float32Data = input[0];
+      const int16Data = new Int16Array(float32Data.length);
+      for (let i = 0; i < float32Data.length; i++) {
+        let s = Math.max(-1, Math.min(1, float32Data[i]));
+        int16Data[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+      }
+      this.port.postMessage(int16Data);
+    }
+    return true;
+  }
+}
+registerProcessor('mic-processor', MicProcessor);
+`;
+
 async function startTalking() {
   if (IS_TALKING) return;
   IS_TALKING = true;
 
   try {
-    // 1. Fetch ephemeral token from Vercel
     const RESPONSE = await fetch(VERCEL_TOKEN_URL);
     if (!RESPONSE.ok) {
       const ERROR_DATA = await RESPONSE.json().catch(() => ({}));
@@ -139,17 +158,16 @@ async function startTalking() {
       return;
     }
 
-    // 2. Open direct WebSocket connection using v1alpha endpoint and access_token parameter
+    // Connect using BidiGenerateContentConstrained endpoint
     const GEMINI_WS_URL = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=${DATA.token}`;
     SOCKET = new WebSocket(GEMINI_WS_URL);
 
     SOCKET.onopen = async () => {
       console.log("WebSocket connected to Gemini");
 
-      // Send initial setup payload using gemini-2.0-flash-exp on v1alpha
       const SETUP_PAYLOAD = {
         setup: {
-          model: "models/gemini-2.0-flash-exp",
+          model: "models/gemini-3.1-flash-live-preview",
           generationConfig: {
             responseModalities: ["AUDIO"],
             speechConfig: {
@@ -209,7 +227,10 @@ async function startMic() {
 
   AUDIO_CONTEXT = new AudioContext({ sampleRate: 16000 });
 
-  await AUDIO_CONTEXT.audioWorklet.addModule("/audio-processor.js");
+  // Load AudioWorklet from inline Blob URL to prevent path errors
+  const BLOB = new Blob([WORKLET_CODE], { type: "application/javascript" });
+  const WORKLET_URL = URL.createObjectURL(BLOB);
+  await AUDIO_CONTEXT.audioWorklet.addModule(WORKLET_URL);
 
   const SOURCE = AUDIO_CONTEXT.createMediaStreamSource(MIC_STREAM);
 
@@ -218,7 +239,7 @@ async function startMic() {
   WORKLET_NODE.port.onmessage = (EVENT) => {
     if (!IS_TALKING || !SOCKET || SOCKET.readyState !== WebSocket.OPEN) return;
 
-    const PCM16_DATA = EVENT.data; // Int16Array from mic-processor
+    const PCM16_DATA = EVENT.data;
     const BASE64_DATA = arrayBufferToBase64(PCM16_DATA.buffer);
 
     const AUDIO_PAYLOAD = {
