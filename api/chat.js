@@ -19,17 +19,22 @@ export default async function handler(REQ, RES) {
   try {
     const AI = new GoogleGenAI({ apiKey: process.env.GOOGLE });
 
-    // Request an ephemeral client token for Gemini Multimodal Live API
-    const CLIENT_TOKEN = await AI.auth.createClientToken({
+    // Generate an ephemeral token valid for 5 minutes (300 seconds)
+    const EXPIRE_TIME = new Date(Date.now() + 300 * 1000).toISOString();
+    
+    const TOKEN_RESPONSE = await AI.authTokens.create({
       config: {
         uses: 1,
-        ttl: "300s", // Valid for 5 minutes
+        expireTime: EXPIRE_TIME,
       },
     });
 
-    RES.status(200).json({ token: CLIENT_TOKEN.value });
+    // TOKEN_RESPONSE.name contains the generated key/token string
+    const TOKEN_VALUE = TOKEN_RESPONSE.name || TOKEN_RESPONSE.value;
+
+    RES.status(200).json({ token: TOKEN_VALUE });
   } catch (ERR) {
     console.error("Token generation error:", ERR);
-    RES.status(500).json({ error: "Failed to generate ephemeral token" });
+    RES.status(500).json({ error: ERR.message || "Failed to generate ephemeral token" });
   }
 }
