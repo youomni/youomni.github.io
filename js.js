@@ -139,17 +139,17 @@ async function startTalking() {
       return;
     }
 
-    // 2. Open direct WebSocket connection to the Constrained endpoint using access_token
+    // 2. Open direct WebSocket connection using v1alpha endpoint and access_token parameter
     const GEMINI_WS_URL = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=${DATA.token}`;
     SOCKET = new WebSocket(GEMINI_WS_URL);
 
     SOCKET.onopen = async () => {
       console.log("WebSocket connected to Gemini");
 
-      // Send initial setup payload directly to Gemini using the supported Live model
+      // Send initial setup payload using gemini-2.0-flash-exp on v1alpha
       const SETUP_PAYLOAD = {
         setup: {
-          model: "models/gemini-2.0-flash",
+          model: "models/gemini-2.0-flash-exp",
           generationConfig: {
             responseModalities: ["AUDIO"],
             speechConfig: {

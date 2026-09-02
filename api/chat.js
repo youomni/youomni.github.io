@@ -26,9 +26,12 @@ export default async function handler(REQ, RES) {
       config: {
         uses: 1,
         expireTime: EXPIRE_TIME,
+        targetModel: "models/gemini-2.0-flash-exp",
+        allowedMethods: ["bidiGenerateContent"],
       },
     });
 
+    // The SDK returns the token identifier in the name property
     const TOKEN_VALUE = TOKEN_RESPONSE.name || TOKEN_RESPONSE.value;
 
     RES.status(200).json({ token: TOKEN_VALUE });
