@@ -97,6 +97,22 @@ Error!
 ERROR = TARGET − OUTPUT = 3.0 − 0.0 = 3.0
 The ERROR tells us how far the OUTPUT is off from the TARGET.
 
+DIAGRAM!!!
+          (0.6)                INPUT
+            |
+            v
+       /---------\
+      /   (3.0)   \             WEIGHT
+     |      |      |
+NEURON      v      |
+     |    (1.8)    |            PRODUCT = INPUT * WEIGHT
+      \           /
+       \---------/
+            |
+            v
+ ( 1.2 ) = ( 3.0 ) - ( 1.8 )     OUTPUT = PRODUCT
+  ERROR  =  TARGET -  OUTPUT
+
 Backward Pass!
 The brain changes the PARAMETER that caused this ERROR.
 Imagine the brain asking itself:
