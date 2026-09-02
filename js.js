@@ -74,12 +74,12 @@ During TRAINING, in each LESSON, the brain changes its PARAMETER so that the OUT
 Change Rule
 The brain changes the PARAMETER using this CHANGE RULE:
 SIMPLEST CHANGE RULE for PARAMETER
-PARAMETER_change = ERROR
-PARAMETER = PARAMETER + PARAMETER_change
+PARAMETER_update = ERROR
+PARAMETER = PARAMETER + PARAMETER_update
 Because the brain has just one PARAMETER — WEIGHT — we obtain:
 SIMPLEST CHANGE RULE for WEIGHT
-WEIGHT_change = ERROR
-WEIGHT = WEIGHT + WEIGHT_change
+WEIGHT_update = ERROR
+WEIGHT = WEIGHT + WEIGHT_update
 Don't worry — each step is simple. Just follow the calculations below.
 Training
 LESSON 1
@@ -102,10 +102,10 @@ The ERROR provides the answer:
 "Your OUTPUT is 3.0 below the TARGET, so increase the WEIGHT by the exact same 3.0."
 And that's exactly what the SIMPLEST CHANGE RULE tells us to do:
 SIMPLEST CHANGE RULE for WEIGHT
-WEIGHT_change = ERROR
-WEIGHT = WEIGHT + WEIGHT_change
-WEIGHT_change = ERROR = 3.0
-WEIGHT = WEIGHT + WEIGHT_change = 0.0 + 3.0 = 3.0
+WEIGHT_update = ERROR
+WEIGHT = WEIGHT + WEIGHT_update
+WEIGHT_update = ERROR = 3.0
+WEIGHT = WEIGHT + WEIGHT_update = 0.0 + 3.0 = 3.0
 So the WEIGHT becomes 3.0.
 WEIGHT = 3.0
 What just happened?
@@ -124,6 +124,13 @@ async function startTalking() {
   try {
     // 1. Fetch ephemeral token from Vercel
     const RESPONSE = await fetch(VERCEL_TOKEN_URL);
+    if (!RESPONSE.ok) {
+      const ERROR_DATA = await RESPONSE.json().catch(() => ({}));
+      console.error("HTTP error fetching token:", RESPONSE.status, ERROR_DATA);
+      IS_TALKING = false;
+      return;
+    }
+
     const DATA = await RESPONSE.json();
 
     if (!DATA.token) {
@@ -132,15 +139,17 @@ async function startTalking() {
       return;
     }
 
-    // 2. Open direct WebSocket connection to Gemini Live API
-    const GEMINI_WS_URL = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${DATA.token}`;
+    // 2. Open direct WebSocket connection using the access_token query param and v1beta endpoint
+    const GEMINI_WS_URL = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContentConstrained?access_token=${DATA.token}`;
     SOCKET = new WebSocket(GEMINI_WS_URL);
 
     SOCKET.onopen = async () => {
+      console.log("WebSocket connected. Sending setup payload...");
+      
       // Send initial setup payload directly to Gemini
       const SETUP_PAYLOAD = {
         setup: {
-          model: "models/gemini-3.1-flash-live-preview",
+          model: "models/gemini-2.0-flash-exp",
           generationConfig: {
             responseModalities: ["AUDIO"],
             speechConfig: {
@@ -165,7 +174,8 @@ async function startTalking() {
       handleServerMessage(EVENT.data);
     };
 
-    SOCKET.onclose = () => {
+    SOCKET.onclose = (EVENT) => {
+      console.log("WebSocket closed:", EVENT.code, EVENT.reason);
       stopMic();
     };
 
