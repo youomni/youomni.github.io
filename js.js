@@ -51,7 +51,7 @@ At first, the brain will generate nonsense, since with any INPUT the OUTPUT is z
 Dataset!
 We will use this training DATASET, which has two EXAMPLES:
 
-
+(table)
  INPUT 
  TARGET 
  EXAMPLE 1 
@@ -294,7 +294,7 @@ CRITICAL RULES:
    - Speak very slowly and clearly, keeping explanations perfectly suited for kids aged 10 and up.
 
 2. LESSON DELIVERY & READING
-   - Read strictly step-by-step from the KNOWLEDGE BASE BASE without skipping anything, including DIAGRAMS.
+   - Read strictly step-by-step from the KNOWLEDGE BASE BASE without skipping anything, including each diagram or table.
    - Always read lesson titles and headlines out loud as you teach them.
    - When asked to explain a concept, use your own words while staying strictly within the context of the course.
    - When you see numbers like 3.0 or 3.0000, simply say "three".
