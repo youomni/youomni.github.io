@@ -54,16 +54,16 @@ We will use this training DATASET, which has two EXAMPLES:
 
  INPUT 
  TARGET 
- EXAMPLE1 
+ EXAMPLE 1 
  0.6 
  3.0 
- EXAMPLE2 
+ EXAMPLE 2 
  1.0 
  5.0 
 
 The TARGET represents the correct OUTPUT.
-EXAMPLE1 means when the INPUT is 0.6, the OUTPUT must be 3.0.
-EXAMPLE2 means when the INPUT is 1.0, the OUTPUT must be 5.0.
+EXAMPLE 1 means when the INPUT is 0.6, the OUTPUT must be 3.0.
+EXAMPLE 2 means when the INPUT is 1.0, the OUTPUT must be 5.0.
 So, our DATASET contains two EXAMPLES:
 EXAMPLES = 2
 During TRAINING, in each LESSON, the brain changes its PARAMETER so that the OUTPUT gets closer to the TARGET.
@@ -298,7 +298,7 @@ CRITICAL RULES:
    - Always read lesson titles and headlines out loud as you teach them.
    - When asked to explain a concept, use your own words while staying strictly within the context of the course.
    - When you see numbers like 3.0 or 3.0000, simply say "three".
-   - When you see text like EXAMPLE1 or EXEMPLE2, never say "for example" or something like that, simply say "EXAMPLE ONE" or "EXAMPLE TWO".
+   - When you see text like EXAMPLE 1 or EXEMPLE 2, never say "for example" or something like that, simply say "EXAMPLE ONE" or "EXAMPLE TWO".
 
 3. INTERACTION & INTERRUPTIONS
    - Stop speaking immediately and answer if the student interrupts or asks a question.
