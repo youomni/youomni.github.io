@@ -810,5 +810,54 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
+
+
+<!-- LOGIN OVERLAY (locks lesson until login) -->
+<div id="login-overlay" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  color: white;
+  font-family: Arial;
+">
+
+  <div style="
+    width: 320px;
+    padding: 20px;
+    background: #111;
+    border-radius: 12px;
+    text-align: center;
+  ">
+
+    <h2>Sign in required</h2>
+
+    <input id="email" placeholder="Email"
+      style="width:100%; margin:6px 0; padding:10px;" />
+
+    <input id="password" type="password" placeholder="Password"
+      style="width:100%; margin:6px 0; padding:10px;" />
+
+    <button id="email-login" style="width:100%; margin-top:10px; padding:10px;">
+      Log In
+    </button>
+
+    <button id="signup-btn" style="width:100%; margin-top:6px; padding:10px;">
+      Sign Up
+    </button>
+
+    <hr style="margin:15px 0;" />
+
+    <button id="google-login" style="width:100%; padding:10px;">
+      Continue with Google
+    </button>
+
+  </div>
+</div>
+
 </body>
 </html>
