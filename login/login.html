@@ -35,7 +35,6 @@
       font-size: 22px;
     }
 
-    /* 🔲 Shared block style */
     .block {
       border: 1px solid #9C9C9C;
       border-radius: 16px;
@@ -96,18 +95,18 @@
 
     <h1>Enter</h1>
 
-    <!-- 🔲 OPTION 1: EMAIL -->
+    <!-- EMAIL LOGIN -->
     <div class="block">
-      <input type="email" placeholder="Email" />
-      <input type="password" placeholder="Password" />
-      <button class="primary">Enter</button>
+      <input id="email" type="email" placeholder="Email" />
+      <input id="password" type="password" placeholder="Password" />
+      <button class="primary" onclick="handleLogin()">Enter</button>
     </div>
 
     <div class="or">Or</div>
 
-    <!-- 🔲 OPTION 2: GOOGLE -->
+    <!-- GOOGLE -->
     <div class="block">
-      <button class="google">Enter with Google</button>
+      <button class="google" onclick="handleGoogle()">Enter with Google</button>
     </div>
 
     <div class="hint">
@@ -115,6 +114,41 @@
     </div>
 
   </div>
+
+  <script>
+    function redirectAfterLogin() {
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get("redirect");
+
+      if (redirect) {
+        window.location.href = redirect;
+      } else {
+        window.location.href = "/index.html";
+      }
+    }
+
+    function handleLogin() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        alert("Please enter email and password");
+        return;
+      }
+
+      // fake auth for now
+      localStorage.setItem("youomni_user", "true");
+
+      redirectAfterLogin();
+    }
+
+    function handleGoogle() {
+      // placeholder (same behavior for now)
+      localStorage.setItem("youomni_user", "true");
+
+      redirectAfterLogin();
+    }
+  </script>
 
 </body>
 </html>
