@@ -377,7 +377,7 @@ header { background: #111111; color: var(--yellow); padding: 0px 0px 0px; text-a
   border: 1px solid rgba(255, 255, 255, 0.05);
   background: rgba(0, 0, 0, 0.2);
 }
-.footer-copyright { color: var(--gray); font-weight: 700; font-size: 14px; letter-spacing: 0.05em; text-transform: uppercase; }
+.footer-copyright { color: var(--gray); font-weight: 700; font-size: 14px; letter-spacing: 0.05em;}
 
 /* ── CLASS SPECIFIC UTILS ── */
 .influence-panel { background: var(--white); border-left: 4px solid var(--blue); border-radius: 16px; padding: 12px 0px; margin: 12px 0 16px; color: var(--black); font-weight: 700; line-height: 1.85; }
