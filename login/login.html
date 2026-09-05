@@ -1,1 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouOmni Login</title>
 
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 320px;
+      padding: 24px;
+      background: #1c1c1c;
+      border-radius: 12px;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: 22px;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .login-btn {
+      background: #4a90e2;
+      color: white;
+    }
+
+    .google-btn {
+      background: white;
+      color: black;
+    }
+
+    .hint {
+      font-size: 12px;
+      text-align: center;
+      margin-top: 10px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Login / Sign up</h1>
+
+    <input type="email" placeholder="Email" />
+    <input type="password" placeholder="Password" />
+
+    <button class="login-btn">Login</button>
+    <button class="google-btn">Continue with Google</button>
+
+    <div class="hint">
+      After login you will be checked for access to lessons
+    </div>
+  </div>
+</body>
+</html>
