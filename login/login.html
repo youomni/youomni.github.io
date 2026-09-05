@@ -31,26 +31,6 @@
       font-size: 22px;
     }
 
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .tab {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #2a2a2a;
-      color: white;
-    }
-
-    .tab.active {
-      background: #4a90e2;
-    }
-
     input {
       width: 100%;
       padding: 10px;
@@ -86,10 +66,6 @@
       color: black;
     }
 
-    .hidden {
-      display: none;
-    }
-
     .hint {
       margin-top: 12px;
       font-size: 12px;
@@ -102,54 +78,25 @@
 <body>
 
   <div class="container">
-    <h1>Login</h1>
 
-    <div class="tabs">
-      <button class="tab active" onclick="showTab('login')">Login</button>
-      <button class="tab" onclick="showTab('signup')">Sign Up</button>
-    </div>
+    <!-- TITLE -->
+    <h1>Enter</h1>
 
-    <!-- LOGIN -->
-    <div id="loginForm">
-      <input type="email" placeholder="Email" />
-      <input type="password" placeholder="Password" />
-      <button class="primary">Login</button>
-    </div>
+    <!-- LOGIN FORM -->
+    <input type="email" placeholder="Email" />
+    <input type="password" placeholder="Password" />
 
-    <!-- SIGN UP -->
-    <div id="signupForm" class="hidden">
-      <input type="email" placeholder="Email" />
-      <input type="password" placeholder="Create Password" />
-      <button class="primary">Create Account</button>
-    </div>
+    <!-- MAIN ACTION -->
+    <button class="primary">Enter</button>
 
-    <!-- GOOGLE -->
+    <!-- GOOGLE LOGIN -->
     <button class="google">Continue with Google</button>
 
     <div class="hint">
       Access will be checked after authentication
     </div>
+
   </div>
-
-  <script>
-    function showTab(tab) {
-      const login = document.getElementById("loginForm");
-      const signup = document.getElementById("signupForm");
-      const tabs = document.querySelectorAll(".tab");
-
-      if (tab === "login") {
-        login.classList.remove("hidden");
-        signup.classList.add("hidden");
-        tabs[0].classList.add("active");
-        tabs[1].classList.remove("active");
-      } else {
-        signup.classList.remove("hidden");
-        login.classList.add("hidden");
-        tabs[1].classList.add("active");
-        tabs[0].classList.remove("active");
-      }
-    }
-  </script>
 
 </body>
 </html>
