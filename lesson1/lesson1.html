@@ -810,28 +810,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-<script src="/login/login.js"></script>
-
-<script>
-  // check if user is logged in
-  function checkAuth() {
-    const user = localStorage.getItem("youomni_user");
-
-    if (!user) {
-      window.location.href = "/login/login.html?redirect=/lesson1/lesson1.html";
-    }
-  }
-
-  checkAuth();
-</script>
-
-
-
-
 <script src="/access/access-control.js"></script>
+
 <script>
-  initAccessControl("lesson1");
+  protectPage("lesson1", "/lesson1/lesson1.html");
 </script>
 
 

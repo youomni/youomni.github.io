@@ -23,7 +23,6 @@
       background: #1c1c1c;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -36,7 +35,7 @@
     }
 
     .block {
-      border: 1px solid #9C9C9C;
+      border: 1px solid #3a3a3a;
       border-radius: 16px;
       padding: 16px;
       display: flex;
@@ -50,7 +49,6 @@
       padding: 10px;
       border: none;
       border-radius: 8px;
-      outline: none;
       background: #2a2a2a;
       color: white;
       box-sizing: border-box;
@@ -59,18 +57,18 @@
     button {
       width: 100%;
       padding: 10px;
-      border: none;
       border-radius: 8px;
+      border: none;
       cursor: pointer;
       font-weight: bold;
     }
 
-    button.primary {
+    .primary {
       background: #4a90e2;
       color: white;
     }
 
-    button.google {
+    .google {
       background: white;
       color: black;
     }
@@ -80,75 +78,60 @@
       font-size: 12px;
       opacity: 0.6;
     }
-
-    .hint {
-      font-size: 12px;
-      text-align: center;
-      opacity: 0.7;
-    }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <h1>Enter</h1>
+  <h1>Enter</h1>
 
-    <!-- EMAIL LOGIN -->
-    <div class="block">
-      <input id="email" type="email" placeholder="Email" />
-      <input id="password" type="password" placeholder="Password" />
-      <button class="primary" onclick="handleLogin()">Enter</button>
-    </div>
-
-    <div class="or">Or</div>
-
-    <!-- GOOGLE -->
-    <div class="block">
-      <button class="google" onclick="handleGoogle()">Enter with Google</button>
-    </div>
-
-    <div class="hint">
-      Access will be checked after authentication
-    </div>
-
+  <div class="block">
+    <input id="email" type="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
+    <button class="primary" onclick="handleLogin()">Enter</button>
   </div>
 
-  <script>
-    function redirectAfterLogin() {
-      const params = new URLSearchParams(window.location.search);
-      const redirect = params.get("redirect");
+  <div class="or">Or</div>
 
-      if (redirect) {
-        window.location.href = redirect;
-      } else {
-        window.location.href = "/index.html";
-      }
+  <div class="block">
+    <button class="google" onclick="handleGoogle()">Continue with Google</button>
+  </div>
+
+</div>
+
+<script>
+  function redirectAfterLogin() {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get("redirect");
+
+    window.location.href = redirect || "/index.html";
+  }
+
+  function handleLogin() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+      alert("Enter email and password");
+      return;
     }
 
-    function handleLogin() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    localStorage.setItem("youomni_user", "true");
 
-      if (!email || !password) {
-        alert("Please enter email and password");
-        return;
-      }
+    // ✅ FIX: delay avoids redirect bug
+    setTimeout(redirectAfterLogin, 50);
+  }
 
-      // fake auth for now
-      localStorage.setItem("youomni_user", "true");
+  function handleGoogle() {
+    // 🔥 still fake (no real OAuth yet)
+    localStorage.setItem("youomni_user", "true");
 
-      redirectAfterLogin();
-    }
-
-    function handleGoogle() {
-      // placeholder (same behavior for now)
-      localStorage.setItem("youomni_user", "true");
-
-      redirectAfterLogin();
-    }
-  </script>
+    // ✅ FIX
+    setTimeout(redirectAfterLogin, 50);
+  }
+</script>
 
 </body>
 </html>
