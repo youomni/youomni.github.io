@@ -18,7 +18,7 @@
     }
 
     .container {
-      width: 340px;
+      width: 360px;
       padding: 24px;
       background: #1c1c1c;
       border-radius: 12px;
@@ -26,9 +26,9 @@
     }
 
     h1 {
-      margin: 0 0 16px;
-      font-size: 22px;
       text-align: center;
+      margin-bottom: 16px;
+      font-size: 22px;
     }
 
     .tabs {
@@ -39,7 +39,7 @@
 
     .tab {
       flex: 1;
-      padding: 8px;
+      padding: 10px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -58,9 +58,11 @@
       border: none;
       border-radius: 8px;
       outline: none;
+      background: #2a2a2a;
+      color: white;
     }
 
-    button {
+    button.primary {
       width: 100%;
       padding: 10px;
       margin-top: 10px;
@@ -68,14 +70,18 @@
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
-    }
-
-    .primary {
       background: #4a90e2;
       color: white;
     }
 
-    .google {
+    button.google {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
       background: white;
       color: black;
     }
@@ -85,60 +91,65 @@
     }
 
     .hint {
+      margin-top: 12px;
       font-size: 12px;
       text-align: center;
-      margin-top: 10px;
       opacity: 0.7;
     }
   </style>
 </head>
 
 <body>
+
   <div class="container">
-    <h1>Welcome</h1>
+    <h1>Login</h1>
 
     <div class="tabs">
       <button class="tab active" onclick="showTab('login')">Login</button>
       <button class="tab" onclick="showTab('signup')">Sign Up</button>
     </div>
 
+    <!-- LOGIN -->
     <div id="loginForm">
       <input type="email" placeholder="Email" />
       <input type="password" placeholder="Password" />
       <button class="primary">Login</button>
     </div>
 
+    <!-- SIGN UP -->
     <div id="signupForm" class="hidden">
       <input type="email" placeholder="Email" />
       <input type="password" placeholder="Create Password" />
       <button class="primary">Create Account</button>
     </div>
 
+    <!-- GOOGLE -->
     <button class="google">Continue with Google</button>
 
     <div class="hint">
-      After authentication, access will be checked for purchased lessons
+      Access will be checked after authentication
     </div>
   </div>
 
   <script>
     function showTab(tab) {
-      const login = document.getElementById('loginForm');
-      const signup = document.getElementById('signupForm');
-      const buttons = document.querySelectorAll('.tab');
+      const login = document.getElementById("loginForm");
+      const signup = document.getElementById("signupForm");
+      const tabs = document.querySelectorAll(".tab");
 
-      if (tab === 'login') {
-        login.classList.remove('hidden');
-        signup.classList.add('hidden');
-        buttons[0].classList.add('active');
-        buttons[1].classList.remove('active');
+      if (tab === "login") {
+        login.classList.remove("hidden");
+        signup.classList.add("hidden");
+        tabs[0].classList.add("active");
+        tabs[1].classList.remove("active");
       } else {
-        signup.classList.remove('hidden');
-        login.classList.add('hidden');
-        buttons[1].classList.add('active');
-        buttons[0].classList.remove('active');
+        signup.classList.remove("hidden");
+        login.classList.add("hidden");
+        tabs[1].classList.add("active");
+        tabs[0].classList.remove("active");
       }
     }
   </script>
+
 </body>
 </html>
