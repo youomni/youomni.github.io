@@ -18,16 +18,37 @@
     }
 
     .container {
-      width: 320px;
+      width: 340px;
       padding: 24px;
       background: #1c1c1c;
       border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
 
     h1 {
       margin: 0 0 16px;
       font-size: 22px;
       text-align: center;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #2a2a2a;
+      color: white;
+    }
+
+    .tab.active {
+      background: #4a90e2;
     }
 
     input {
@@ -49,14 +70,18 @@
       font-weight: bold;
     }
 
-    .login-btn {
+    .primary {
       background: #4a90e2;
       color: white;
     }
 
-    .google-btn {
+    .google {
       background: white;
       color: black;
+    }
+
+    .hidden {
+      display: none;
     }
 
     .hint {
@@ -70,17 +95,50 @@
 
 <body>
   <div class="container">
-    <h1>Login / Sign up</h1>
+    <h1>Welcome</h1>
 
-    <input type="email" placeholder="Email" />
-    <input type="password" placeholder="Password" />
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('login')">Login</button>
+      <button class="tab" onclick="showTab('signup')">Sign Up</button>
+    </div>
 
-    <button class="login-btn">Login</button>
-    <button class="google-btn">Continue with Google</button>
+    <div id="loginForm">
+      <input type="email" placeholder="Email" />
+      <input type="password" placeholder="Password" />
+      <button class="primary">Login</button>
+    </div>
+
+    <div id="signupForm" class="hidden">
+      <input type="email" placeholder="Email" />
+      <input type="password" placeholder="Create Password" />
+      <button class="primary">Create Account</button>
+    </div>
+
+    <button class="google">Continue with Google</button>
 
     <div class="hint">
-      After login you will be checked for access to lessons
+      After authentication, access will be checked for purchased lessons
     </div>
   </div>
+
+  <script>
+    function showTab(tab) {
+      const login = document.getElementById('loginForm');
+      const signup = document.getElementById('signupForm');
+      const buttons = document.querySelectorAll('.tab');
+
+      if (tab === 'login') {
+        login.classList.remove('hidden');
+        signup.classList.add('hidden');
+        buttons[0].classList.add('active');
+        buttons[1].classList.remove('active');
+      } else {
+        signup.classList.remove('hidden');
+        login.classList.add('hidden');
+        buttons[1].classList.add('active');
+        buttons[0].classList.remove('active');
+      }
+    }
+  </script>
 </body>
 </html>
