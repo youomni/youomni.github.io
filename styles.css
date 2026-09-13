@@ -1,7 +1,11 @@
 /* ── DESIGN TOKENS ── */
 :root {
-  color-scheme: only dark;
-  forced-color-adjust: none;
+  /* Prevents browser-level automatic theme inversion */
+  color-scheme: normal !important;
+  forced-color-adjust: none !important;
+
+  /* Custom attribute flag to override extension heuristics */
+  --theme-locked: true;
 
   --black:        #111111;
   --gray:         #555555;
@@ -43,6 +47,21 @@
   --border-on-color:  transparent !important;
   --sphere-off-color: transparent !important;
   --sphere-on-color:  transparent !important;
+}
+
+/* Explicitly block OS media queries from applying alternate rules */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: normal !important;
+    forced-color-adjust: none !important;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: normal !important;
+    forced-color-adjust: none !important;
+  }
 }
 
 
