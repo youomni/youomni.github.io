@@ -1,5 +1,8 @@
 /* ── DESIGN TOKENS ── */
 :root {
+  color-scheme: only dark;
+  forced-color-adjust: none;
+
   --black:        #111111;
   --gray:         #555555;
   --gray-lt:      #f2f2f2;
@@ -40,24 +43,8 @@
   --border-on-color:  transparent !important;
   --sphere-off-color: transparent !important;
   --sphere-on-color:  transparent !important;
-  
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --black:     #111111;
-    --gray:      #555555;
-    --gray-lt:   #f2f2f2;
-    --border:    #dddddd;
-    --bg:        #ffffff;
-    --white:     #ffffff;
-    --green-lt:  #eaf7ee;
-    --blue-lt:   #e8f3fc;
-    --orange-lt: #fff3eb;
-    --red-lt:    #fdecea;
-    --red:       #c0392b;
-  }
-}
 
 /* ── RESET & BASE ── */
 * { 
