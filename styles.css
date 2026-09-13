@@ -103,7 +103,7 @@ em { font-style: italic; }
 .header {
   position: relative;
   width: 100%;
-
+  background: var(--surface-dark);
   color: var(--surface-dark-text);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
