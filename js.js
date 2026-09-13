@@ -26,7 +26,7 @@ const SYSTEM_INSTRUCTION_TEXT = `
 On-Screen Text:
 
 HOW CHATGPT THINKS
-in 45 seconds
+in 60 seconds
 
 Voiceover:
 
