@@ -70,90 +70,96 @@ OUTPUT = INPUT * WEIGHT + BIAS</pre>
 
 
     <div class="section-label">Initial PARAMETERS</div>
-    <div class="card">
-      <div class="card-body">
-        <p>Suppose we don't yet know what these <strong>PARAMETERS</strong> should be, so let's start by setting them to <strong>zero</strong>:</p>
-        <div class="callout callout-neutral"><pre>
+<div class="card">
+  <div class="card-body">
+    <p>To start <strong>TRAINING</strong>, the PARAMETERS must first get their initial values.</p>
+    <p>For example, let's start by setting them to <strong>zero</strong>:</p>
+    <div class="callout callout-neutral"><pre>
 WEIGHT = 0.0
 BIAS   = 0.0</pre>
-        </div>
-        <p>At first, the brain will generate nonsense, since with any <strong>INPUT</strong> the <strong>OUTPUT</strong> is <strong>zero</strong>.</p>
-      </div>
+    </div>
+    <p>At first, the brain will generate nonsense, since with any <strong>INPUT</strong> the <strong>OUTPUT</strong> is <strong>zero</strong>.</p>
+  </div>
+</div>
+
+
+<!-- DATASET -->
+<div class="section-label">Dataset</div>
+<div class="card">
+  <div class="card-body">
+    <p>In <strong>TRAINING</strong>, we always use the DATASET.</p>
+    <p>Every <strong>DATASET</strong> always consists of <strong>EXAMPLES</strong>.</p>
+      
+    <p>Each <strong>EXAMPLE</strong> always contains <strong>INPUT</strong> and <strong>TARGET</strong>.</p>
+    <p>Here, we have this training <strong>DATASET</strong> consisting of two <strong>EXAMPLES</strong>:</p>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>INPUT</th>
+            <th>TARGET</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>EXAMPLE 1</td>
+            <td>0.0</td>
+            <td>32.0</td>
+          </tr>
+          <tr>
+            <td>EXAMPLE 2</td>
+            <td>1.0</td>
+            <td>33.8</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
+    <p>The <strong>TARGET</strong> always represents the correct <strong>OUTPUT</strong>.</p>
+    <p><strong>EXAMPLE 1</strong> means when the <strong>INPUT</strong> is <strong>0.0</strong>, the <strong>OUTPUT</strong> must be <strong>32.0</strong>, because 0.0°C equals 32.0°F.</p>
+    <p><strong>EXAMPLE 2</strong> means when the <strong>INPUT</strong> is <strong>1.0</strong>, the <strong>OUTPUT</strong> must be <strong>33.8</strong>, because 1.0°C equals 33.8°F.</p>
 
-    <!-- DATASET -->
-    <div class="section-label">Dataset</div>
-    <div class="card">
-      <div class="card-body">
-        <p>We have this training <strong>DATASET</strong> consisting of two <strong>EXAMPLES</strong>:</p>
-
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>INPUT</th>
-                <th>TARGET</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>EXAMPLE 1</td>
-                <td>0.0</td>
-                <td>32.0</td>
-              </tr>
-              <tr>
-                <td>EXAMPLE 2</td>
-                <td>1.0</td>
-                <td>33.8</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <p><strong>EXAMPLE 1</strong> means when the <strong>INPUT</strong> is <strong>0.0</strong>, the <strong>OUTPUT</strong> must be <strong>32.0</strong>, because 0.0°C equals 32.0°F.</p>
-        <p><strong>EXAMPLE 2</strong> means when the <strong>INPUT</strong> is <strong>1.0</strong>, the <strong>OUTPUT</strong> must be <strong>33.8</strong>, because 1.0°C equals 33.8°F.</p>
-    
-        <p>
-          During <strong>TRAINING</strong>, in each <strong>LESSON</strong>, the brain <strong>changes</strong> each <strong>PARAMETER</strong> so that the <strong>OUTPUT</strong> gets closer to the <strong>TARGET</strong>.
-        </p>
-      </div>
-    </div>
+    <p>
+      During <strong>TRAINING</strong>, in each <strong>LESSON</strong>, the brain <strong>changes</strong> each <strong>PARAMETER</strong> so that the <strong>OUTPUT</strong> gets closer to the <strong>TARGET</strong>.
+    </p>
+  </div>
+</div>
 
 
-    <!-- CHANGE RULE -->
-    <div class="section-label">Change Rule</div>
+<!-- CHANGE RULE -->
+<div class="section-label">Change Rule</div>
 
-    <div class="card">
-      <div class="card-body">
+<div class="card">
+  <div class="card-body">
 
-        <p>The brain <strong>changes</strong> each <strong>PARAMETER</strong> using the <strong>FUNDAMENTAL CHANGE RULE</strong>:</p>
+    <p>In <strong>TRAINING</strong>, the brain <strong>changes</strong> each <strong>PARAMETER</strong> using the <strong>FUNDAMENTAL CHANGE RULE</strong>:</p>
 
-        <div class="formula-block">
-          <div class="formula-block-label">FUNDAMENTAL CHANGE RULE for PARAMETER</div><pre>
+    <div class="formula-block">
+      <div class="formula-block-label">FUNDAMENTAL CHANGE RULE for PARAMETER</div><pre>
 <span class="formula">PARAMETER_change = ERROR * influence_PARAMETER_OUTPUT * PACE</span>
 <span class="formula">PARAMETER = PARAMETER + PARAMETER_change</span></pre>
-        </div>
+    </div>
 
-        <p>Because the brain has two <strong>PARAMETERS</strong>  —  <strong>WEIGHT</strong> and <strong>BIAS</strong>  —  we obtain these two change rules:</p>
+    <p>Because the brain has two <strong>PARAMETERS</strong>  —  <strong>WEIGHT</strong> and <strong>BIAS</strong>  —  we obtain these two change rules:</p>
 
-        <div class="formula-block">
-          <div class="formula-block-label">FUNDAMENTAL CHANGE RULE for WEIGHT</div><pre>
+    <div class="formula-block">
+      <div class="formula-block-label">FUNDAMENTAL CHANGE RULE for WEIGHT</div><pre>
 <span class="formula">WEIGHT_change = ERROR * influence_WEIGHT_OUTPUT * PACE</span>
 <span class="formula">WEIGHT = WEIGHT + WEIGHT_change</span></pre>
-        </div>
+    </div>
 
-        <div class="formula-block">
-          <div class="formula-block-label">FUNDAMENTAL CHANGE RULE for BIAS</div><pre>
+    <div class="formula-block">
+      <div class="formula-block-label">FUNDAMENTAL CHANGE RULE for BIAS</div><pre>
 <span class="formula">BIAS_change = ERROR * influence_BIAS_OUTPUT * PACE</span>
 <span class="formula">BIAS = BIAS + BIAS_change</span></pre>
-        </div>
-
-        <p>Don't worry  —  each step is simple. Just follow the calculations below.</p>
-
-      </div>
     </div>
+
+    <p>Don't worry  —  each step is simple. Just follow the calculations below.</p>
+
+  </div>
+</div>
 
 
 
