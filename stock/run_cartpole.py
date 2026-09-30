@@ -1,4 +1,4 @@
-import os # new1
+import os
 import math
 import time
 import numpy as np
@@ -122,13 +122,18 @@ def MAIN():
         print(f"Error: Weights file not found at '{WEIGHTS_PATH}'")
         return
 
-    # USE GYMNASIUM FOR VISUAL WINDOW ONLY
+    # USE GYMNASIUM FOR VISUAL WINDOW
     RENDER_ENV = gym.make("CartPole-v1", render_mode="human")
     RENDER_ENV.reset()
 
     # USE CUSTOM ENVIRONMENT FOR ACCURATE CONTINUOUS PHYSICS
     PHYSICS_ENV = ENVIRONMENT(SEED=100)
     STATE = PHYSICS_ENV.RESET()
+
+    # SET INITIAL ANGLE TO 30 DEGREES
+    STARTING_ANGLE_DEG = 30.0
+    PHYSICS_ENV.STATE[2] = math.radians(STARTING_ANGLE_DEG)
+    STATE = PHYSICS_ENV.STATE
 
     DEVICE = "cpu"
     EVAL_AGENT = PPOAGENT(STATE_DIM=4, ACTION_DIM=1, DEVICE=DEVICE)
@@ -138,9 +143,9 @@ def MAIN():
     print(f"Successfully loaded weights from: {WEIGHTS_PATH}")
 
     # -----------------------------------------------------------------------
-    # PHASE 1: MOTOR ON (POLICY ACTIVE)
+    # PHASE 1: MOTOR ON (POLICY ACTIVE FROM 30 DEGREES)
     # -----------------------------------------------------------------------
-    print("\nMotor ON: Policy actively stabilizing the pendulum...")
+    print(f"\nMotor ON: Starting at {STARTING_ANGLE_DEG} deg. Policy attempting recovery...")
     for STEP in range(300):
         STATE_TENSOR = torch.as_tensor(STATE, dtype=torch.float32, device=EVAL_AGENT.DEVICE).unsqueeze(0)
 
@@ -150,7 +155,7 @@ def MAIN():
             )
             ACTION_NP = CONTINUOUS_ACTION.squeeze(0).cpu().numpy()
 
-        STATE, _, DONE = PHYSICS_ENV.STEP(ACTION_NP)
+        STATE, _, _ = PHYSICS_ENV.STEP(ACTION_NP)
 
         # UPDATE VISUAL FRAME WITH EXACT PHYSICS STATE
         RENDER_ENV.unwrapped.state = np.array(STATE, dtype=np.float64)
@@ -158,22 +163,15 @@ def MAIN():
 
         time.sleep(0.02)
 
-        if DONE:
-            print(f"Active control terminated early at step {STEP + 1}.")
-            break
-
     # -----------------------------------------------------------------------
     # PHASE 2: MOTOR OFF (ZERO FORCE / PURE GRAVITY)
     # -----------------------------------------------------------------------
     print("\nMotor OFF: Cutting motor power (Force = 0.0 N). Watching pole fall under gravity...")
 
-    # ADD A TINY NUDGE (0.01 RAD / ~0.57 DEG) TO BREAK PERFECT VERTICAL BALANCE IF NEEDED
-    PHYSICS_ENV.STATE[2] += 0.01
-
     FREE_FALL_STEPS = 0
     ZERO_FORCE_ACTION = np.array([0.0], dtype=np.float32)
 
-    for STEP in range(200):
+    for STEP in range(300):
         # APPLY EXACTLY 0.0 FORCE TO SIMULATE UNPOWERED COASTING
         STATE, _, _ = PHYSICS_ENV.STEP(ZERO_FORCE_ACTION)
         FREE_FALL_STEPS += 1
