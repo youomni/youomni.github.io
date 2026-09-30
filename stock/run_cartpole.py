@@ -1,4 +1,4 @@
-import os
+import os # new
 import math
 import time
 import numpy as np
@@ -73,10 +73,10 @@ def MAIN():
     EVAL_AGENT.ACTOR.eval()
 
     print(f"Successfully loaded weights from: {WEIGHTS_PATH}")
-    
+
     STATE, _ = ENV_GYM.reset()
-    
-    # 1. ACTIVE CONTROL PHASE (NETWORK DRIVES THE MOTOR FOR 500 STEPS)
+
+    # 1. ACTIVE CONTROL PHASE (MOTOR ACTIVE FOR 500 STEPS)
     print("Motor ON: Policy actively stabilizing the pendulum...")
     for STEP in range(500):
         STATE_TENSOR = torch.as_tensor(STATE, dtype=torch.float32, device=EVAL_AGENT.DEVICE).unsqueeze(0)
@@ -96,19 +96,32 @@ def MAIN():
             print(f"Active control terminated early at step {STEP + 1}.")
             break
 
-    # 2. MOTOR TURNED OFF PHASE (LET GRAVITY TAKE OVER UNTIL THE POLE FALLS)
+    # 2. UNPOWERED COASTING PHASE (MOTOR OFF)
     print("\nMotor OFF: Disabling active control. Watching the pole fall under gravity...")
-    DONE = False
-    FREE_FALL_STEPS = 0
 
-    while not DONE and FREE_FALL_STEPS < 200:
-        # Pass a neutral action (e.g., 0) while ignoring network outputs
-        STATE, REWARD, TERMINATED, TRUNCATED, INFO = ENV_GYM.step(0)
+    # FORCE-RESET INTERNAL TRUNCATION FLAG SO GYMNASIUM CONTINUES STEPPING
+    ENV_GYM.unwrapped._elapsed_steps = 0
+
+    # PUSH THE POLE SLIGHTLY SO IT BREAKS PERFECT BALANCE AND FALLS
+    ENV_GYM.unwrapped.state[2] += 0.01  # ADD ~0.5 DEGREES TO THETA
+
+    FREE_FALL_STEPS = 0
+    NEUTRAL_ACTION = 0
+
+    # RUN UNTIL THE POLE FINALLY CRASHES PAST THETA THRESHOLD
+    while FREE_FALL_STEPS < 200:
+        # ALTERNATE ACTIONS (0, 1, 0, 1) TO CANCEL OUT DIRECT FORCE
+        NEUTRAL_ACTION = 1 - NEUTRAL_ACTION
+        STATE, REWARD, TERMINATED, TRUNCATED, INFO = ENV_GYM.step(NEUTRAL_ACTION)
+
         FREE_FALL_STEPS += 1
-        DONE = TERMINATED or TRUNCATED
         time.sleep(0.02)
 
-    print(f"Pole completely fell over after {FREE_FALL_STEPS} unpowered steps.")
+        # CHECK IF POLE EXCEEDED 12 DEGREES OR CART EXCEEDED BOUNDS
+        X, X_DOT, THETA, THETA_DOT = STATE
+        if abs(THETA) > (12 * 2 * math.pi / 360) or abs(X) > 2.4:
+            print(f"Pole crashed at step {FREE_FALL_STEPS} | Angle: {math.degrees(THETA):.2f} deg")
+            break
 
     input("\nPress ENTER in Terminal to close the window...")
     ENV_GYM.close()
