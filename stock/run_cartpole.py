@@ -60,18 +60,13 @@ class PPOAGENT:
 # 3. MAIN EXECUTION
 # ===========================================================================
 def MAIN():
-    # DIRECT PATH TO YOUR WEIGHTS FILE
     WEIGHTS_PATH = "/Users/apple/Desktop/POLE/ppo_actor.pt"
 
     if not os.path.exists(WEIGHTS_PATH):
         print(f"Error: Weights file not found at '{WEIGHTS_PATH}'")
         return
 
-    # INITIALIZE ENVIRONMENT WITH NATIVE SMOOTH WINDOW
     ENV_GYM = gym.make("CartPole-v1", render_mode="human")
-    STATE, _ = ENV_GYM.reset()
-
-    # LOAD TRAINED MODEL
     DEVICE = "cpu"
     EVAL_AGENT = PPOAGENT(STATE_DIM=4, ACTION_DIM=1, DEVICE=DEVICE)
     EVAL_AGENT.ACTOR.load_state_dict(torch.load(WEIGHTS_PATH, map_location=DEVICE))
@@ -80,27 +75,32 @@ def MAIN():
     print(f"Successfully loaded weights from: {WEIGHTS_PATH}")
     print("Running smooth native simulation...")
 
-    for STEP in range(500):
-        STATE_TENSOR = torch.as_tensor(STATE, dtype=torch.float32, device=EVAL_AGENT.DEVICE).unsqueeze(0)
+    NUM_EPISODES = 3  # RUN 3 EPISODES INSTEAD OF JUST 1
 
-        with torch.no_grad():
-            CONTINUOUS_ACTION, _, _ = EVAL_AGENT.ACTOR.GET_ACTION(
-                STATE_TENSOR, DETERMINISTIC=True
-            )
-            FORCE = CONTINUOUS_ACTION.item()
+    for EPISODE in range(1, NUM_EPISODES + 1):
+        STATE, _ = ENV_GYM.reset()
+        print(f"\n--- Episode {EPISODE} ---")
 
-        # MAP CONTINUOUS FORCE (-10 N TO +10 N) TO GYMNASIUM DISCRETE ACTION (0 OR 1)
-        DISCRETE_ACTION = 1 if FORCE >= 0.0 else 0
+        for STEP in range(1000):  # INCREASED MAX STEPS TO 1000
+            STATE_TENSOR = torch.as_tensor(STATE, dtype=torch.float32, device=EVAL_AGENT.DEVICE).unsqueeze(0)
 
-        STATE, REWARD, TERMINATED, TRUNCATED, INFO = ENV_GYM.step(DISCRETE_ACTION)
+            with torch.no_grad():
+                CONTINUOUS_ACTION, _, _ = EVAL_AGENT.ACTOR.GET_ACTION(
+                    STATE_TENSOR, DETERMINISTIC=True
+                )
+                FORCE = CONTINUOUS_ACTION.item()
 
-        # 0.02 SECONDS DELAY = ~50 FPS
-        time.sleep(0.02)
+            DISCRETE_ACTION = 1 if FORCE >= 0.0 else 0
+            STATE, REWARD, TERMINATED, TRUNCATED, INFO = ENV_GYM.step(DISCRETE_ACTION)
 
-        if TERMINATED or TRUNCATED:
-            print(f"Episode finished after {STEP + 1} steps.")
-            break
+            time.sleep(0.02)
 
+            if TERMINATED or TRUNCATED:
+                print(f"Episode {EPISODE} finished after {STEP + 1} steps.")
+                break
+
+    # WAIT FOR USER INPUT BEFORE CLOSING
+    input("\nSimulation finished! Press ENTER in Terminal to close the window...")
     ENV_GYM.close()
 
 if __name__ == "__main__":
