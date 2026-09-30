@@ -73,35 +73,46 @@ def MAIN():
     EVAL_AGENT.ACTOR.eval()
 
     print(f"Successfully loaded weights from: {WEIGHTS_PATH}")
-    print("Running smooth native simulation...")
+    
+    STATE, _ = ENV_GYM.reset()
+    
+    # 1. ACTIVE CONTROL PHASE (NETWORK DRIVES THE MOTOR FOR 500 STEPS)
+    print("Motor ON: Policy actively stabilizing the pendulum...")
+    for STEP in range(500):
+        STATE_TENSOR = torch.as_tensor(STATE, dtype=torch.float32, device=EVAL_AGENT.DEVICE).unsqueeze(0)
 
-    NUM_EPISODES = 3  # RUN 3 EPISODES INSTEAD OF JUST 1
+        with torch.no_grad():
+            CONTINUOUS_ACTION, _, _ = EVAL_AGENT.ACTOR.GET_ACTION(
+                STATE_TENSOR, DETERMINISTIC=True
+            )
+            FORCE = CONTINUOUS_ACTION.item()
 
-    for EPISODE in range(1, NUM_EPISODES + 1):
-        STATE, _ = ENV_GYM.reset()
-        print(f"\n--- Episode {EPISODE} ---")
+        DISCRETE_ACTION = 1 if FORCE >= 0.0 else 0
+        STATE, REWARD, TERMINATED, TRUNCATED, INFO = ENV_GYM.step(DISCRETE_ACTION)
 
-        for STEP in range(1000):  # INCREASED MAX STEPS TO 1000
-            STATE_TENSOR = torch.as_tensor(STATE, dtype=torch.float32, device=EVAL_AGENT.DEVICE).unsqueeze(0)
+        time.sleep(0.02)
 
-            with torch.no_grad():
-                CONTINUOUS_ACTION, _, _ = EVAL_AGENT.ACTOR.GET_ACTION(
-                    STATE_TENSOR, DETERMINISTIC=True
-                )
-                FORCE = CONTINUOUS_ACTION.item()
+        if TERMINATED or TRUNCATED:
+            print(f"Active control terminated early at step {STEP + 1}.")
+            break
 
-            DISCRETE_ACTION = 1 if FORCE >= 0.0 else 0
-            STATE, REWARD, TERMINATED, TRUNCATED, INFO = ENV_GYM.step(DISCRETE_ACTION)
+    # 2. MOTOR TURNED OFF PHASE (LET GRAVITY TAKE OVER UNTIL THE POLE FALLS)
+    print("\nMotor OFF: Disabling active control. Watching the pole fall under gravity...")
+    DONE = False
+    FREE_FALL_STEPS = 0
 
-            time.sleep(0.02)
+    while not DONE and FREE_FALL_STEPS < 200:
+        # Pass a neutral action (e.g., 0) while ignoring network outputs
+        STATE, REWARD, TERMINATED, TRUNCATED, INFO = ENV_GYM.step(0)
+        FREE_FALL_STEPS += 1
+        DONE = TERMINATED or TRUNCATED
+        time.sleep(0.02)
 
-            if TERMINATED or TRUNCATED:
-                print(f"Episode {EPISODE} finished after {STEP + 1} steps.")
-                break
+    print(f"Pole completely fell over after {FREE_FALL_STEPS} unpowered steps.")
 
-    # WAIT FOR USER INPUT BEFORE CLOSING
-    input("\nSimulation finished! Press ENTER in Terminal to close the window...")
+    input("\nPress ENTER in Terminal to close the window...")
     ENV_GYM.close()
+
 
 if __name__ == "__main__":
     MAIN()
