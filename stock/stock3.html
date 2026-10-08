@@ -290,7 +290,130 @@
                 <span>Connected</span>
             </div>
         </header>
-        <!-- Additional UI elements go here -->
+
+        <!-- Mode Selection -->
+        <div class="panel reveal d1">
+            <div class="grid grid-3">
+                <button class="mode-btn active" id="btnManual">Manual</button>
+                <button class="mode-btn" id="btnAuto">Auto</button>
+                <button class="mode-btn" id="btnChoreo">Choreo</button>
+            </div>
+        </div>
+
+        <!-- Joystick Area -->
+        <div class="panel stage reveal d2">
+            <div id="joystick-zone">
+                <div class="tick n">N</div>
+                <div class="tick">E</div>
+                <div class="tick s">S</div>
+                <div class="tick w">W</div>
+                <div id="joystick-knob"></div>
+            </div>
+        </div>
+
+        <!-- Quick Movements -->
+        <div class="panel reveal d3">
+            <div class="six-grid">
+                <button class="action-btn s2">Center</button>
+                <button class="action-btn s2">Cross</button>
+                <button class="action-btn s2">Circle</button>
+            </div>
+        </div>
+
+        <!-- Blink Control -->
+        <div class="panel reveal d4">
+            <button id="blinkBtn">Trigger Blink</button>
+        </div>
+
+        <!-- Pitch Trim Slider -->
+        <div class="panel reveal d5">
+            <div class="trim-head">
+                <span class="lbl">Pitch Trim</span>
+                <span class="val" id="pitchTrimVal">0°</span>
+            </div>
+            <input type="range" id="pitchTrim" min="-30" max="30" value="0">
+            <div class="scale">
+                <span>-30°</span>
+                <span>0°</span>
+                <span>+30°</span>
+            </div>
+        </div>
+
+        <!-- Yaw Trim Slider -->
+        <div class="panel reveal d6">
+            <div class="trim-head">
+                <span class="lbl">Yaw Trim</span>
+                <span class="val" id="yawTrimVal">0°</span>
+            </div>
+            <input type="range" id="yawTrim" min="-30" max="30" value="0">
+            <div class="scale">
+                <span>-30°</span>
+                <span>0°</span>
+                <span>+30°</span>
+            </div>
+        </div>
+
+        <!-- Choreography Transport -->
+        <div class="panel reveal d7">
+            <div class="choreo-transport">
+                <button class="btn-play">Play Sequence</button>
+                <button class="btn-stop">Stop</button>
+            </div>
+        </div>
+
+        <!-- Preset Movements -->
+        <div class="panel reveal d8">
+            <div class="choreo-canned">
+                <select>
+                    <option value="">Select Preset Routine...</option>
+                    <option value="scan">Room Scan</option>
+                    <option value="expressive">Expressive Search</option>
+                    <option value="idle">Idle Movements</option>
+                </select>
+                <button class="choreo-btn-sm">Load</button>
+            </div>
+        </div>
+
+        <!-- Keyframe Sequence Editor -->
+        <div class="panel reveal d9">
+            <div class="trim-head">
+                <span class="lbl">Keyframe Sequence</span>
+            </div>
+            <div class="kf-list">
+                <div class="kf-row">
+                    <div class="kf-row-top">
+                        <span class="kf-idx">#1</span>
+                        <div class="kf-reorder">
+                            <button class="kf-arrow">▲</button>
+                            <button class="kf-arrow">▼</button>
+                        </div>
+                        <button class="kf-del">Delete</button>
+                    </div>
+                    <div class="kf-fields">
+                        <div class="kf-field">
+                            <label>X Pos</label>
+                            <input type="number" value="0">
+                        </div>
+                        <div class="kf-field">
+                            <label>Y Pos</label>
+                            <input type="number" value="0">
+                        </div>
+                        <div class="kf-field">
+                            <label>Duration</label>
+                            <input type="text" value="500ms">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Save Custom Routine -->
+        <div class="panel reveal d9">
+            <div class="choreo-save">
+                <input type="text" placeholder="Routine Name...">
+                <button class="choreo-btn-sm">Save Preset</button>
+            </div>
+        </div>
     </div>
 </body>
 </html>
